@@ -1,0 +1,42 @@
+{
+  "name": "@jbox-web/datatables-factory",
+  "version": "1.0.0",
+  "main": "dist/js/datatables-factory.js",
+  "files": [
+    "dist/js/*.js"
+  ],
+  "author": {
+    "name": "Nicolas Rodriguez",
+    "email": "nicoladmin@free.fr",
+    "url": "https://github.com/n-rodriguez"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/jbox-web/datatables-factory",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbox-web/datatables-factory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jbox-web/datatables-factory/issues"
+  },
+  "dependencies": {
+    "jquery": ">=3.5.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "babel-loader": "^8.2.1",
+    "babel-plugin-macros": "^2.8.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-preset-env": "^1.7.0",
+    "coffee-loader": "^1.0.1",
+    "eslint": "^7.12.0",
+    "eslint-plugin-coffee": "^0.1.13",
+    "eslint-webpack-plugin": "^2.4.1",
+    "path": "^0.12.7",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  }
+}

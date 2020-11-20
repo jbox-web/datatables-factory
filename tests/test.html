@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>MD5</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" media="screen"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- <script src="../datatables-factory.js"></script> -->
+    <script src="../dist/js/datatables-factory.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-10">
+          <form class="responsive-select2 form-horizontal" role="form" action="/customers" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="GYUkhYP8henU+lUcz7nWt4hwmUHPIu3jzoj9ubq01emekQ75Xl9qEe8DCQ9+L6CwuPzdKNaqaT80vqbfnnTPvg==" />
+            <div class="row">
+              <div class="col-lg-4 col-xl-3"><div id="customers-full-name-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-tags-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-trust-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-commercial-filter"></div></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4 col-xl-3"><div id="customers-region-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-situation-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-price-range-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-business-type-filter"></div></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4 col-xl-3"><div id="customers-deleted-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-comment-filter"></div></div>
+              <div class="col-lg-4 col-xl-3"><div id="customers-free-capital-filter"></div></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-xl-3">
+                <label class="font-weight-bold">Filter par date de création</label>
+                <div id="customers-created-at-filter"></div>
+              </div>
+              <div class="col-lg-6 col-xl-3">
+                <label class="font-weight-bold">Filter par date de mise à jour</label>
+                <div id="customers-updated-at-filter"></div>
+              </div>
+              <div class="col-lg-6 col-xl-3">
+                <label class="font-weight-bold">Filter par date de suppression</label>
+                <div id="customers-deleted-at-filter"></div>
+              </div>
+            </div>
+            <table width="100%" class="table table-striped table-bordered display responsive no-wrap" id="customers-datatable" data-toggle="datatable" data-dtf-loader="{&quot;dt_id&quot;:&quot;#customers-datatable&quot;,&quot;dt_class&quot;:&quot;Datatables.CustomersDatatable&quot;,&quot;dt_options&quot;:{&quot;columns&quot;:[{&quot;className&quot;:&quot;check_box&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:false,&quot;searchable&quot;:false,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;check_box&quot;},{&quot;className&quot;:&quot;tags colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;tags&quot;},{&quot;className&quot;:&quot;full_name colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;full_name&quot;},{&quot;className&quot;:&quot;email colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;email&quot;},{&quot;className&quot;:&quot;city colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;city&quot;},{&quot;className&quot;:&quot;postal_code colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;postal_code&quot;},{&quot;className&quot;:&quot;phone_number colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;phone_number&quot;},{&quot;className&quot;:&quot;owned_capital colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;owned_capital&quot;},{&quot;className&quot;:&quot;free_capital colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;free_capital&quot;},{&quot;className&quot;:&quot;commercial colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;commercial&quot;},{&quot;className&quot;:&quot;trust colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;trust&quot;},{&quot;className&quot;:&quot;region colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;region&quot;},{&quot;className&quot;:&quot;situation colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;situation&quot;},{&quot;className&quot;:&quot;price_range colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;price_range&quot;},{&quot;className&quot;:&quot;business_type colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;business_type&quot;},{&quot;className&quot;:&quot;created_at colvis&quot;,&quot;visible&quot;:true,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;created_at&quot;},{&quot;className&quot;:&quot;updated_at colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;updated_at&quot;},{&quot;className&quot;:&quot;deleted_at colvis&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;deleted_at&quot;},{&quot;className&quot;:&quot;deleted&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;deleted&quot;},{&quot;className&quot;:&quot;comment&quot;,&quot;visible&quot;:false,&quot;orderable&quot;:true,&quot;searchable&quot;:true,&quot;width&quot;:&quot;&quot;,&quot;data&quot;:&quot;comment&quot;}],&quot;buttons&quot;:[{&quot;url&quot;:&quot;/custom_email_campaigns/new?target_type=customers&quot;,&quot;method&quot;:&quot;redirect&quot;,&quot;action&quot;:&quot;email&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-envelope\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Envoyer un email&quot;,&quot;button_name&quot;:&quot;email&quot;},{&quot;url&quot;:&quot;/custom_sms_campaigns/new?target_type=customers&quot;,&quot;method&quot;:&quot;redirect&quot;,&quot;action&quot;:&quot;sms&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;fas fa-mobile\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Envoyer un sms&quot;,&quot;button_name&quot;:&quot;sms&quot;},{&quot;url&quot;:&quot;/customers/select_all&quot;,&quot;action&quot;:&quot;select_all&quot;,&quot;method&quot;:&quot;post&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-check-square\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Tout sélectionner&quot;,&quot;button_name&quot;:&quot;select_all&quot;},{&quot;url&quot;:&quot;/customers/reset_selection&quot;,&quot;action&quot;:&quot;reset_selection&quot;,&quot;method&quot;:&quot;post&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-square\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Réinitialiser la sélection&quot;,&quot;button_name&quot;:&quot;reset_selection&quot;},{&quot;action&quot;:&quot;reset_filters&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;fas fa-sync-alt\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Réinitialiser tous les filtres&quot;,&quot;button_name&quot;:&quot;reset_filters&quot;},{&quot;extend&quot;:&quot;colvis&quot;,&quot;columns&quot;:&quot;.colvis&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;fas fa-table\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Visibilité des colonnes&quot;,&quot;button_name&quot;:&quot;columns&quot;},{&quot;action&quot;:&quot;csv&quot;,&quot;method&quot;:&quot;modal&quot;,&quot;size&quot;:&quot;lg&quot;,&quot;url&quot;:&quot;/customers/bulk_export?type=csv&quot;,&quot;extend&quot;:&quot;csv&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-file-alt\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Exporter au format CSV&quot;,&quot;button_name&quot;:&quot;csv&quot;},{&quot;action&quot;:&quot;excel&quot;,&quot;method&quot;:&quot;modal&quot;,&quot;size&quot;:&quot;lg&quot;,&quot;url&quot;:&quot;/customers/bulk_export?type=xlsx&quot;,&quot;extend&quot;:&quot;excel&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-file-excel\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Exporter au format Excel&quot;,&quot;button_name&quot;:&quot;excel&quot;},{&quot;action&quot;:&quot;pdf&quot;,&quot;method&quot;:&quot;modal&quot;,&quot;size&quot;:&quot;lg&quot;,&quot;url&quot;:&quot;/customers/bulk_export?type=pdf&quot;,&quot;extend&quot;:&quot;pdf&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;far fa-file-pdf\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Exporter au format PDF&quot;,&quot;button_name&quot;:&quot;pdf&quot;},{&quot;extend&quot;:&quot;print&quot;,&quot;text&quot;:&quot;&lt;i class=\&quot;fas fa-print\&quot;&gt;&lt;/i&gt;&quot;,&quot;titleAttr&quot;:&quot;Imprimer&quot;,&quot;button_name&quot;:&quot;print&quot;}],&quot;filters&quot;:[],&quot;search_fields&quot;:[{&quot;filter_type&quot;:&quot;text&quot;,&quot;filter_container_id&quot;:&quot;customers-full-name-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par nom&quot;,&quot;column_number&quot;:2},{&quot;filter_type&quot;:&quot;multi_select&quot;,&quot;select_type_options&quot;:{&quot;width&quot;:&quot;element&quot;,&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;select_type&quot;:&quot;select2&quot;,&quot;filter_container_id&quot;:&quot;customers-tags-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par tags&quot;,&quot;column_number&quot;:1},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-trust-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par confiance&quot;,&quot;column_number&quot;:10},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-commercial-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par commercial&quot;,&quot;column_number&quot;:9},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-region-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par région&quot;,&quot;column_number&quot;:11},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-situation-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par positionnement&quot;,&quot;column_number&quot;:12},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-price-range-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par gamme de prix&quot;,&quot;column_number&quot;:13},{&quot;filter_type&quot;:&quot;select&quot;,&quot;select_type&quot;:&quot;select2&quot;,&quot;select_type_options&quot;:{&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;filter_container_id&quot;:&quot;customers-business-type-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par type d&#39;affaire&quot;,&quot;column_number&quot;:14},{&quot;filter_type&quot;:&quot;multi_select&quot;,&quot;select_type_options&quot;:{&quot;width&quot;:&quot;element&quot;,&quot;minimumResultsForSearch&quot;:&quot;-1&quot;},&quot;select_type&quot;:&quot;select2&quot;,&quot;filter_container_id&quot;:&quot;customers-deleted-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par état&quot;,&quot;column_number&quot;:18},{&quot;filter_delay&quot;:500,&quot;filter_type&quot;:&quot;text&quot;,&quot;filter_container_id&quot;:&quot;customers-comment-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par mot-clé&quot;,&quot;column_number&quot;:19},{&quot;filter_delay&quot;:500,&quot;filter_type&quot;:&quot;text&quot;,&quot;filter_container_id&quot;:&quot;customers-free-capital-filter&quot;,&quot;filter_default_label&quot;:&quot;Filter par apports personnels&quot;,&quot;column_number&quot;:8},{&quot;date_format&quot;:&quot;dd/mm/yyyy&quot;,&quot;datepicker_type&quot;:&quot;jquery-ui&quot;,&quot;filter_plugin_options&quot;:{&quot;changeMonth&quot;:true,&quot;changeYear&quot;:true},&quot;filter_type&quot;:&quot;range_date&quot;,&quot;filter_container_id&quot;:&quot;customers-created-at-filter&quot;,&quot;filter_default_label&quot;:[&quot;Date début&quot;,&quot;Date fin&quot;],&quot;column_number&quot;:15},{&quot;date_format&quot;:&quot;dd/mm/yyyy&quot;,&quot;datepicker_type&quot;:&quot;jquery-ui&quot;,&quot;filter_plugin_options&quot;:{&quot;changeMonth&quot;:true,&quot;changeYear&quot;:true},&quot;filter_type&quot;:&quot;range_date&quot;,&quot;filter_container_id&quot;:&quot;customers-updated-at-filter&quot;,&quot;filter_default_label&quot;:[&quot;Date début&quot;,&quot;Date fin&quot;],&quot;column_number&quot;:16},{&quot;date_format&quot;:&quot;dd/mm/yyyy&quot;,&quot;datepicker_type&quot;:&quot;jquery-ui&quot;,&quot;filter_plugin_options&quot;:{&quot;changeMonth&quot;:true,&quot;changeYear&quot;:true},&quot;filter_type&quot;:&quot;range_date&quot;,&quot;filter_container_id&quot;:&quot;customers-deleted-at-filter&quot;,&quot;filter_default_label&quot;:[&quot;Date début&quot;,&quot;Date fin&quot;],&quot;column_number&quot;:17}],&quot;language&quot;:{&quot;processing&quot;:&quot;Traitement en cours...&quot;,&quot;search&quot;:&quot;Rechercher&amp;nbsp;:&quot;,&quot;lengthMenu&quot;:&quot;Afficher _MENU_ éléments&quot;,&quot;info&quot;:&quot;Affichage de l&#39;élément _START_ à _END_ sur _TOTAL_ éléments&quot;,&quot;infoEmpty&quot;:&quot;Affichage de l&#39;élément 0 à 0 sur 0 éléments&quot;,&quot;infoFiltered&quot;:&quot;(filtré de _MAX_ éléments au total)&quot;,&quot;infoPostFix&quot;:&quot;&quot;,&quot;loadingRecords&quot;:&quot;Chargement en cours...&quot;,&quot;zeroRecords&quot;:&quot;Aucun élément à afficher&quot;,&quot;emptyTable&quot;:&quot;Aucune donnée disponible dans le tableau&quot;,&quot;paginate&quot;:{&quot;first&quot;:&quot;Premier&quot;,&quot;previous&quot;:&quot;Précédent&quot;,&quot;next&quot;:&quot;Suivant&quot;,&quot;last&quot;:&quot;Dernier&quot;},&quot;aria&quot;:{&quot;sortAscending&quot;:&quot;: activer pour trier la colonne par ordre croissant&quot;,&quot;sortDescending&quot;:&quot;: activer pour trier la colonne par ordre décroissant&quot;},&quot;select&quot;:{&quot;rows&quot;:&quot;%d lignes sélectionnée(s)&quot;},&quot;buttons&quot;:{&quot;pageLength&quot;:{&quot;_&quot;:&quot;Afficher %d éléments&quot;,&quot;-1&quot;:&quot;Montre tout&quot;}}},&quot;source&quot;:&quot;http://back.local:5000/customers/datatable.json&quot;,&quot;dom&quot;:&quot;&lt;\&quot;html5buttons\&quot;B&gt;lr&lt;\&quot;clearfix\&quot;&gt;&lt;\&quot;dataTables_info selected-count-wrapper \&quot;&lt;\&quot;.selected-count\&quot;&gt;&gt;&lt;\&quot;\&quot; i&gt;tp&quot;,&quot;select&quot;:{&quot;style&quot;:&quot;multi&quot;},&quot;order&quot;:[[2,&quot;asc&quot;]]},&quot;dtf_options&quot;:{&quot;env&quot;:&quot;development&quot;,&quot;debug_log&quot;:true,&quot;debug_dump&quot;:false,&quot;context_menu&quot;:true}}">
+              <thead>
+                <tr>
+                  <th class="check_box">
+                    <input type="checkbox" name="select_all" id="select_all" value="1" onchange="BootstrapHelper.toggle_checkboxes(this, &#39;#customers-datatable&#39;); return false;" title="Tout cocher/Tout décocher" />
+                  </th>
+                  <th class="tags colvis">Tags</th>
+                  <th class="full_name colvis">Nom complet</th>
+                  <th class="email colvis">Adresse email</th>
+                  <th class="city colvis">Ville</th>
+                  <th class="postal_code colvis">Code postal</th>
+                  <th class="phone_number colvis">Téléphone</th>
+                  <th class="owned_capital colvis">Apport final total</th>
+                  <th class="free_capital colvis">Apports personnels</th>
+                  <th class="commercial colvis">Commercial</th>
+                  <th class="trust colvis">Confiance</th>
+                  <th class="region colvis">Régions recherchées</th>
+                  <th class="situation colvis">Situations recherchées</th>
+                  <th class="price_range colvis">Gammes de prix recherchées</th>
+                  <th class="business_type colvis">Types d&#39;affaire recherchées</th>
+                  <th class="created_at colvis">Créé le</th>
+                  <th class="updated_at colvis">Modifé le</th>
+                  <th class="deleted_at colvis">Supprimé le</th>
+                  <th class="deleted">Supprimé le</th>
+                  <th class="comment">Commentaires</th>
+                </tr>
+              </thead>
+              <tbody class="context-menu" data-url="/customers/context_menu">
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      Datatables = {}
+
+      class CustomersDatatable extends DatatableBase {
+      };
+
+      Datatables['CustomersDatatable'] = CustomersDatatable;
+
+      $('document').ready(function(){
+        DatatableBase.load_datatables();
+
+        console.log(Datatables.CustomersDatatable.instance);
+      });
+    </script>
+  </body>
+</html>
