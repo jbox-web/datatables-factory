@@ -1,0 +1,59 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 2.5
+  Exclude:
+    - bin/*
+
+#########
+# STYLE #
+#########
+
+Style/Documentation:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+##########
+# LAYOUT #
+##########
+
+Layout/LineLength:
+  Max: 130
+
+Layout/EmptyLines:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: false
+
+Layout/IndentationConsistency:
+  EnforcedStyle: indented_internal_methods
+
+###########
+# METRICS #
+###########
+
+Metrics/MethodLength:
+  Max: 12
+
+Metrics/ModuleLength:
+  Max: 140
+
+##########
+# NAMING #
+##########
+
+Naming/FileName:
+  Exclude:
+    - lib/datatables-factory.rb
