@@ -1,11 +1,13 @@
 ---
 name: Github CI
+
 on:
   - push
   - pull_request
+
 jobs:
   webpack:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
