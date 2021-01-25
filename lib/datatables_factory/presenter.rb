@@ -70,7 +70,7 @@ module DatatablesFactory
 
     def render_datatable
       options = @html_opts.deep_merge(build_datatable_options)
-      tag.table(table_content, options)
+      tag.table(table_content, **options)
     end
 
 
@@ -114,7 +114,7 @@ module DatatablesFactory
 
 
       def table_body
-        tag.tbody('', @body_opts)
+        tag.tbody('', **@body_opts)
       end
 
 

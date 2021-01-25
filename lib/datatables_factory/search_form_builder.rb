@@ -67,7 +67,7 @@ module DatatablesFactory
 
         # Set search field
         @datatable.search_field(opts)
-        @template.tag.div('', container_opts)
+        @template.tag.div('', **container_opts)
       end
 
 
