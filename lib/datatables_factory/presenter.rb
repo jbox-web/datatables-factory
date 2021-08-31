@@ -12,6 +12,7 @@ module DatatablesFactory
       @opts            = opts
       @dtf_options     = opts.delete(:dtf_options) { {} }
       @namespace       = opts.delete(:namespace) { [] }
+      @js_namespace    = opts.delete(:js_namespace) { nil }
       @dt_id           = id
       @columns         = []
       @column_names    = []
@@ -94,7 +95,7 @@ module DatatablesFactory
 
 
       def datatable_js_class
-        @datatable_js_class ||= [*final_namespace, "#{@dt_id}-datatable".underscore.camelize].flatten.compact.join('.')
+        @datatable_js_class ||= [@js_namespace, *final_namespace, "#{@dt_id}-datatable".underscore.camelize].flatten.compact.join('.')
       end
 
 
