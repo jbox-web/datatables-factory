@@ -97,15 +97,21 @@ class TextFilter extends BaseFilter
   ###################
 
   _html_input_field: ->
+    callback1 = (event) =>
+      @prevent_default_on_enter(event)
+
+    callback2 = (event) =>
+      @stop_propagation(event)
+
     options =
       type:        'text'
       id:          @input_id
       class:       "yadcf-filter #{@filter_css_class}"
       placeholder: @filter_default_label
-      onkeydown:   "#{@dt_class}.prevent_default_on_enter(event);"
-      onmousedown: "#{@dt_class}.stop_propagation(event);"
 
     $('<input/>', options)
+      .on('keydown', callback1)
+      .on('mousedown', callback2)
 
 
   _empty_value: (value) ->

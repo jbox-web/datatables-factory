@@ -106,13 +106,16 @@ class RangeBase extends BaseFilter
   ###################
 
   _html_wrapper_outer: ->
+    callback = (event) =>
+      @stop_propagation(event)
+
     options =
-      id:          @wrapper_outer_id
-      class:       'yadcf-filter-wrapper'
-      onclick:     "#{@dt_class}.stop_propagation(event);"
-      onmousedown: "#{@dt_class}.stop_propagation(event);"
+      id:    @wrapper_outer_id
+      class: 'yadcf-filter-wrapper'
 
     $('<div/>', options)
+      .on('click', callback)
+      .on('mousedown', callback)
 
 
   _html_wrapper_inner: ->
@@ -124,23 +127,29 @@ class RangeBase extends BaseFilter
 
 
   _html_range_start: ->
+    callback = (event) =>
+      @prevent_default_on_enter(event)
+
     options =
       id:          @from_id
       class:       "yadcf-filter-range yadcf-filter-range-#{@range_type} yadcf-filter-range-start"
       placeholder: @from_placeholder
-      onkeydown:   "#{@dt_class}.prevent_default_on_enter(event);"
 
     $('<input/>', options)
+      .on('keydown', callback)
 
 
   _html_range_end: ->
+    callback = (event) =>
+      @prevent_default_on_enter(event)
+
     options =
       id:          @to_id
       class:       "yadcf-filter-range yadcf-filter-range-#{@range_type} yadcf-filter-range-end"
       placeholder: @to_placeholder
-      onkeydown:   "#{@dt_class}.prevent_default_on_enter(event);"
 
     $('<input/>', options)
+      .on('keydown', callback)
 
 
   _html_range_separator: ->

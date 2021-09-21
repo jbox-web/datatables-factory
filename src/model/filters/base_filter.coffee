@@ -76,6 +76,23 @@ class BaseFilter extends Extendable
     @logger.dump event
 
 
+  prevent_default_on_enter: (event) ->
+    if event.keyCode == 13
+      if event.preventDefault
+        event.preventDefault()
+      else
+        event.returnValue = false
+    return
+
+
+  stop_propagation: (event) ->
+    if event.stopPropagation?
+      event.stopPropagation()
+    else
+      event.cancelBubble = true
+    return
+
+
   ###################
   # PRIVATE METHODS #
   ###################
@@ -89,14 +106,17 @@ class BaseFilter extends Extendable
 
 
   _html_reset_button: ->
+    callback = (event) =>
+      @stop_propagation(event)
+
     options =
-      type:       'button'
-      id:          @reset_id
-      text:        @filter_reset_button_text
-      class:       'yadcf-filter-reset-button'
-      onmousedown: "#{@dt_class}.stop_propagation(event);"
+      type:  'button'
+      id:    @reset_id
+      text:  @filter_reset_button_text
+      class: 'yadcf-filter-reset-button'
 
     $('<button/>', options)
+      .on('mousedown', callback)
 
 
   _reset_state: (column_id) ->

@@ -96,13 +96,19 @@ class SelectBase extends BaseFilter
 
   _html_input_field: ->
     options =
-      id:          @select_id
-      class:       "yadcf-filter #{@filter_css_class}"
-      onclick:     "#{@dt_class}.stop_propagation(event);"
-      onkeydown:   "#{@dt_class}.prevent_default_on_enter(event);"
-      onmousedown: "#{@dt_class}.stop_propagation(event);"
+      id:    @select_id
+      class: "yadcf-filter #{@filter_css_class}"
+
+    callback1 = (event) =>
+      @stop_propagation(event)
+
+    callback2 = (event) =>
+      @prevent_default_on_enter(event)
 
     $('<select/>', options)
+      .on('click',     callback1)
+      .on('keydown',   callback2)
+      .on('mousedown', callback1)
 
 
   _select_change: (event) ->
@@ -135,9 +141,11 @@ class SelectBase extends BaseFilter
         $("##{@select_id}").select2 @filter_plugin_options
         select2 = $("##{@select_id}").next()
         if select2? and select2.hasClass('select2-container')
+          callback = (event) =>
+            @stop_propagation(event)
           select2
-            .attr('onclick', "#{@dt_class}.stop_propagation(event);")
-            .attr('onmousedown', "#{@dt_class}.stop_propagation(event);")
+            .on('click', callback)
+            .on('mousedown', callback)
       else
         @logger.error("Unknown select type: #{@filter_plugin}")
 

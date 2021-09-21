@@ -963,6 +963,26 @@ BaseFilter = function () {
       value: function reload(event) {
         this.logger.info("".concat(this.name(), " : reload"));
         return this.logger.dump(event);
+      }
+    }, {
+      key: "prevent_default_on_enter",
+      value: function prevent_default_on_enter(event) {
+        if (event.keyCode === 13) {
+          if (event.preventDefault) {
+            event.preventDefault();
+          } else {
+            event.returnValue = false;
+          }
+        }
+      }
+    }, {
+      key: "stop_propagation",
+      value: function stop_propagation(event) {
+        if (event.stopPropagation != null) {
+          event.stopPropagation();
+        } else {
+          event.cancelBubble = true;
+        }
       } //##################
       // PRIVATE METHODS #
       //##################
@@ -980,15 +1000,21 @@ BaseFilter = function () {
     }, {
       key: "_html_reset_button",
       value: function _html_reset_button() {
-        var options;
+        var _this2 = this;
+
+        var callback, options;
+
+        callback = function callback(event) {
+          return _this2.stop_propagation(event);
+        };
+
         options = {
           type: 'button',
           id: this.reset_id,
           text: this.filter_reset_button_text,
-          "class": 'yadcf-filter-reset-button',
-          onmousedown: "".concat(this.dt_class, ".stop_propagation(event);")
+          "class": 'yadcf-filter-reset-button'
         };
-        return $('<button/>', options);
+        return $('<button/>', options).on('mousedown', callback);
       }
     }, {
       key: "_reset_state",
@@ -1231,14 +1257,19 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "_html_wrapper_outer",
     value: function _html_wrapper_outer() {
-      var options;
+      var _this3 = this;
+
+      var callback, options;
+
+      callback = function callback(event) {
+        return _this3.stop_propagation(event);
+      };
+
       options = {
         id: this.wrapper_outer_id,
-        "class": 'yadcf-filter-wrapper',
-        onclick: "".concat(this.dt_class, ".stop_propagation(event);"),
-        onmousedown: "".concat(this.dt_class, ".stop_propagation(event);")
+        "class": 'yadcf-filter-wrapper'
       };
-      return $('<div/>', options);
+      return $('<div/>', options).on('click', callback).on('mousedown', callback);
     }
   }, {
     key: "_html_wrapper_inner",
@@ -1253,26 +1284,38 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "_html_range_start",
     value: function _html_range_start() {
-      var options;
+      var _this4 = this;
+
+      var callback, options;
+
+      callback = function callback(event) {
+        return _this4.prevent_default_on_enter(event);
+      };
+
       options = {
         id: this.from_id,
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-start"),
-        placeholder: this.from_placeholder,
-        onkeydown: "".concat(this.dt_class, ".prevent_default_on_enter(event);")
+        placeholder: this.from_placeholder
       };
-      return $('<input/>', options);
+      return $('<input/>', options).on('keydown', callback);
     }
   }, {
     key: "_html_range_end",
     value: function _html_range_end() {
-      var options;
+      var _this5 = this;
+
+      var callback, options;
+
+      callback = function callback(event) {
+        return _this5.prevent_default_on_enter(event);
+      };
+
       options = {
         id: this.to_id,
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-end"),
-        placeholder: this.to_placeholder,
-        onkeydown: "".concat(this.dt_class, ".prevent_default_on_enter(event);")
+        placeholder: this.to_placeholder
       };
-      return $('<input/>', options);
+      return $('<input/>', options).on('keydown', callback);
     }
   }, {
     key: "_html_range_separator",
@@ -1800,15 +1843,23 @@ SelectBase = function () {
     }, {
       key: "_html_input_field",
       value: function _html_input_field() {
-        var options;
+        var _this3 = this;
+
+        var callback1, callback2, options;
         options = {
           id: this.select_id,
-          "class": "yadcf-filter ".concat(this.filter_css_class),
-          onclick: "".concat(this.dt_class, ".stop_propagation(event);"),
-          onkeydown: "".concat(this.dt_class, ".prevent_default_on_enter(event);"),
-          onmousedown: "".concat(this.dt_class, ".stop_propagation(event);")
+          "class": "yadcf-filter ".concat(this.filter_css_class)
         };
-        return $('<select/>', options);
+
+        callback1 = function callback1(event) {
+          return _this3.stop_propagation(event);
+        };
+
+        callback2 = function callback2(event) {
+          return _this3.prevent_default_on_enter(event);
+        };
+
+        return $('<select/>', options).on('click', callback1).on('keydown', callback2).on('mousedown', callback1);
       }
     }, {
       key: "_select_change",
@@ -1841,7 +1892,9 @@ SelectBase = function () {
     }, {
       key: "_initialize_select_plugin",
       value: function _initialize_select_plugin() {
-        var select2;
+        var _this4 = this;
+
+        var callback, select2;
         this.logger.info("".concat(this.name(), " : _initialize_select_plugin"));
 
         switch (this.filter_plugin) {
@@ -1850,7 +1903,11 @@ SelectBase = function () {
             select2 = $("#".concat(this.select_id)).next();
 
             if (select2 != null && select2.hasClass('select2-container')) {
-              return select2.attr('onclick', "".concat(this.dt_class, ".stop_propagation(event);")).attr('onmousedown', "".concat(this.dt_class, ".stop_propagation(event);"));
+              callback = function callback(event) {
+                return _this4.stop_propagation(event);
+              };
+
+              return select2.on('click', callback).on('mousedown', callback);
             }
 
             break;
@@ -2339,16 +2396,25 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "_html_input_field",
     value: function _html_input_field() {
-      var options;
+      var _this3 = this;
+
+      var callback1, callback2, options;
+
+      callback1 = function callback1(event) {
+        return _this3.prevent_default_on_enter(event);
+      };
+
+      callback2 = function callback2(event) {
+        return _this3.stop_propagation(event);
+      };
+
       options = {
         type: 'text',
         id: this.input_id,
         "class": "yadcf-filter ".concat(this.filter_css_class),
-        placeholder: this.filter_default_label,
-        onkeydown: "".concat(this.dt_class, ".prevent_default_on_enter(event);"),
-        onmousedown: "".concat(this.dt_class, ".stop_propagation(event);")
+        placeholder: this.filter_default_label
       };
-      return $('<input/>', options);
+      return $('<input/>', options).on('keydown', callback1).on('mousedown', callback2);
     }
   }, {
     key: "_empty_value",
@@ -3231,27 +3297,7 @@ Object.defineProperty(exports, "__esModule", ({
 exports["default"] = void 0;
 var WithFilters;
 WithFilters = {};
-WithFilters.class_methods = {
-  //#######################
-  // Public Class methods #
-  //#######################
-  prevent_default_on_enter: function prevent_default_on_enter(event) {
-    if (event.keyCode === 13) {
-      if (event.preventDefault) {
-        event.preventDefault();
-      } else {
-        event.returnValue = false;
-      }
-    }
-  },
-  stop_propagation: function stop_propagation(event) {
-    if (event.stopPropagation != null) {
-      event.stopPropagation();
-    } else {
-      event.cancelBubble = true;
-    }
-  }
-};
+WithFilters.class_methods = {};
 WithFilters.instance_methods = {
   //##########################
   // Public Instance methods #

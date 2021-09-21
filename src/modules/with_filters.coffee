@@ -1,26 +1,6 @@
 WithFilters = {}
 
-WithFilters.class_methods =
-
-  ########################
-  # Public Class methods #
-  ########################
-
-  prevent_default_on_enter: (event) ->
-    if event.keyCode == 13
-      if event.preventDefault
-        event.preventDefault()
-      else
-        event.returnValue = false
-    return
-
-
-  stop_propagation: (event) ->
-    if event.stopPropagation?
-      event.stopPropagation()
-    else
-      event.cancelBubble = true
-    return
+WithFilters.class_methods = {}
 
 
 WithFilters.instance_methods =
