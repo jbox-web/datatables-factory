@@ -30,7 +30,7 @@ module DatatablesFactory
 
 
     def datatables_factory_options
-      debug_log  = params.fetch(:dtf_debug_log, true)
+      debug_log  = params.fetch(:dtf_debug_log, false)
       debug_dump = params.fetch(:dtf_debug_dump, false)
       { dtf_options: { env: Rails.env, debug_log: debug_log, debug_dump: debug_dump } }
     end
