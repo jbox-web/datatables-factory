@@ -80,13 +80,13 @@ module DatatablesFactory
 
       def build_datatable_options
         {
-          id: datatable_id,
+          id:   datatable_id,
           data: {
-            toggle: 'datatable',
+            toggle:     'datatable',
             dtf_loader: {
-              dt_id: "##{datatable_id}",
-              dt_class: datatable_js_class,
-              dt_options: datatable_options,
+              dt_id:       "##{datatable_id}",
+              dt_class:    datatable_js_class,
+              dt_options:  datatable_options,
               dtf_options: dtf_options,
             },
           },
@@ -95,7 +95,8 @@ module DatatablesFactory
 
 
       def datatable_js_class
-        @datatable_js_class ||= [@js_namespace, *final_namespace, "#{@dt_id}-datatable".underscore.camelize].flatten.compact.join('.')
+        @datatable_js_class ||= [@js_namespace, *final_namespace,
+                                 "#{@dt_id}-datatable".underscore.camelize].flatten.compact.join('.')
       end
 
 
@@ -131,10 +132,10 @@ module DatatablesFactory
 
       def datatable_options
         {
-          language: datatables_translations,
-          columns: @columns.map(&:to_hash),
-          buttons: @buttons,
-          filters: @filters,
+          language:        datatables_translations,
+          columns:         @columns.map(&:to_hash),
+          buttons:         @buttons,
+          filters:         @filters,
           filters_applied: @filters_applied,
         }.merge(@opts)
       end

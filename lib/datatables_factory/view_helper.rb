@@ -38,8 +38,8 @@ module DatatablesFactory
 
     def datatable_options_for_range_date
       {
-        filter_default_label: [label_filter_by('date_start', prefix: false), label_filter_by('date_end', prefix: false)],
-        filter_plugin: 'jquery-ui',
+        filter_default_label:  [label_filter_by('date_start', prefix: false), label_filter_by('date_end', prefix: false)],
+        filter_plugin:         'jquery-ui',
         filter_plugin_options: { changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' },
       }
     end
@@ -66,20 +66,20 @@ module DatatablesFactory
         loadingRecords: t('datatables.loadingRecords'),
         zeroRecords:    t('datatables.zeroRecords'),
         emptyTable:     t('datatables.emptyTable'),
-        paginate: {
+        paginate:       {
           first:    t('datatables.paginate.first'),
           previous: t('datatables.paginate.previous'),
           next:     t('datatables.paginate.next'),
           last:     t('datatables.paginate.last'),
         },
-        aria: {
+        aria:           {
           sortAscending:  t('datatables.aria.sortAscending'),
           sortDescending: t('datatables.aria.sortDescending'),
         },
-        select: {
+        select:         {
           rows: t('datatables.select.rows'),
         },
-        buttons: {
+        buttons:        {
           pageLength: {
             _:    t('datatables.buttons.pageLength._'),
             '-1': t('datatables.buttons.pageLength.-1'),
