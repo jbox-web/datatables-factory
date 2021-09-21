@@ -2433,8 +2433,22 @@ var _datatable_filter = _interopRequireDefault(__webpack_require__(/*! ../model/
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var Loader,
+    dig,
     hasProp = {}.hasOwnProperty;
+dig = __webpack_require__(/*! object-dig */ "./node_modules/object-dig/dist/index.js");
 Loader = {};
 Loader.class_methods = {
   //#######################
@@ -2501,9 +2515,9 @@ Loader.class_methods = {
     return options;
   },
   constantize: function constantize(string) {
-    var constant;
-    constant = null;
-    eval("constant = window.".concat(string));
+    var constant, path;
+    path = string.split('.');
+    constant = dig.apply(void 0, [window].concat(_toConsumableArray(path)));
     return constant;
   },
   to_underscore: function to_underscore(string) {
@@ -3308,6 +3322,59 @@ WithLogger.instance_methods = {
 };
 var _default = WithLogger;
 exports["default"] = _default;
+
+/***/ }),
+
+/***/ "./node_modules/object-dig/dist/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/object-dig/dist/index.js ***!
+  \***********************************************/
+/***/ ((module) => {
+
+
+
+module.exports = function (target) {
+  for (var _len = arguments.length, keys = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    keys[_key - 1] = arguments[_key];
+  }
+
+  var digged = target;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var key = _step.value;
+
+      if (typeof digged === 'undefined' || digged === null) {
+        return undefined;
+      }
+      if (typeof key === 'function') {
+        digged = key(digged);
+      } else {
+        digged = digged[key];
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  ;
+  return digged;
+};
+
 
 /***/ })
 

@@ -1,3 +1,5 @@
+dig = require('object-dig')
+
 import Logger          from '../logger.coffee'
 import DatatableFilter from '../model/datatable_filter.coffee'
 
@@ -65,8 +67,8 @@ Loader.class_methods =
 
 
   constantize: (string) ->
-    constant = null
-    eval("constant = window.#{string}")
+    path = string.split('.')
+    constant = dig(window, ...path)
     return constant
 
 
