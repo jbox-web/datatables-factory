@@ -37,7 +37,7 @@
     "babel-traverse": "^6.26.0",
     "babel-types": "^6.26.0",
     "coffee-loader": "^3.0.0",
-    "coffeescript": "^2.5.1",
+    "coffeescript": "^2.6.0",
     "debug": "^4.3.2",
     "eslint": "^7.32.0",
     "eslint-module-utils": "^2.6.2",
