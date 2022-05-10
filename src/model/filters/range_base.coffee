@@ -39,7 +39,8 @@ class RangeBase extends BaseFilter
     $("#{@container_id} div.yadcf-filter-wrapper-inner").append @_html_range_end()
 
     # add reset button
-    $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
+    if @filter_reset_button
+      $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
 
 
   bind_inputs: ->

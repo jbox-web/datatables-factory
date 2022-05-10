@@ -902,6 +902,7 @@ BaseFilter = function () {
       _this.filter_default_label = _this.options.filter_default_label; // fetch optional data
 
       _this.filter_css_class = _this.options.filter_css_class || '';
+      _this.filter_reset_button = _this.options.filter_reset_button === false ? false : true;
       _this.filter_reset_button_text = _this.options.filter_reset_button_text || 'x'; // build ids
 
       _this.container_id = "#".concat(_this.options.filter_container_id);
@@ -1177,7 +1178,9 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
       $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_separator());
       $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_end()); // add reset button
 
-      return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+      if (this.filter_reset_button) {
+        return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+      }
     }
   }, {
     key: "bind_inputs",
@@ -1772,7 +1775,9 @@ SelectBase = function () {
 
         $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field()); // add reset button
 
-        return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+        if (this.filter_reset_button) {
+          return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+        }
       }
     }, {
       key: "bind_inputs",
@@ -2306,7 +2311,9 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
 
       $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field()); // add reset button
 
-      return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+      if (this.filter_reset_button) {
+        return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+      }
     } //#################
     // PUBLIC METHODS #
     //#################

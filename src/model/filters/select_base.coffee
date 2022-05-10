@@ -31,7 +31,8 @@ class SelectBase extends BaseFilter
     $("#{@container_id} div.yadcf-filter-wrapper").append @_html_input_field()
 
     # add reset button
-    $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
+    if @filter_reset_button
+      $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
 
 
   bind_inputs: ->

@@ -25,6 +25,7 @@ class BaseFilter extends Extendable
 
     # fetch optional data
     @filter_css_class         = @options.filter_css_class or ''
+    @filter_reset_button      = if @options.filter_reset_button == false then false else true
     @filter_reset_button_text = @options.filter_reset_button_text or 'x'
 
     # build ids
