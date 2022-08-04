@@ -163,7 +163,7 @@ class DatatableFilter extends Extendable
     @info "Datatable has been reloaded, fetch dropdown data for filters"
 
     if !json?
-      @error 'datatables xhr.dt event came back with null as data (nothing for yadcf to do with it).'
+      @warn 'datatables xhr.dt event came back with null data instead of JSON data.'
       return
 
     for column_id, filter of @loaded_filters

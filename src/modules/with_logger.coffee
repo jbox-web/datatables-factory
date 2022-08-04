@@ -13,6 +13,10 @@ WithLogger.instance_methods =
     @logger.info(@_format_message(message))
 
 
+  warn: (message) ->
+    @logger.warn(@_format_message(message))
+
+
   error: (message) ->
     @logger.error(@_format_message(message))
 

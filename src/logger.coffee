@@ -15,6 +15,10 @@ class Logger extends Extendable
       console.info "DatatableFactory : #{message}"
 
 
+  warn: (message) ->
+    console.warn "DatatableFactory : #{message}"
+
+
   error: (message) ->
     console.error "DatatableFactory : #{message}"
 
