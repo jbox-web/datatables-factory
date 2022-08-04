@@ -295,6 +295,11 @@ Logger = /*#__PURE__*/function (_Extendable) {
       }
     }
   }, {
+    key: "warn",
+    value: function warn(message) {
+      return console.warn("DatatableFactory : ".concat(message));
+    }
+  }, {
     key: "error",
     value: function error(message) {
       return console.error("DatatableFactory : ".concat(message));
@@ -642,6 +647,11 @@ DatatableFilter = function () {
     }, {
       key: "has_state_for",
       value: function has_state_for(column_id) {
+        if (this.instance == null) {
+          // Fix error: Cannot read properties of null (reading 'oLoadedState')
+          return null;
+        }
+
         if (this.instance.fnSettings().oLoadedState != null && this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] != null) {
           return this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id];
         } else {
@@ -783,7 +793,7 @@ DatatableFilter = function () {
         this.info("Datatable has been reloaded, fetch dropdown data for filters");
 
         if (json == null) {
-          this.error('datatables xhr.dt event came back with null as data (nothing for yadcf to do with it).');
+          this.warn('datatables xhr.dt event came back with null data instead of JSON data.');
           return;
         }
 
@@ -3362,6 +3372,9 @@ WithLogger.instance_methods = {
   //##########################
   info: function info(message) {
     return this.logger.info(this._format_message(message));
+  },
+  warn: function warn(message) {
+    return this.logger.warn(this._format_message(message));
   },
   error: function error(message) {
     return this.logger.error(this._format_message(message));
