@@ -58,6 +58,9 @@ class DatatableFilter extends Extendable
 
 
   has_state_for: (column_id) ->
+    # Fix error: Cannot read properties of null (reading 'oLoadedState')
+    return null if !@instance?
+
     if  @instance.fnSettings().oLoadedState? and
         @instance.fnSettings().oLoadedState.dt_filters_state? and
         @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]? and
