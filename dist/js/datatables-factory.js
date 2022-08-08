@@ -407,6 +407,9 @@ DatatableBase = function () {
       _this.callbacks['ajax'] = [];
       _this.callbacks['createdRow'] = [];
       _this.callbacks['drawCallback'] = [];
+      _this.callbacks['buttons'] = {};
+      _this.callbacks['buttons']['select_all'] = {};
+      _this.callbacks['buttons']['reset_selection'] = {};
       return _this;
     } //##########################
     // Public Instance methods #
@@ -2819,30 +2822,34 @@ WithButtons.instance_methods = {
     return this.datatable_filter.apply_default_filters(event);
   },
   select_all: function select_all(button) {
-    var params; // Get datatable params
+    var ajax_options, params; // Get datatable params
 
     params = this.datatable.ajax.params(); // Set length to -1 to get all filtered records
 
     params['length'] = -1; // Reset selection
 
     params['selected'] = [];
-    params['not_selected'] = []; // select all rows in the current page
+    params['not_selected'] = []; // Select all rows in the current page
 
-    this.select_all_rows(); // Call url
+    this.select_all_rows(); // Build ajax options
 
-    return this._call_url(button, params, this.datatable.ajax.reload);
+    ajax_options = this._build_ajax_options('select_all'); // Call url
+
+    return this._call_url(button, params, ajax_options);
   },
   reset_selection: function reset_selection(button) {
-    var params; // Get datatable params
+    var ajax_options, params; // Get datatable params
 
     params = this.datatable.ajax.params(); // Reset selection
 
     params['selected'] = [];
     params['not_selected'] = []; // unselect all rows in the current page
 
-    this.unselect_all_rows(); // Call url
+    this.unselect_all_rows(); // Build ajax options
 
-    return this._call_url(button, params, this.datatable.ajax.reload);
+    ajax_options = this._build_ajax_options('reset_selection'); // Call url
+
+    return this._call_url(button, params, ajax_options);
   },
   //###########################
   // Private Instance methods #
@@ -2884,7 +2891,55 @@ WithButtons.instance_methods = {
 
     return this.buttons[idx] = button;
   },
-  _call_url: function _call_url(button, params, callback) {
+  _build_ajax_options: function _build_ajax_options(button) {
+    var _this2 = this;
+
+    var callbacks, on_error, on_send, on_success;
+    callbacks = this.callbacks['buttons'][button];
+    on_send = callbacks.beforeSend != null ? callbacks.beforeSend : [];
+    on_error = callbacks.error != null ? callbacks.error : [];
+    on_success = callbacks.success != null ? callbacks.success : []; // add datatable reload callback at the end
+
+    on_success.push(function (_data, _status, _xhr) {
+      return _this2.datatable.ajax.reload();
+    });
+    return {
+      beforeSend: function beforeSend(xhr, settings) {
+        var c, j, len1, results;
+        results = [];
+
+        for (j = 0, len1 = on_send.length; j < len1; j++) {
+          c = on_send[j];
+          results.push(c(xhr, settings));
+        }
+
+        return results;
+      },
+      error: function error(xhr, status, _error) {
+        var c, j, len1, results;
+        results = [];
+
+        for (j = 0, len1 = on_error.length; j < len1; j++) {
+          c = on_error[j];
+          results.push(c(xhr, status, _error));
+        }
+
+        return results;
+      },
+      success: function success(data, status, xhr) {
+        var c, j, len1, results;
+        results = [];
+
+        for (j = 0, len1 = on_success.length; j < len1; j++) {
+          c = on_success[j];
+          results.push(c(data, status, xhr));
+        }
+
+        return results;
+      }
+    };
+  },
+  _call_url: function _call_url(button, params, ajax_options) {
     var options;
     options = {
       url: button.url,
@@ -2897,12 +2952,8 @@ WithButtons.instance_methods = {
       });
     }
 
-    if (callback) {
-      options = $.extend({}, options, {
-        success: function success() {
-          return callback();
-        }
-      });
+    if (ajax_options) {
+      options = $.extend({}, options, ajax_options);
     }
 
     return $.ajax(options);

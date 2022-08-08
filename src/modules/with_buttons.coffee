@@ -59,10 +59,12 @@ WithButtons.instance_methods =
     # Reset selection
     params['selected'] = []
     params['not_selected'] = []
-    # select all rows in the current page
+    # Select all rows in the current page
     @select_all_rows()
+    # Build ajax options
+    ajax_options = @_build_ajax_options('select_all')
     # Call url
-    @_call_url(button, params, @datatable.ajax.reload)
+    @_call_url(button, params, ajax_options)
 
 
   reset_selection: (button) ->
@@ -73,8 +75,10 @@ WithButtons.instance_methods =
     params['not_selected'] = []
     # unselect all rows in the current page
     @unselect_all_rows()
+    # Build ajax options
+    ajax_options = @_build_ajax_options('reset_selection')
     # Call url
-    @_call_url(button, params, @datatable.ajax.reload)
+    @_call_url(button, params, ajax_options)
 
 
   ############################
@@ -109,10 +113,32 @@ WithButtons.instance_methods =
     @buttons[idx] = button
 
 
-  _call_url: (button, params, callback) ->
+  _build_ajax_options: (button) ->
+    callbacks  = @callbacks['buttons'][button]
+    on_send    = if callbacks.beforeSend? then callbacks.beforeSend else []
+    on_error   = if callbacks.error? then callbacks.error else []
+    on_success = if callbacks.success? then callbacks.success else []
+
+    # add datatable reload callback at the end
+    on_success.push((_data, _status, _xhr) => @datatable.ajax.reload())
+
+    {
+      beforeSend: (xhr, settings) =>
+        for c in on_send
+          c(xhr, settings)
+      error: (xhr, status, error) =>
+        for c in on_error
+          c(xhr, status, error)
+      success: (data, status, xhr) =>
+        for c in on_success
+          c(data, status, xhr)
+    }
+
+
+  _call_url: (button, params, ajax_options) ->
     options = { url: button.url, method: button.method }
     options = $.extend {}, options, data: params if params
-    options = $.extend {}, options, { success: () -> callback() } if callback
+    options = $.extend {}, options, ajax_options if ajax_options
     $.ajax options
 
 

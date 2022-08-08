@@ -64,10 +64,12 @@ class DatatableBase extends Extendable
     @dt_id_strip   = @dt_id.substring(1)
 
     # Init callbacks hash
-    @callbacks['ajax']         = []
-    @callbacks['createdRow']   = []
-    @callbacks['drawCallback'] = []
-
+    @callbacks['ajax']                       = []
+    @callbacks['createdRow']                 = []
+    @callbacks['drawCallback']               = []
+    @callbacks['buttons']                    = {}
+    @callbacks['buttons']['select_all']      = {}
+    @callbacks['buttons']['reset_selection'] = {}
 
   ###########################
   # Public Instance methods #
