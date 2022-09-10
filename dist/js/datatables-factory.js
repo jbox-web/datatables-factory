@@ -630,32 +630,31 @@ DatatableFilter = function () {
         var tmp;
         this.info("Save current filter state (".concat(column_id, ")"));
 
-        if (!this.instance.fnSettings().oLoadedState) {
-          this.instance.fnSettings().oLoadedState = {};
-        } // @_dump_dt_filters_state()
+        if (this.instance != null && this.instance.fnSettings() != null) {
+          if (!this.instance.fnSettings().oLoadedState) {
+            this.instance.fnSettings().oLoadedState = {};
+          } // @_dump_dt_filters_state()
 
 
-        if (this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null) {
-          this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] = data;
+          if (this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null) {
+            this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] = data;
+          } else {
+            tmp = {};
+            tmp[this.dt_id] = {};
+            tmp[this.dt_id][column_id] = data;
+            this.instance.fnSettings().oLoadedState.dt_filters_state = tmp;
+          } // @_dump_dt_filters_state()
+
+
+          return this._save();
         } else {
-          tmp = {};
-          tmp[this.dt_id] = {};
-          tmp[this.dt_id][column_id] = data;
-          this.instance.fnSettings().oLoadedState.dt_filters_state = tmp;
-        } // @_dump_dt_filters_state()
-
-
-        return this._save();
+          return this.error("save_state: Datatable instance is null");
+        }
       }
     }, {
       key: "has_state_for",
       value: function has_state_for(column_id) {
-        if (this.instance == null) {
-          // Fix error: Cannot read properties of null (reading 'oLoadedState')
-          return null;
-        }
-
-        if (this.instance.fnSettings().oLoadedState != null && this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] != null) {
+        if (this.instance != null && this.instance.fnSettings() != null && this.instance.fnSettings().oLoadedState != null && this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] != null) {
           return this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id];
         } else {
           return null;
@@ -3053,6 +3052,12 @@ WithCheckBoxes.instance_methods = {
   },
   update_select_all_ctrl: function update_select_all_ctrl() {
     var chkbox_all, chkbox_checked, select_all, table;
+
+    if (this.datatable == null) {
+      this.error("update_select_all_ctrl: Datatable instance is null");
+      return false;
+    }
+
     table = this.datatable.table().container();
     select_all = $('thead input[type="checkbox"]', table).get(0);
     chkbox_all = $('tbody input[type="checkbox"]', table);

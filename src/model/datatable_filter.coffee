@@ -37,31 +37,33 @@ class DatatableFilter extends Extendable
   save_state: (column_id, data) ->
     @info "Save current filter state (#{column_id})"
 
-    if !@instance.fnSettings().oLoadedState
-      @instance.fnSettings().oLoadedState = {}
+    if @instance? and @instance.fnSettings()?
+      if !@instance.fnSettings().oLoadedState
+        @instance.fnSettings().oLoadedState = {}
 
-    # @_dump_dt_filters_state()
+      # @_dump_dt_filters_state()
 
-    if  @instance.fnSettings().oLoadedState.dt_filters_state? and
-        @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]?
+      if  @instance.fnSettings().oLoadedState.dt_filters_state? and
+          @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]?
 
-      @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id] = data
+        @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id] = data
+      else
+        tmp = {}
+        tmp[@dt_id] = {}
+        tmp[@dt_id][column_id] = data
+        @instance.fnSettings().oLoadedState.dt_filters_state = tmp
+
+      # @_dump_dt_filters_state()
+
+      @_save()
     else
-      tmp = {}
-      tmp[@dt_id] = {}
-      tmp[@dt_id][column_id] = data
-      @instance.fnSettings().oLoadedState.dt_filters_state = tmp
-
-    # @_dump_dt_filters_state()
-
-    @_save()
+      @error "save_state: Datatable instance is null"
 
 
   has_state_for: (column_id) ->
-    # Fix error: Cannot read properties of null (reading 'oLoadedState')
-    return null if !@instance?
-
-    if  @instance.fnSettings().oLoadedState? and
+    if  @instance? and
+        @instance.fnSettings()? and
+        @instance.fnSettings().oLoadedState? and
         @instance.fnSettings().oLoadedState.dt_filters_state? and
         @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]? and
         @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id]?

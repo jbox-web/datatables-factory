@@ -81,6 +81,10 @@ WithCheckBoxes.instance_methods =
 
 
   update_select_all_ctrl: ->
+    if !@datatable?
+      @error "update_select_all_ctrl: Datatable instance is null"
+      return false
+
     table          = @datatable.table().container()
     select_all     = $('thead input[type="checkbox"]', table).get(0)
     chkbox_all     = $('tbody input[type="checkbox"]', table)
