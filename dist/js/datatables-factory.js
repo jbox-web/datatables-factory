@@ -24,30 +24,27 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var ContextMenu;
-
 ContextMenu = /*#__PURE__*/function () {
   function ContextMenu() {
     _classCallCheck(this, ContextMenu);
   }
-
   _createClass(ContextMenu, null, [{
     key: "window_size",
-    value: //################
+    value:
+    //################
     // Class methods #
     //################
     function window_size() {
       var h, w;
       w = null;
       h = null;
-
       if (window.innerWidth) {
         w = window.innerWidth;
         h = window.innerHeight;
@@ -58,7 +55,6 @@ ContextMenu = /*#__PURE__*/function () {
         w = document.body.clientWidth;
         h = document.body.clientHeight;
       }
-
       return {
         width: w,
         height: h
@@ -95,19 +91,18 @@ ContextMenu = /*#__PURE__*/function () {
           max_height = mouse_y_c + menu_height;
           ws = ContextMenu.window_size();
           window_width = ws.width;
-          window_height = ws.height; // display the menu above and/or to the left of the click if needed
-
+          window_height = ws.height;
+          // display the menu above and/or to the left of the click if needed
           if (max_width > window_width) {
             render_x -= menu_width;
             $('#context-menu').addClass('reverse-x');
           } else {
             $('#context-menu').removeClass('reverse-x');
           }
-
           if (max_height > window_height) {
             render_y -= menu_height;
-            $('#context-menu').addClass('reverse-y'); // adding class for submenu
-
+            $('#context-menu').addClass('reverse-y');
+            // adding class for submenu
             if (mouse_y_c < 325) {
               $('#context-menu .folder').addClass('down');
             }
@@ -116,18 +111,14 @@ ContextMenu = /*#__PURE__*/function () {
             if (window_height - mouse_y_c < 345) {
               $('#context-menu .folder').addClass('up');
             }
-
             $('#context-menu').removeClass('reverse-y');
           }
-
           if (render_x <= 0) {
             render_x = 1;
           }
-
           if (render_y <= 0) {
             render_y = 1;
           }
-
           $('#context-menu').css('left', render_x + 'px');
           $('#context-menu').css('top', render_y + 'px');
           return $('#context-menu').show();
@@ -135,10 +126,8 @@ ContextMenu = /*#__PURE__*/function () {
       });
     }
   }]);
-
   return ContextMenu;
 }();
-
 var _default = ContextMenu;
 exports["default"] = _default;
 
@@ -156,71 +145,58 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var Extendable,
-    moduleKeywords,
-    indexOf = [].indexOf;
+  moduleKeywords,
+  indexOf = [].indexOf;
 moduleKeywords = ['extended', 'included'];
-
 Extendable = /*#__PURE__*/function () {
   function Extendable() {
     _classCallCheck(this, Extendable);
   }
-
   _createClass(Extendable, null, [{
     key: "extend",
     value: function extend(obj) {
       var key, ref, value;
-
       for (key in obj) {
         value = obj[key];
-
         if (indexOf.call(moduleKeywords, key) < 0) {
           this[key] = value;
         }
       }
-
       if (obj != null) {
         if ((ref = obj.extended) != null) {
           ref.apply(this);
         }
       }
-
       return this;
     }
   }, {
     key: "include",
     value: function include(obj) {
       var key, ref, value;
-
       for (key in obj) {
         value = obj[key];
-
         if (indexOf.call(moduleKeywords, key) < 0) {
           // Assign properties to the prototype
           this.prototype[key] = value;
         }
       }
-
       if (obj != null) {
         if ((ref = obj.included) != null) {
           ref.apply(this);
         }
       }
-
       return this;
     }
   }]);
-
   return Extendable;
 }();
-
 var _default = Extendable;
 exports["default"] = _default;
 
@@ -235,53 +211,35 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ./extendable.coffee */ "./src/extendable.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var Logger;
-
 Logger = /*#__PURE__*/function (_Extendable) {
   _inherits(Logger, _Extendable);
-
   var _super = _createSuper(Logger);
-
   function Logger(dtf_options) {
     var _this;
-
     _classCallCheck(this, Logger);
-
     _this = _super.call(this);
     _this.dtf_options = dtf_options;
     return _this;
   }
-
   _createClass(Logger, [{
     key: "log_delimiter",
     value: function log_delimiter() {
@@ -312,10 +270,8 @@ Logger = /*#__PURE__*/function (_Extendable) {
       }
     }
   }]);
-
   return Logger;
 }(_extendable["default"]);
-
 var _default = Logger;
 exports["default"] = _default;
 
@@ -330,80 +286,56 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ../extendable.coffee */ "./src/extendable.coffee"));
-
 var _loader = _interopRequireDefault(__webpack_require__(/*! ../modules/loader.coffee */ "./src/modules/loader.coffee"));
-
 var _with_logger = _interopRequireDefault(__webpack_require__(/*! ../modules/with_logger.coffee */ "./src/modules/with_logger.coffee"));
-
 var _with_filters = _interopRequireDefault(__webpack_require__(/*! ../modules/with_filters.coffee */ "./src/modules/with_filters.coffee"));
-
 var _with_check_boxes = _interopRequireDefault(__webpack_require__(/*! ../modules/with_check_boxes.coffee */ "./src/modules/with_check_boxes.coffee"));
-
 var _with_buttons = _interopRequireDefault(__webpack_require__(/*! ../modules/with_buttons.coffee */ "./src/modules/with_buttons.coffee"));
-
 var _with_context_menu = _interopRequireDefault(__webpack_require__(/*! ../modules/with_context_menu.coffee */ "./src/modules/with_context_menu.coffee"));
-
 var _with_debug = _interopRequireDefault(__webpack_require__(/*! ../modules/with_debug.coffee */ "./src/modules/with_debug.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var DatatableBase;
-
 DatatableBase = function () {
   var DatatableBase = /*#__PURE__*/function (_Extendable) {
     _inherits(DatatableBase, _Extendable);
-
     var _super = _createSuper(DatatableBase);
-
     function DatatableBase(dt_class, dt_id, dt_options, dtf_options, logger) {
       var _this;
-
       _classCallCheck(this, DatatableBase);
-
       _this = _super.call(this);
       _this.dt_class = dt_class;
       _this.dt_id = dt_id;
       _this.dt_options = dt_options;
       _this.dtf_options = dtf_options;
-      _this.logger = logger; // Extract some options
-
+      _this.logger = logger;
+      // Extract some options
       _this.columns = _this.dt_options['columns'] || [];
       _this.buttons = _this.dt_options['buttons'] || [];
       _this.filters = _this.dt_options['filters'] || [];
-      _this.filters_applied = _this.dt_options['filters_applied'] || []; // Don't polute jQuery Datatable options namespace
-
+      _this.filters_applied = _this.dt_options['filters_applied'] || [];
+      // Don't polute jQuery Datatable options namespace
       _this.dt_options = _this._select(_this.dt_options, function (k, _v) {
         return k !== 'filters' && k !== 'filters_applied';
       });
-      _this.dt_id_strip = _this.dt_id.substring(1); // Init callbacks hash
-
+      _this.dt_id_strip = _this.dt_id.substring(1);
+      // Init callbacks hash
       _this.callbacks['ajax'] = [];
       _this.callbacks['createdRow'] = [];
       _this.callbacks['drawCallback'] = [];
@@ -411,25 +343,23 @@ DatatableBase = function () {
       _this.callbacks['buttons']['select_all'] = {};
       _this.callbacks['buttons']['reset_selection'] = {};
       return _this;
-    } //##########################
+    }
+
+    //##########################
     // Public Instance methods #
     //##########################
-
-
     _createClass(DatatableBase, [{
       key: "load",
       value: function load() {
         // Call before callback (good to extend options)
-        this.before_init(); // Build options
-
-        this.loader_load_callbacks(); // Log final hash options
-
-        this.log_final_options(); // Create the real datatable
-
-        this.init_datatable(); // Create datatable filters
-
-        this.init_filters(); // Call after callback (good to apply CSS rules after rendering)
-
+        this.before_init();
+        // Build options
+        this.loader_load_callbacks();
+        // Log final hash options
+        this.log_final_options();
+        // Create the real datatable
+        this.init_datatable();
+        // Call after callback (good to apply CSS rules after rendering)
         return this.after_init();
       }
     }, {
@@ -442,8 +372,8 @@ DatatableBase = function () {
       key: "before_init",
       value: function before_init() {
         this.info('Build config');
-        this.info('Before init callbacks'); // Load callbacks and buttons
-
+        this.info('Before init callbacks');
+        // Load callbacks and buttons
         this.with_check_boxes_set_callbacks('before_init');
         this.with_context_menu_set_callbacks('before_init');
         this.with_debug_set_callbacks('before_init');
@@ -452,8 +382,8 @@ DatatableBase = function () {
     }, {
       key: "after_init",
       value: function after_init() {
-        this.info('After init callbacks'); // Load callbacks
-
+        this.info('After init callbacks');
+        // Load callbacks
         this.with_check_boxes_set_callbacks('after_init');
         this.with_context_menu_set_callbacks('after_init');
         this.with_debug_set_callbacks('after_init');
@@ -470,32 +400,28 @@ DatatableBase = function () {
       key: "find_column_by_name",
       value: function find_column_by_name(column_name) {
         return this._find_column(this.columns, column_name);
-      } //###########################
+      }
+
+      //###########################
       // Private Instance methods #
       //###########################
-
     }, {
       key: "_find_column",
       value: function _find_column(columns, column_name) {
         var i, len;
         i = 0;
         len = columns.length;
-
         while (i < len) {
           if (columns[i].data === column_name) {
             return [i, columns[i]];
           }
-
           i++;
         }
-
         return null;
       }
     }]);
-
     return DatatableBase;
   }(_extendable["default"]);
-
   ;
   DatatableBase.extend(_loader["default"].class_methods);
   DatatableBase.include(_loader["default"].instance_methods);
@@ -510,15 +436,17 @@ DatatableBase = function () {
   DatatableBase.extend(_with_context_menu["default"].class_methods);
   DatatableBase.include(_with_context_menu["default"].instance_methods);
   DatatableBase.extend(_with_debug["default"].class_methods);
-  DatatableBase.include(_with_debug["default"].instance_methods); //###################
+  DatatableBase.include(_with_debug["default"].instance_methods);
+
+  //###################
   // Class attributes #
   //###################
-
   DatatableBase.instance = null;
-  DatatableBase.dtf_options = null; //######################
+  DatatableBase.dtf_options = null;
+
+  //######################
   // Instance attributes #
   //######################
-
   DatatableBase.prototype.columns = [];
   DatatableBase.prototype.buttons = [];
   DatatableBase.prototype.filters = [];
@@ -526,7 +454,6 @@ DatatableBase = function () {
   DatatableBase.prototype.callbacks = {};
   return DatatableBase;
 }.call(void 0);
-
 var _default = DatatableBase;
 exports["default"] = _default;
 
@@ -541,83 +468,56 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ../extendable.coffee */ "./src/extendable.coffee"));
-
 var _with_logger = _interopRequireDefault(__webpack_require__(/*! ../modules/with_logger.coffee */ "./src/modules/with_logger.coffee"));
-
 var _text_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/text_filter.coffee */ "./src/model/filters/text_filter.coffee"));
-
 var _range_date_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/range_date_filter.coffee */ "./src/model/filters/range_date_filter.coffee"));
-
 var _range_number_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/range_number_filter.coffee */ "./src/model/filters/range_number_filter.coffee"));
-
 var _select_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/select_filter.coffee */ "./src/model/filters/select_filter.coffee"));
-
 var _select_multi_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/select_multi_filter.coffee */ "./src/model/filters/select_multi_filter.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var DatatableFilter;
-
 DatatableFilter = function () {
   var DatatableFilter = /*#__PURE__*/function (_Extendable) {
     _inherits(DatatableFilter, _Extendable);
-
     var _super = _createSuper(DatatableFilter);
-
     function DatatableFilter(datatable, filters, filters_applied, logger) {
       var _this;
-
       _classCallCheck(this, DatatableFilter);
-
       _this = _super.call(this);
       _this.datatable = datatable;
       _this.filters = filters;
       _this.filters_applied = filters_applied;
-      _this.logger = logger; // initialize loaded_filters
-
-      _this.loaded_filters = {}; // Set datatable instance
-
+      _this.logger = logger;
+      // initialize loaded_filters
+      _this.loaded_filters = {};
+      // Set datatable instance
       _this.dt_id = _this.datatable.dt_id_strip;
       _this.dt_class = _this.datatable.dt_class;
       _this.instance = _this.datatable.datatable.settings()[0].oInstance;
       return _this;
     }
-
     _createClass(DatatableFilter, [{
       key: "load",
       value: function load() {
         this._load_filters();
-
-        this._bind_datatable();
-
-        return this._apply_filters();
+        return this._bind_datatable();
       }
     }, {
       key: "find_by_column_id",
@@ -629,13 +529,11 @@ DatatableFilter = function () {
       value: function save_state(column_id, data) {
         var tmp;
         this.info("Save current filter state (".concat(column_id, ")"));
-
         if (this.instance != null && this.instance.fnSettings() != null) {
           if (!this.instance.fnSettings().oLoadedState) {
             this.instance.fnSettings().oLoadedState = {};
-          } // @_dump_dt_filters_state()
-
-
+          }
+          // @_dump_dt_filters_state()
           if (this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null) {
             this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] = data;
           } else {
@@ -643,9 +541,8 @@ DatatableFilter = function () {
             tmp[this.dt_id] = {};
             tmp[this.dt_id][column_id] = data;
             this.instance.fnSettings().oLoadedState.dt_filters_state = tmp;
-          } // @_dump_dt_filters_state()
-
-
+          }
+          // @_dump_dt_filters_state()
           return this._save();
         } else {
           return this.error("save_state: Datatable instance is null");
@@ -674,39 +571,34 @@ DatatableFilter = function () {
       key: "reset_filters",
       value: function reset_filters(event) {
         var _column_id, filter, ref;
-
         ref = this.loaded_filters;
-
         for (_column_id in ref) {
           filter = ref[_column_id];
           filter.reset(event);
         }
-
         return this._draw();
       }
     }, {
       key: "apply_default_filters",
       value: function apply_default_filters(event) {
         this.info('apply_default_filters');
-        this.dump(event);
-        return this._apply_filters();
-      } //##################
+        return this._apply_filters(event);
+      }
+
+      //##################
       // PRIVATE METHODS #
       //##################
-
     }, {
       key: "_load_filters",
       value: function _load_filters() {
         var column_id, filter, i, len, ref, results;
         ref = this.filters;
         results = [];
-
         for (i = 0, len = ref.length; i < len; i++) {
           filter = ref[i];
           column_id = filter.column_id;
           results.push(this.loaded_filters[column_id] = this._load_filter(filter));
         }
-
         return results;
       }
     }, {
@@ -715,19 +607,14 @@ DatatableFilter = function () {
         switch (filter.filter_type) {
           case 'text':
             return _text_filter["default"].build(this, this.logger, filter);
-
           case 'range_number':
             return _range_number_filter["default"].build(this, this.logger, filter);
-
           case 'range_date':
             return _range_date_filter["default"].build(this, this.logger, filter);
-
           case 'select':
             return _select_filter["default"].build(this, this.logger, filter);
-
           case 'multi_select':
             return _select_multi_filter["default"].build(this, this.logger, filter);
-
           default:
             this.error("Unknown filter type: ".concat(filter.filter_type));
             this.dump(filter);
@@ -738,52 +625,48 @@ DatatableFilter = function () {
       key: "_bind_datatable",
       value: function _bind_datatable() {
         var _this2 = this;
-
         var ondraw_callback, onsave_callback;
-        this.info("Bind datatable"); // set onsave callback
-
+        this.info("Bind datatable");
+        // set onsave callback
         onsave_callback = function onsave_callback(event, settings, data) {
           _this2._dt_on_save(event, settings, data);
         };
-
-        $(this.datatable.dt_id).off('stateSaveParams.dt').on('stateSaveParams.dt', onsave_callback); // set ondraw callback
-
+        $(this.datatable.dt_id).off('stateSaveParams.dt').on('stateSaveParams.dt', onsave_callback);
+        // set ondraw callback
         ondraw_callback = function ondraw_callback(event, settings, json) {
           _this2._dt_on_draw(event, settings, json);
         };
-
-        $(this.datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback); // we need to make sure that the yadcf state will be saved after page reload
-
+        $(this.datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback);
+        // we need to make sure that the yadcf state will be saved after page reload
         return this._save();
       }
     }, {
       key: "_apply_filters",
-      value: function _apply_filters() {
-        var filter, i, item, len, ref; // return to avoid a useless datatable reload
-
+      value: function _apply_filters(event) {
+        var filter, i, item, len, ref;
+        // return to avoid a useless datatable reload
         if (this.filters_applied.length === 0) {
           return;
         }
-
-        ref = this.filters_applied; // apply filters
-
+        this.dump(event);
+        ref = this.filters_applied;
+        // apply filters
         for (i = 0, len = ref.length; i < len; i++) {
           item = ref[i];
           filter = this.find_by_column_id(item.column_id);
-
           if (filter != null) {
             filter.set(item.value);
           }
-        } // reload datatable
-
-
-        return this._draw();
+        }
+        // reload datatable
+        if (event.type === 'click') {
+          return this._draw();
+        }
       }
     }, {
       key: "_dt_on_save",
       value: function _dt_on_save(event, settings, data) {
         this.info("Datatable has been saved");
-
         if (settings.oLoadedState && settings.oLoadedState.dt_filters_state != null) {
           return data.dt_filters_state = settings.oLoadedState.dt_filters_state;
         }
@@ -793,18 +676,14 @@ DatatableFilter = function () {
       value: function _dt_on_draw(event, settings, json) {
         var column_id, filter, ref, results;
         this.info("Datatable has been reloaded, fetch dropdown data for filters");
-
         if (json == null) {
           this.warn('datatables xhr.dt event came back with null data instead of JSON data.');
           return;
         }
-
         ref = this.loaded_filters;
         results = [];
-
         for (column_id in ref) {
           filter = ref[column_id];
-
           if (json["dt_filter_data_".concat(column_id)] != null) {
             this.info("Loading data for ".concat(filter.name()));
             filter.dropdown_data = json["dt_filter_data_".concat(column_id)];
@@ -813,7 +692,6 @@ DatatableFilter = function () {
             results.push(void 0);
           }
         }
-
         return results;
       }
     }, {
@@ -834,16 +712,13 @@ DatatableFilter = function () {
         return this.dump(object);
       }
     }]);
-
     return DatatableFilter;
   }(_extendable["default"]);
-
   ;
   DatatableFilter.extend(_with_logger["default"].class_methods);
   DatatableFilter.include(_with_logger["default"].instance_methods);
   return DatatableFilter;
 }.call(void 0);
-
 var _default = DatatableFilter;
 exports["default"] = _default;
 
@@ -858,82 +733,63 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ../../extendable.coffee */ "./src/extendable.coffee"));
-
 var _with_logger = _interopRequireDefault(__webpack_require__(/*! ../../modules/with_logger.coffee */ "./src/modules/with_logger.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var BaseFilter;
-
 BaseFilter = function () {
   var BaseFilter = /*#__PURE__*/function (_Extendable) {
     _inherits(BaseFilter, _Extendable);
-
     var _super = _createSuper(BaseFilter);
-
     function BaseFilter(datatable_filter1, logger1, options1) {
       var _this;
-
       _classCallCheck(this, BaseFilter);
-
       _this = _super.apply(this, arguments);
       _this.datatable_filter = datatable_filter1;
       _this.logger = logger1;
-      _this.options = options1; // Get datatable JS class
-
-      _this.dt_class = _this.datatable_filter.dt_class; // fetch mandatory data
-
+      _this.options = options1;
+      // Get datatable JS class
+      _this.dt_class = _this.datatable_filter.dt_class;
+      // fetch mandatory data
       _this.column_id = _this.options.column_id;
-      _this.filter_default_label = _this.options.filter_default_label; // fetch optional data
-
+      _this.filter_default_label = _this.options.filter_default_label;
+      // fetch optional data
       _this.filter_css_class = _this.options.filter_css_class || '';
       _this.filter_reset_button = _this.options.filter_reset_button === false ? false : true;
-      _this.filter_reset_button_text = _this.options.filter_reset_button_text || 'x'; // build ids
-
+      _this.filter_reset_button_text = _this.options.filter_reset_button_text || 'x';
+      // build ids
       _this.container_id = "#".concat(_this.options.filter_container_id);
       return _this;
-    } //#################
+    }
+
+    //#################
     // PUBLIC METHODS #
     //#################
+
     // loader
-
-
     _createClass(BaseFilter, [{
       key: "bind",
       value: function bind() {
         this.logger.info("* Loading '".concat(this.name(), "'"));
-
         if (this.options.debug === true) {
           this._debug_log();
         }
-
         this.create_html();
         this.bind_inputs();
         return this.restore_state();
@@ -942,8 +798,9 @@ BaseFilter = function () {
       key: "name",
       value: function name() {
         return "".concat(this.dt_class, "/").concat(this.constructor.name, "#").concat(this.column_id);
-      } // implementation (must be overriden)
+      }
 
+      // implementation (must be overriden)
     }, {
       key: "create_html",
       value: function create_html() {
@@ -996,10 +853,11 @@ BaseFilter = function () {
         } else {
           event.cancelBubble = true;
         }
-      } //##################
+      }
+
+      //##################
       // PRIVATE METHODS #
       //##################
-
     }, {
       key: "_html_wrapper",
       value: function _html_wrapper() {
@@ -1014,13 +872,10 @@ BaseFilter = function () {
       key: "_html_reset_button",
       value: function _html_reset_button() {
         var _this2 = this;
-
         var callback, options;
-
         callback = function callback(event) {
           return _this2.stop_propagation(event);
         };
-
         options = {
           type: 'button',
           id: this.reset_id,
@@ -1085,16 +940,13 @@ BaseFilter = function () {
         return object;
       }
     }]);
-
     return BaseFilter;
   }(_extendable["default"]);
-
   ;
   BaseFilter.extend(_with_logger["default"].class_methods);
   BaseFilter.include(_with_logger["default"].instance_methods);
   return BaseFilter;
 }.call(void 0);
-
 var _default = BaseFilter;
 exports["default"] = _default;
 
@@ -1109,87 +961,67 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _base_filter = _interopRequireDefault(__webpack_require__(/*! ./base_filter.coffee */ "./src/model/filters/base_filter.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var RangeBase;
-
 RangeBase = /*#__PURE__*/function (_BaseFilter) {
   _inherits(RangeBase, _BaseFilter);
-
   var _super = _createSuper(RangeBase);
-
   function RangeBase(datatable_filter, logger, options1) {
     var _this;
-
     _classCallCheck(this, RangeBase);
-
     _this = _super.apply(this, arguments);
     _this.datatable_filter = datatable_filter;
     _this.logger = logger;
-    _this.options = options1; // fetch mandatory data
-
+    _this.options = options1;
+    // fetch mandatory data
     _this.from_placeholder = _this.filter_default_label[0];
-    _this.to_placeholder = _this.filter_default_label[1]; // fetch optional data
-
-    _this.range_delimiter = _this.options.filter_range_delimiter || '-yadcf_delim-'; // build ids
-
+    _this.to_placeholder = _this.filter_default_label[1];
+    // fetch optional data
+    _this.range_delimiter = _this.options.filter_range_delimiter || '-yadcf_delim-';
+    // build ids
     _this.wrapper_outer_id = "yadcf-filter-wrapper-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
     _this.wrapper_inner_id = "yadcf-filter-wrapper-inner-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
     _this.from_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-from-").concat(_this.range_type, "-").concat(_this.column_id);
     _this.to_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-to-").concat(_this.range_type, "-").concat(_this.column_id);
     _this.reset_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-reset-").concat(_this.range_type, "-").concat(_this.column_id);
     return _this;
-  } //#################
+  }
+
+  //#################
   // PUBLIC METHODS #
   //#################
-
-
   _createClass(RangeBase, [{
     key: "create_html",
     value: function create_html() {
-      _get(_getPrototypeOf(RangeBase.prototype), "create_html", this).call(this); // add outer wrapper to hold both filter and reset button
-
-
-      $("".concat(this.container_id)).append(this._html_wrapper_outer()); // add inner wrapper to hold both filter and reset button
-
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_wrapper_inner()); // add input fields
-
+      _get(_getPrototypeOf(RangeBase.prototype), "create_html", this).call(this);
+      // add outer wrapper to hold both filter and reset button
+      $("".concat(this.container_id)).append(this._html_wrapper_outer());
+      // add inner wrapper to hold both filter and reset button
+      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_wrapper_inner());
+      // add input fields
       $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_start());
       $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_separator());
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_end()); // add reset button
-
+      $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_end());
+      // add reset button
       if (this.filter_reset_button) {
         return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
       }
@@ -1198,45 +1030,34 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "bind_inputs",
     value: function bind_inputs() {
       var _this2 = this;
-
       var delay, onclick_callback, onkeyup_callback;
-
-      _get(_getPrototypeOf(RangeBase.prototype), "bind_inputs", this).call(this); // bind input fields
-
-
+      _get(_getPrototypeOf(RangeBase.prototype), "bind_inputs", this).call(this);
+      // bind input fields
       delay = this.options.filter_delay || 0;
-
       onkeyup_callback = function onkeyup_callback(event) {
         _this2._range_change(event);
       };
-
       $("#".concat(this.from_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
-      $("#".concat(this.to_id)).on('keyup', this._with_delay(onkeyup_callback, delay)); // bind reset button
-
+      $("#".concat(this.to_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
+      // bind reset button
       onclick_callback = function onclick_callback(event) {
         _this2._range_clear(event);
       };
-
       return $("#".concat(this.reset_id)).on('click', onclick_callback);
     }
   }, {
     key: "restore_state",
     value: function restore_state() {
       var restored_from, restored_to, saved_state;
-
       _get(_getPrototypeOf(RangeBase.prototype), "restore_state", this).call(this);
-
       saved_state = this.datatable_filter.has_state_for(this.column_id);
-
       if (saved_state != null) {
         restored_from = saved_state.from;
         restored_to = saved_state.to;
-
         if (restored_from !== '') {
           $("#".concat(this.from_id)).val(restored_from);
           $("#".concat(this.from_id)).addClass('inuse');
         }
-
         if (restored_to !== '') {
           $("#".concat(this.to_id)).val(restored_to);
           return $("#".concat(this.to_id)).addClass('inuse');
@@ -1247,15 +1068,13 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "reset",
     value: function reset(event) {
       _get(_getPrototypeOf(RangeBase.prototype), "reset", this).call(this, event);
-
       $("#".concat(this.from_id)).val('');
       $("#".concat(this.from_id)).removeClass('inuse');
       $("#".concat(this.to_id)).val('');
-      $("#".concat(this.to_id)).removeClass('inuse'); // set search value (datatable reload will be triggered later)
-
-      this._set_search_value(this.column_id, ''); // save current value
-
-
+      $("#".concat(this.to_id)).removeClass('inuse');
+      // set search value (datatable reload will be triggered later)
+      this._set_search_value(this.column_id, '');
+      // save current value
       return this._reset_state(this.column_id);
     }
   }, {
@@ -1265,21 +1084,19 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
         from: $("#".concat(this.from_id)).val(),
         to: $("#".concat(this.to_id)).val()
       };
-    } //##################
+    }
+
+    //##################
     // PRIVATE METHODS #
     //##################
-
   }, {
     key: "_html_wrapper_outer",
     value: function _html_wrapper_outer() {
       var _this3 = this;
-
       var callback, options;
-
       callback = function callback(event) {
         return _this3.stop_propagation(event);
       };
-
       options = {
         id: this.wrapper_outer_id,
         "class": 'yadcf-filter-wrapper'
@@ -1300,13 +1117,10 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "_html_range_start",
     value: function _html_range_start() {
       var _this4 = this;
-
       var callback, options;
-
       callback = function callback(event) {
         return _this4.prevent_default_on_enter(event);
       };
-
       options = {
         id: this.from_id,
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-start"),
@@ -1318,13 +1132,10 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "_html_range_end",
     value: function _html_range_end() {
       var _this5 = this;
-
       var callback, options;
-
       callback = function callback(event) {
         return _this5.prevent_default_on_enter(event);
       };
-
       options = {
         id: this.to_id,
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-end"),
@@ -1354,19 +1165,16 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
       this.logger.info("".concat(this.name(), " : _range_clear"));
       this.logger.dump(event);
       current_value = this.current_value();
-
       if (current_value.from === '' && current_value.to === '') {
         return;
       }
-
       $("#".concat(this.from_id)).val('');
       $("#".concat(this.from_id)).removeClass('inuse');
       $("#".concat(this.to_id)).val('');
-      $("#".concat(this.to_id)).removeClass('inuse'); // run filter (triggers a datatable reload)
-
-      this._run_filter(this.column_id, this.range_delimiter); // save current value
-
-
+      $("#".concat(this.to_id)).removeClass('inuse');
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, this.range_delimiter);
+      // save current value
       return this._save_state(this.column_id, {
         from: '',
         to: ''
@@ -1376,7 +1184,6 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "_debug_log",
     value: function _debug_log() {
       _get(_getPrototypeOf(RangeBase.prototype), "_debug_log", this).call(this);
-
       this.logger.info("container_id: ".concat(this.container_id));
       this.logger.info("wrapper_outer_id: ".concat(this.wrapper_outer_id));
       this.logger.info("wrapper_inner_id: ".concat(this.wrapper_inner_id));
@@ -1386,10 +1193,8 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
       return this.logger.info("to_placeholder: ".concat(this.to_placeholder));
     }
   }]);
-
   return RangeBase;
 }(_base_filter["default"]);
-
 var _default = RangeBase;
 exports["default"] = _default;
 
@@ -1404,81 +1209,60 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _range_base = _interopRequireDefault(__webpack_require__(/*! ./range_base.coffee */ "./src/model/filters/range_base.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var RangeDateFilter,
-    boundMethodCheck = function boundMethodCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new Error('Bound instance method accessed before binding');
-  }
-};
-
+  boundMethodCheck = function boundMethodCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new Error('Bound instance method accessed before binding');
+    }
+  };
 RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
   _inherits(RangeDateFilter, _RangeBase);
-
   var _super = _createSuper(RangeDateFilter);
-
   function RangeDateFilter(datatable_filter, logger, options) {
     var _this;
-
     _classCallCheck(this, RangeDateFilter);
-
-    _this = _super.apply(this, arguments); //##################
+    _this = _super.apply(this, arguments);
+    //##################
     // PRIVATE METHODS #
     //##################
-
     _this._date_select = _this._date_select.bind(_assertThisInitialized(_this));
     _this.datatable_filter = datatable_filter;
     _this.logger = logger;
-    _this.options = options; // customize class
-
-    _this.range_type = 'date'; // fetch datepicker data
-
+    _this.options = options;
+    // customize class
+    _this.range_type = 'date';
+    // fetch datepicker data
     _this.filter_plugin = _this.options.filter_plugin;
     _this.filter_plugin_options = $.extend({}, {
       onSelect: _this._date_select
     }, _this.options.filter_plugin_options);
     return _this;
   }
-
   _createClass(RangeDateFilter, [{
     key: "bind_inputs",
     value: function bind_inputs() {
-      _get(_getPrototypeOf(RangeDateFilter.prototype), "bind_inputs", this).call(this); // load datepicker with callbacks
-
-
+      _get(_getPrototypeOf(RangeDateFilter.prototype), "bind_inputs", this).call(this);
+      // load datepicker with callbacks
       $("#".concat(this.from_id)).datepicker($.extend(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
           $("#".concat(this.to_id)).datepicker('option', 'minDate', selected_date);
@@ -1499,11 +1283,10 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
       current_value = this.current_value();
       from = current_value.from;
       to = current_value.to;
-      search_value = "".concat(from).concat(this.range_delimiter).concat(to); // run filter (triggers a datatable reload)
-
-      this._run_filter(this.column_id, search_value); // save current value
-
-
+      search_value = "".concat(from).concat(this.range_delimiter).concat(to);
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         from: from,
         to: to
@@ -1513,17 +1296,13 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
     key: "_range_change",
     value: function _range_change(event) {
       var current_value, date_from, date_to, from, search_value, to;
-
       _get(_getPrototypeOf(RangeDateFilter.prototype), "_range_change", this).call(this, event);
-
       if (this._skip_key_codes().includes(event.keyCode)) {
         return;
       }
-
       current_value = this.current_value();
       date_from = this._date_or_empty_string(current_value.from);
       date_to = this._date_or_empty_string(current_value.to);
-
       if (date_from instanceof Date) {
         $("#".concat(this.from_id)).addClass('inuse');
         from = current_value.from;
@@ -1531,7 +1310,6 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
         $("#".concat(this.from_id)).removeClass('inuse');
         from = '';
       }
-
       if (date_to instanceof Date) {
         $("#".concat(this.to_id)).addClass('inuse');
         to = current_value.to;
@@ -1539,12 +1317,10 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
         $("#".concat(this.to_id)).removeClass('inuse');
         to = '';
       }
-
-      search_value = "".concat(from).concat(this.range_delimiter).concat(to); // run filter (triggers a datatable reload)
-
-      this._run_filter(this.column_id, search_value); // save current value
-
-
+      search_value = "".concat(from).concat(this.range_delimiter).concat(to);
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         from: from,
         to: to
@@ -1554,13 +1330,10 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
     key: "_date_or_empty_string",
     value: function _date_or_empty_string(value) {
       var date_format, e;
-
       if (value === '') {
         return '';
       }
-
       date_format = this.options.filter_plugin_options.dateFormat;
-
       try {
         return $.datepicker.parseDate(date_format, value);
       } catch (error) {
@@ -1570,10 +1343,8 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
       }
     }
   }]);
-
   return RangeDateFilter;
 }(_range_base["default"]);
-
 var _default = RangeDateFilter;
 exports["default"] = _default;
 
@@ -1588,96 +1359,70 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _range_base = _interopRequireDefault(__webpack_require__(/*! ./range_base.coffee */ "./src/model/filters/range_base.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var RangeNumberFilter;
-
 RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
   _inherits(RangeNumberFilter, _RangeBase);
-
   var _super = _createSuper(RangeNumberFilter);
-
   function RangeNumberFilter(datatable_filter, logger, options) {
     var _this;
-
     _classCallCheck(this, RangeNumberFilter);
-
     _this = _super.apply(this, arguments);
     _this.datatable_filter = datatable_filter;
     _this.logger = logger;
-    _this.options = options; // customize class
-
+    _this.options = options;
+    // customize class
     _this.range_type = 'number';
     return _this;
-  } //##################
+  }
+
+  //##################
   // PRIVATE METHODS #
   //##################
-
-
   _createClass(RangeNumberFilter, [{
     key: "_range_change",
     value: function _range_change(event) {
       var current_value, max, min, search_value;
-
       _get(_getPrototypeOf(RangeNumberFilter.prototype), "_range_change", this).call(this, event);
-
       if (this._skip_key_codes().includes(event.keyCode)) {
         return;
       }
-
       current_value = this.current_value();
       min = this._int_or_empty_string(current_value.from);
       max = this._int_or_empty_string(current_value.to);
-
       if (min !== '') {
         $("#".concat(this.from_id)).addClass('inuse');
       } else {
         $("#".concat(this.from_id)).removeClass('inuse');
       }
-
       if (max !== '') {
         $("#".concat(this.to_id)).addClass('inuse');
       } else {
         $("#".concat(this.to_id)).removeClass('inuse');
       }
-
-      search_value = "".concat(min).concat(this.range_delimiter).concat(max); // run filter (triggers a datatable reload)
-
-      this._run_filter(this.column_id, search_value); // save current value
-
-
+      search_value = "".concat(min).concat(this.range_delimiter).concat(max);
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         from: min,
         to: max
@@ -1687,18 +1432,14 @@ RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
     key: "_int_or_empty_string",
     value: function _int_or_empty_string(value) {
       value = value !== '' ? +value : value;
-
       if (isNaN(value)) {
         value = '';
       }
-
       return value;
     }
   }]);
-
   return RangeNumberFilter;
 }(_range_base["default"]);
-
 var _default = RangeNumberFilter;
 exports["default"] = _default;
 
@@ -1713,80 +1454,60 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _base_filter = _interopRequireDefault(__webpack_require__(/*! ./base_filter.coffee */ "./src/model/filters/base_filter.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var SelectBase;
-
 SelectBase = function () {
   var SelectBase = /*#__PURE__*/function (_BaseFilter) {
     _inherits(SelectBase, _BaseFilter);
-
     var _super = _createSuper(SelectBase);
-
     function SelectBase(datatable_filter, logger, options1) {
       var _this;
-
       _classCallCheck(this, SelectBase);
-
       _this = _super.apply(this, arguments);
       _this.datatable_filter = datatable_filter;
       _this.logger = logger;
-      _this.options = options1; // fetch select data
-
+      _this.options = options1;
+      // fetch select data
       _this.filter_plugin = _this.options.filter_plugin;
-      _this.filter_plugin_options = _this.options.filter_plugin_options; // build ids
-
+      _this.filter_plugin_options = _this.options.filter_plugin_options;
+      // build ids
       _this.wrapper_id = "yadcf-filter-wrapper-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
       _this.select_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
       _this.reset_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-reset-").concat(_this.column_id);
       return _this;
-    } //#################
+    }
+
+    //#################
     // PUBLIC METHODS #
     //#################
-
-
     _createClass(SelectBase, [{
       key: "create_html",
       value: function create_html() {
-        _get(_getPrototypeOf(SelectBase.prototype), "create_html", this).call(this); // add a wrapper to hold both filter and reset button
-
-
-        $("".concat(this.container_id)).append(this._html_wrapper()); // add input fields
-
-        $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field()); // add reset button
-
+        _get(_getPrototypeOf(SelectBase.prototype), "create_html", this).call(this);
+        // add a wrapper to hold both filter and reset button
+        $("".concat(this.container_id)).append(this._html_wrapper());
+        // add input fields
+        $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field());
+        // add reset button
         if (this.filter_reset_button) {
           return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
         }
@@ -1795,22 +1516,17 @@ SelectBase = function () {
       key: "bind_inputs",
       value: function bind_inputs() {
         var _this2 = this;
-
         var onchange_callback, onclick_callback;
-
-        _get(_getPrototypeOf(SelectBase.prototype), "bind_inputs", this).call(this); // bind select field
-
-
+        _get(_getPrototypeOf(SelectBase.prototype), "bind_inputs", this).call(this);
+        // bind select field
         onchange_callback = function onchange_callback(event) {
           _this2._select_change(event);
         };
-
-        $("#".concat(this.select_id)).on('change', onchange_callback); // bind reset button
-
+        $("#".concat(this.select_id)).on('change', onchange_callback);
+        // bind reset button
         onclick_callback = function onclick_callback(event) {
           _this2._select_clear(event);
         };
-
         $("#".concat(this.reset_id)).on('click', onclick_callback);
         return this._initialize_select_plugin();
       }
@@ -1818,15 +1534,11 @@ SelectBase = function () {
       key: "restore_state",
       value: function restore_state() {
         var restored_value, saved_state;
-
         _get(_getPrototypeOf(SelectBase.prototype), "restore_state", this).call(this);
-
         saved_state = this.datatable_filter.has_state_for(this.column_id);
-
         if (saved_state != null) {
           restored_value = saved_state.value;
           $("#".concat(this.select_id)).val(restored_value);
-
           if (restored_value !== '-1') {
             return $("#".concat(this.select_id)).addClass('inuse');
           }
@@ -1836,46 +1548,40 @@ SelectBase = function () {
       key: "reset",
       value: function reset(event) {
         _get(_getPrototypeOf(SelectBase.prototype), "reset", this).call(this, event);
-
         $("#".concat(this.select_id)).val('');
-        $("#".concat(this.select_id)).removeClass('inuse'); // set search value (datatable reload will be triggered later)
-
-        this._set_search_value(this.column_id, ''); // save current value
-
-
+        $("#".concat(this.select_id)).removeClass('inuse');
+        // set search value (datatable reload will be triggered later)
+        this._set_search_value(this.column_id, '');
+        // save current value
         return this._reset_state(this.column_id);
       }
     }, {
       key: "reload",
       value: function reload(event) {
         _get(_getPrototypeOf(SelectBase.prototype), "reload", this).call(this, event);
-
         $("#".concat(this.select_id)).empty();
         $("#".concat(this.select_id)).append(this._select_options());
         return this.restore_state();
-      } //##################
+      }
+
+      //##################
       // PRIVATE METHODS #
       //##################
-
     }, {
       key: "_html_input_field",
       value: function _html_input_field() {
         var _this3 = this;
-
         var callback1, callback2, options;
         options = {
           id: this.select_id,
           "class": "yadcf-filter ".concat(this.filter_css_class)
         };
-
         callback1 = function callback1(event) {
           return _this3.stop_propagation(event);
         };
-
         callback2 = function callback2(event) {
           return _this3.prevent_default_on_enter(event);
         };
-
         return $('<select/>', options).on('click', callback1).on('keydown', callback2).on('mousedown', callback1);
       }
     }, {
@@ -1891,17 +1597,14 @@ SelectBase = function () {
         this.logger.info("".concat(this.name(), " : _select_clear"));
         this.logger.dump(event);
         current_value = this.current_value();
-
         if (this._empty_value(current_value)) {
           return;
         }
-
         $("#".concat(this.select_id)).val('-1');
-        $("#".concat(this.select_id)).removeClass('inuse'); // run filter (triggers a datatable reload)
-
-        this._run_filter(this.column_id, ''); // save current value
-
-
+        $("#".concat(this.select_id)).removeClass('inuse');
+        // run filter (triggers a datatable reload)
+        this._run_filter(this.column_id, '');
+        // save current value
         return this._save_state(this.column_id, {
           value: '-1'
         });
@@ -1910,25 +1613,19 @@ SelectBase = function () {
       key: "_initialize_select_plugin",
       value: function _initialize_select_plugin() {
         var _this4 = this;
-
         var callback, select2;
         this.logger.info("".concat(this.name(), " : _initialize_select_plugin"));
-
         switch (this.filter_plugin) {
           case 'select2':
             $("#".concat(this.select_id)).select2(this.filter_plugin_options);
             select2 = $("#".concat(this.select_id)).next();
-
             if (select2 != null && select2.hasClass('select2-container')) {
               callback = function callback(event) {
                 return _this4.stop_propagation(event);
               };
-
               return select2.on('click', callback).on('mousedown', callback);
             }
-
             break;
-
           default:
             return this.logger.error("Unknown select type: ".concat(this.filter_plugin));
         }
@@ -1937,22 +1634,18 @@ SelectBase = function () {
       key: "_debug_log",
       value: function _debug_log() {
         _get(_getPrototypeOf(SelectBase.prototype), "_debug_log", this).call(this);
-
         this.logger.info("container_id: ".concat(this.container_id));
         this.logger.info("wrapper_id: ".concat(this.wrapper_id));
         this.logger.info("select_id: ".concat(this.select_id));
         return this.logger.info("reset_id: ".concat(this.reset_id));
       }
     }]);
-
     return SelectBase;
   }(_base_filter["default"]);
-
   ;
   SelectBase.prototype.dropdown_data = null;
   return SelectBase;
 }.call(void 0);
-
 var _default = SelectBase;
 exports["default"] = _default;
 
@@ -1967,56 +1660,38 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _select_base = _interopRequireDefault(__webpack_require__(/*! ./select_base.coffee */ "./src/model/filters/select_base.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var SelectFilter;
-
 SelectFilter = /*#__PURE__*/function (_SelectBase) {
   _inherits(SelectFilter, _SelectBase);
-
   var _super = _createSuper(SelectFilter);
-
   function SelectFilter() {
     _classCallCheck(this, SelectFilter);
-
     return _super.apply(this, arguments);
   }
-
   _createClass(SelectFilter, [{
     key: "current_value",
-    value: //#################
+    value:
+    //#################
     // PUBLIC METHODS #
     //#################
     function current_value() {
@@ -2025,34 +1700,30 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
   }, {
     key: "set",
     value: function set(value) {
-      _get(_getPrototypeOf(SelectFilter.prototype), "set", this).call(this, value); // set search value (datatable reload will be triggered later)
-
-
-      this._set_search_value(this.column_id, value); // save current value
-
-
+      _get(_getPrototypeOf(SelectFilter.prototype), "set", this).call(this, value);
+      // set search value (datatable reload will be triggered later)
+      this._set_search_value(this.column_id, value);
+      // save current value
       return this._save_state(this.column_id, {
         value: value
       });
-    } //##################
+    }
+
+    //##################
     // PRIVATE METHODS #
     //##################
-
   }, {
     key: "_select_options",
     value: function _select_options() {
       var data, i, len, options, ref;
       options = "<option value=\"-1\">".concat(this.filter_default_label, "</option>");
-
       if (this.dropdown_data != null) {
         ref = this.dropdown_data;
-
         for (i = 0, len = ref.length; i < len; i++) {
           data = ref[i];
           options += "<option value=\"".concat(data.value, "\" >").concat(data.label, "</option>");
         }
       }
-
       return options;
     }
   }, {
@@ -2064,32 +1735,32 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_select_change",
     value: function _select_change(event) {
       var current_value, search_value;
-
       _get(_getPrototypeOf(SelectFilter.prototype), "_select_change", this).call(this, event);
-
       current_value = this.current_value();
-
       if (this._empty_value(current_value)) {
         search_value = '';
         $("#".concat(this.select_id)).removeClass('inuse');
       } else {
         search_value = current_value;
         $("#".concat(this.select_id)).addClass('inuse');
-      } // run filter (triggers a datatable reload)
-
-
-      this._run_filter(this.column_id, search_value); // save current value
-
-
+      }
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         value: current_value
       });
     }
+  }, {
+    key: "_html_input_field",
+    value: function _html_input_field() {
+      var input;
+      input = _get(_getPrototypeOf(SelectFilter.prototype), "_html_input_field", this).call(this);
+      return $(input).attr('data-placeholder', this.filter_default_label);
+    }
   }]);
-
   return SelectFilter;
 }(_select_base["default"]);
-
 var _default = SelectFilter;
 exports["default"] = _default;
 
@@ -2104,56 +1775,38 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _select_base = _interopRequireDefault(__webpack_require__(/*! ./select_base.coffee */ "./src/model/filters/select_base.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var SelectMultiFilter;
-
 SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
   _inherits(SelectMultiFilter, _SelectBase);
-
   var _super = _createSuper(SelectMultiFilter);
-
   function SelectMultiFilter() {
     _classCallCheck(this, SelectMultiFilter);
-
     return _super.apply(this, arguments);
   }
-
   _createClass(SelectMultiFilter, [{
     key: "current_value",
-    value: //#################
+    value:
+    //#################
     // PUBLIC METHODS #
     //#################
     function current_value() {
@@ -2163,36 +1816,31 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     key: "set",
     value: function set(value) {
       var search_value;
-
       _get(_getPrototypeOf(SelectMultiFilter.prototype), "set", this).call(this, value);
-
-      search_value = this._cast_value(value); // set search value (datatable reload will be triggered later)
-
-      this._set_search_value(this.column_id, search_value); // save current value
-
-
+      search_value = this._cast_value(value);
+      // set search value (datatable reload will be triggered later)
+      this._set_search_value(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         value: value
       });
-    } //##################
+    }
+
+    //##################
     // PRIVATE METHODS #
     //##################
-
   }, {
     key: "_select_options",
     value: function _select_options() {
       var data, i, len, options, ref;
       options = '';
-
       if (this.dropdown_data != null) {
         ref = this.dropdown_data;
-
         for (i = 0, len = ref.length; i < len; i++) {
           data = ref[i];
           options += "<option value=\"".concat(data.value, "\" >").concat(data.label, "</option>");
         }
       }
-
       return options;
     }
   }, {
@@ -2204,23 +1852,18 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_select_change",
     value: function _select_change(event) {
       var current_value, search_value;
-
       _get(_getPrototypeOf(SelectMultiFilter.prototype), "_select_change", this).call(this, event);
-
       current_value = this.current_value();
-
       if (this._empty_value(current_value)) {
         search_value = '';
         $("#".concat(this.select_id)).removeClass('inuse');
       } else {
         search_value = this._cast_value(current_value);
         $("#".concat(this.select_id)).addClass('inuse');
-      } // run filter (triggers a datatable reload)
-
-
-      this._run_filter(this.column_id, search_value); // save current value
-
-
+      }
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, search_value);
+      // save current value
       return this._save_state(this.column_id, {
         value: current_value
       });
@@ -2238,10 +1881,8 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
       return value.join('|');
     }
   }]);
-
   return SelectMultiFilter;
 }(_select_base["default"]);
-
 var _default = SelectMultiFilter;
 exports["default"] = _default;
 
@@ -2256,117 +1897,87 @@ exports["default"] = _default;
 
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _base_filter = _interopRequireDefault(__webpack_require__(/*! ./base_filter.coffee */ "./src/model/filters/base_filter.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-
 function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 var TextFilter;
-
 TextFilter = /*#__PURE__*/function (_BaseFilter) {
   _inherits(TextFilter, _BaseFilter);
-
   var _super = _createSuper(TextFilter);
-
   function TextFilter(datatable_filter, logger, options1) {
     var _this;
-
     _classCallCheck(this, TextFilter);
-
     _this = _super.apply(this, arguments);
     _this.datatable_filter = datatable_filter;
     _this.logger = logger;
-    _this.options = options1; // build ids
-
+    _this.options = options1;
+    // build ids
     _this.wrapper_id = "yadcf-filter-wrapper-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
     _this.input_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-").concat(_this.column_id);
     _this.reset_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-reset-").concat(_this.column_id);
     return _this;
   }
-
   _createClass(TextFilter, [{
     key: "create_html",
     value: function create_html() {
-      _get(_getPrototypeOf(TextFilter.prototype), "create_html", this).call(this); // add a wrapper to hold both filter and reset button
-
-
-      $("".concat(this.container_id)).append(this._html_wrapper()); // add input fields
-
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field()); // add reset button
-
+      _get(_getPrototypeOf(TextFilter.prototype), "create_html", this).call(this);
+      // add a wrapper to hold both filter and reset button
+      $("".concat(this.container_id)).append(this._html_wrapper());
+      // add input fields
+      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field());
+      // add reset button
       if (this.filter_reset_button) {
         return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
       }
-    } //#################
+    }
+
+    //#################
     // PUBLIC METHODS #
     //#################
-
   }, {
     key: "bind_inputs",
     value: function bind_inputs() {
       var _this2 = this;
-
       var delay, onclick_callback, onkeyup_callback;
-
-      _get(_getPrototypeOf(TextFilter.prototype), "bind_inputs", this).call(this); // bind input field
-
-
+      _get(_getPrototypeOf(TextFilter.prototype), "bind_inputs", this).call(this);
+      // bind input field
       delay = this.options.filter_delay || 0;
-
       onkeyup_callback = function onkeyup_callback(event) {
         _this2._text_change(event);
       };
-
-      $("#".concat(this.input_id)).on('keyup', this._with_delay(onkeyup_callback, delay)); // bind reset button
-
+      $("#".concat(this.input_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
+      // bind reset button
       onclick_callback = function onclick_callback(event) {
         _this2._text_clear(event);
       };
-
       return $("#".concat(this.reset_id)).on('click', onclick_callback);
     }
   }, {
     key: "restore_state",
     value: function restore_state() {
       var restored_value, saved_state;
-
       _get(_getPrototypeOf(TextFilter.prototype), "restore_state", this).call(this);
-
       saved_state = this.datatable_filter.has_state_for(this.column_id);
-
       if (saved_state != null) {
         restored_value = saved_state.value;
         $("#".concat(this.input_id)).val(restored_value);
-
         if (restored_value !== '') {
           return $("#".concat(this.input_id)).addClass('inuse');
         }
@@ -2376,30 +1987,24 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     key: "reset",
     value: function reset(event) {
       _get(_getPrototypeOf(TextFilter.prototype), "reset", this).call(this, event);
-
       $("#".concat(this.input_id)).val('');
-      $("#".concat(this.input_id)).removeClass('inuse'); // set search value (datatable reload will be triggered later)
-
-      this._set_search_value(this.column_id, ''); // save current value
-
-
+      $("#".concat(this.input_id)).removeClass('inuse');
+      // set search value (datatable reload will be triggered later)
+      this._set_search_value(this.column_id, '');
+      // save current value
       return this._reset_state(this.column_id);
     }
   }, {
     key: "set",
     value: function set(value) {
       _get(_getPrototypeOf(TextFilter.prototype), "set", this).call(this, value);
-
       $("#".concat(this.input_id)).val(value);
-
       if (value !== '') {
         $("#".concat(this.input_id)).addClass('inuse');
-      } // set search value (datatable reload will be triggered later)
-
-
-      this._set_search_value(this.column_id, value); // save current value
-
-
+      }
+      // set search value (datatable reload will be triggered later)
+      this._set_search_value(this.column_id, value);
+      // save current value
       return this._save_state(this.column_id, {
         value: value
       });
@@ -2408,25 +2013,22 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     key: "current_value",
     value: function current_value() {
       return $.trim($("#".concat(this.input_id)).val());
-    } //##################
+    }
+
+    //##################
     // PRIVATE METHODS #
     //##################
-
   }, {
     key: "_html_input_field",
     value: function _html_input_field() {
       var _this3 = this;
-
       var callback1, callback2, options;
-
       callback1 = function callback1(event) {
         return _this3.prevent_default_on_enter(event);
       };
-
       callback2 = function callback2(event) {
         return _this3.stop_propagation(event);
       };
-
       options = {
         type: 'text',
         id: this.input_id,
@@ -2446,23 +2048,18 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       var current_value;
       this.logger.info("".concat(this.name(), " : _text_change"));
       this.logger.dump(event);
-
       if (this._skip_key_codes().includes(event.keyCode)) {
         return;
       }
-
       current_value = this.current_value();
-
       if (this._empty_value(current_value)) {
         $("#".concat(this.input_id)).removeClass('inuse');
       } else {
         $("#".concat(this.input_id)).addClass('inuse');
-      } // run filter (triggers a datatable reload)
-
-
-      this._run_filter(this.column_id, current_value); // save current value
-
-
+      }
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, current_value);
+      // save current value
       return this._save_state(this.column_id, {
         value: current_value
       });
@@ -2474,26 +2071,21 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       this.logger.info("".concat(this.name(), " : _text_clear"));
       this.logger.dump(event);
       current_value = this.current_value();
-
       if (this._empty_value(current_value)) {
         return;
       }
-
       $("#".concat(this.input_id)).val('');
-      $("#".concat(this.input_id)).removeClass('inuse'); // run filter (triggers a datatable reload)
-
-      this._run_filter(this.column_id, ''); // save current value
-
-
+      $("#".concat(this.input_id)).removeClass('inuse');
+      // run filter (triggers a datatable reload)
+      this._run_filter(this.column_id, '');
+      // save current value
       return this._save_state(this.column_id, {
         value: ''
       });
     }
   }]);
-
   return TextFilter;
 }(_base_filter["default"]);
-
 var _default = TextFilter;
 exports["default"] = _default;
 
@@ -2511,28 +2103,18 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _logger = _interopRequireDefault(__webpack_require__(/*! ../logger.coffee */ "./src/logger.coffee"));
-
 var _datatable_filter = _interopRequireDefault(__webpack_require__(/*! ../model/datatable_filter.coffee */ "./src/model/datatable_filter.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var Loader,
-    dig,
-    hasProp = {}.hasOwnProperty;
+  dig,
+  hasProp = {}.hasOwnProperty;
 dig = __webpack_require__(/*! object-dig */ "./node_modules/object-dig/dist/index.js");
 Loader = {};
 Loader.class_methods = {
@@ -2557,21 +2139,18 @@ Loader.class_methods = {
     logger.info('dt_options:');
     logger.dump(loader.dt_options);
     logger.info('dtf_options:');
-    logger.dump(loader.dtf_options); // Find datatable class
-
+    logger.dump(loader.dtf_options);
+    // Find datatable class
     klass = Loader.class_methods.constantize(loader.dt_class);
-
     if (klass == null) {
       logger.error("Datatable '".concat(loader.dt_class, "' not found"));
       return false;
     }
-
     if (klass.instance != null) {
       logger.info("* Trigger full reloading of datatable '".concat(loader.dt_class, "'"));
       klass.instance.destroy();
       delete klass.instance;
     }
-
     logger.info("* Loading datatable '".concat(loader.dt_class, "'"));
     klass.instance = Loader.class_methods.create(klass, loader.dt_class, loader.dt_id, loader.dt_options, loader.dtf_options, logger);
     logger.info("* Loaded datatable '".concat(loader.dt_class, "'"));
@@ -2587,16 +2166,13 @@ Loader.class_methods = {
   extract_options: function extract_options(data, prefix) {
     var key, options, value;
     options = {};
-
     for (key in data) {
       if (!hasProp.call(data, key)) continue;
       value = data[key];
-
       if (key.startsWith(prefix)) {
         options[Loader.class_methods.to_underscore(key).split('_')[1]] = value;
       }
     }
-
     return options;
   },
   constantize: function constantize(string) {
@@ -2614,22 +2190,27 @@ Loader.instance_methods = {
   // Public Instance methods #
   //##########################
   init_datatable: function init_datatable() {
+    var _this = this;
     this.info('Create Datatable');
-    this.datatable = $(this.dt_id).DataTable(this.dt_options);
+    // create filters just after dt initialization
+    $(this.dt_id).on('preInit.dt', function (event, settings) {
+      _this.info('preInit.dt callback was called, set filters if exist');
+      _this.datatable = new $.fn.dataTable.Api(settings);
+      return _this.init_filters(event);
+    });
+    $(this.dt_id).DataTable(this.dt_options);
     return this.info('Datatable created');
   },
-  init_filters: function init_filters() {
+  init_filters: function init_filters(event) {
     var form;
-
     if (this.filters.length === 0) {
       return;
     }
-
     this.info('Load Datatable filters');
     this.datatable_filter = new _datatable_filter["default"](this, this.filters, this.filters_applied, this.logger);
     this.datatable_filter.load();
+    this.datatable_filter.apply_default_filters(event);
     form = $(this.dt_id + '_wrapper').parent();
-
     if (form != null) {
       $(form).find('.yadcf-filter-wrapper').each(function () {
         $(this).children().wrapAll('<div class="col-md-12"></div>').wrapAll('<div class="input-group"></div>');
@@ -2638,14 +2219,11 @@ Loader.instance_methods = {
       $(form).find('.yadcf-filter-reset-button').addClass('btn btn-default').wrap('<span class="input-group-btn"></span>');
       $(form).find('.yadcf-filter').addClass('form-control');
     }
-
     return this.info('Datatable filters loaded');
   },
   loader_load_callbacks: function loader_load_callbacks() {
     this._loader_load_ajax_callbacks();
-
     this._loader_load_created_row_callbacks();
-
     return this._loader_load_draw_callbacks();
   },
   //###########################
@@ -2653,10 +2231,9 @@ Loader.instance_methods = {
   //###########################
   _loader_load_ajax_callbacks: function _loader_load_ajax_callbacks() {
     var callbacks, local_opts;
-    this.info('Build datatable callbacks options : ajax'); // Keep a local reference for the ajax option
-
+    this.info('Build datatable callbacks options : ajax');
+    // Keep a local reference for the ajax option
     callbacks = this.callbacks['ajax'];
-
     if (this.callbacks['ajax'].length > 0) {
       local_opts = {
         ajax: {
@@ -2665,12 +2242,10 @@ Loader.instance_methods = {
           data: function data(d) {
             var c, data, i, len;
             data = {};
-
             for (i = 0, len = callbacks.length; i < len; i++) {
               c = callbacks[i];
               data = $.extend({}, data, c(d));
             }
-
             return data;
           }
         }
@@ -2683,24 +2258,21 @@ Loader.instance_methods = {
         }
       };
     }
-
     return this.dt_options = $.extend({}, this.dt_options, local_opts);
   },
   _loader_load_created_row_callbacks: function _loader_load_created_row_callbacks() {
     var callbacks, local_opts;
-    this.info('Build datatable callbacks options : createdRow'); // Keep a local reference for the createdRow option
-
+    this.info('Build datatable callbacks options : createdRow');
+    // Keep a local reference for the createdRow option
     callbacks = this.callbacks['createdRow'];
     local_opts = {
       createdRow: function createdRow(row, data, index, cells) {
         var c, i, len, results;
         results = [];
-
         for (i = 0, len = callbacks.length; i < len; i++) {
           c = callbacks[i];
           results.push(c(row, data, index, cells));
         }
-
         return results;
       }
     };
@@ -2708,19 +2280,17 @@ Loader.instance_methods = {
   },
   _loader_load_draw_callbacks: function _loader_load_draw_callbacks() {
     var callbacks, local_opts;
-    this.info('Build datatable callbacks options : drawCallback'); // Keep a local reference for the drawCallback option
-
+    this.info('Build datatable callbacks options : drawCallback');
+    // Keep a local reference for the drawCallback option
     callbacks = this.callbacks['drawCallback'];
     local_opts = {
       drawCallback: function drawCallback(settings) {
         var c, i, len, results;
         results = [];
-
         for (i = 0, len = callbacks.length; i < len; i++) {
           c = callbacks[i];
           results.push(c(settings));
         }
-
         return results;
       }
     };
@@ -2729,15 +2299,12 @@ Loader.instance_methods = {
   _select: function _select(obj, predicate) {
     var k, res, v;
     res = {};
-
     for (k in obj) {
       v = obj[k];
-
       if (predicate(k, v)) {
         res[k] = v;
       }
     }
-
     return res;
   }
 };
@@ -2774,27 +2341,21 @@ WithButtons.instance_methods = {
   //#########
   with_buttons_set_callbacks: function with_buttons_set_callbacks(callback_type) {
     var _this = this;
-
     if (!this._buttons_enabled()) {
       return false;
     }
-
     switch (callback_type) {
       case 'before_init':
         this.info('Load buttons');
-
         this._load_button('select_all', function (_event, button) {
           return _this.select_all(button);
         });
-
         this._load_button('reset_selection', function (_event, button) {
           return _this.reset_selection(button);
         });
-
         this._load_button('reset_filters', function (event, _button) {
           return _this.reset_filters(event);
         });
-
         return this._load_button('apply_default_filters', function (event, _button) {
           return _this.apply_default_filters(event);
         });
@@ -2806,7 +2367,6 @@ WithButtons.instance_methods = {
   reset_datatable_selection: function reset_datatable_selection() {
     var button;
     button = this.find_button_by_name('reset_selection');
-
     if (button != null) {
       return this.reset_selection(button[1]);
     }
@@ -2821,33 +2381,33 @@ WithButtons.instance_methods = {
     return this.datatable_filter.apply_default_filters(event);
   },
   select_all: function select_all(button) {
-    var ajax_options, params; // Get datatable params
-
-    params = this.datatable.ajax.params(); // Set length to -1 to get all filtered records
-
-    params['length'] = -1; // Reset selection
-
+    var ajax_options, params;
+    // Get datatable params
+    params = this.datatable.ajax.params();
+    // Set length to -1 to get all filtered records
+    params['length'] = -1;
+    // Reset selection
     params['selected'] = [];
-    params['not_selected'] = []; // Select all rows in the current page
-
-    this.select_all_rows(); // Build ajax options
-
-    ajax_options = this._build_ajax_options('select_all'); // Call url
-
+    params['not_selected'] = [];
+    // Select all rows in the current page
+    this.select_all_rows();
+    // Build ajax options
+    ajax_options = this._build_ajax_options('select_all');
+    // Call url
     return this._call_url(button, params, ajax_options);
   },
   reset_selection: function reset_selection(button) {
-    var ajax_options, params; // Get datatable params
-
-    params = this.datatable.ajax.params(); // Reset selection
-
+    var ajax_options, params;
+    // Get datatable params
+    params = this.datatable.ajax.params();
+    // Reset selection
     params['selected'] = [];
-    params['not_selected'] = []; // unselect all rows in the current page
-
-    this.unselect_all_rows(); // Build ajax options
-
-    ajax_options = this._build_ajax_options('reset_selection'); // Call url
-
+    params['not_selected'] = [];
+    // unselect all rows in the current page
+    this.unselect_all_rows();
+    // Build ajax options
+    ajax_options = this._build_ajax_options('reset_selection');
+    // Call url
     return this._call_url(button, params, ajax_options);
   },
   //###########################
@@ -2860,21 +2420,17 @@ WithButtons.instance_methods = {
     var i, len;
     i = 0;
     len = buttons.length;
-
     while (i < len) {
       if (buttons[i].button_name === button_name) {
         return [i, buttons[i]];
       }
-
       i++;
     }
-
     return null;
   },
   _load_button: function _load_button(button_name, callback) {
     var button;
     button = this.find_button_by_name(button_name);
-
     if (button != null) {
       return this._add_callback(button, callback);
     }
@@ -2883,22 +2439,19 @@ WithButtons.instance_methods = {
     var idx;
     idx = button[0];
     button = button[1];
-
     button.action = function (event, _dt, _node, _config) {
       return callback(event, button);
     };
-
     return this.buttons[idx] = button;
   },
   _build_ajax_options: function _build_ajax_options(button) {
     var _this2 = this;
-
     var callbacks, on_error, on_send, on_success;
     callbacks = this.callbacks['buttons'][button];
     on_send = callbacks.beforeSend != null ? callbacks.beforeSend : [];
     on_error = callbacks.error != null ? callbacks.error : [];
-    on_success = callbacks.success != null ? callbacks.success : []; // add datatable reload callback at the end
-
+    on_success = callbacks.success != null ? callbacks.success : [];
+    // add datatable reload callback at the end
     on_success.push(function (_data, _status, _xhr) {
       return _this2.datatable.ajax.reload();
     });
@@ -2906,34 +2459,28 @@ WithButtons.instance_methods = {
       beforeSend: function beforeSend(xhr, settings) {
         var c, j, len1, results;
         results = [];
-
         for (j = 0, len1 = on_send.length; j < len1; j++) {
           c = on_send[j];
           results.push(c(xhr, settings));
         }
-
         return results;
       },
       error: function error(xhr, status, _error) {
         var c, j, len1, results;
         results = [];
-
         for (j = 0, len1 = on_error.length; j < len1; j++) {
           c = on_error[j];
           results.push(c(xhr, status, _error));
         }
-
         return results;
       },
       success: function success(data, status, xhr) {
         var c, j, len1, results;
         results = [];
-
         for (j = 0, len1 = on_success.length; j < len1; j++) {
           c = on_success[j];
           results.push(c(data, status, xhr));
         }
-
         return results;
       }
     };
@@ -2944,17 +2491,14 @@ WithButtons.instance_methods = {
       url: button.url,
       method: button.method
     };
-
     if (params) {
       options = $.extend({}, options, {
         data: params
       });
     }
-
     if (ajax_options) {
       options = $.extend({}, options, ajax_options);
     }
-
     return $.ajax(options);
   }
 };
@@ -2995,25 +2539,23 @@ WithCheckBoxes.instance_methods = {
     if (!this._check_boxes_enabled()) {
       return false;
     }
-
     switch (callback_type) {
       case 'before_init':
         this.info('Add check_boxes callbacks to : ajax');
         this.callbacks['ajax'].push(this._check_boxes_callback_on_ajax());
         this.info('Add check_boxes callbacks to : createdRow');
         return this.callbacks['createdRow'].push(this._check_boxes_callback_on_created_row());
-
       case 'after_init':
-        this.info('Add check_boxes callbacks to : datatable'); // Update state of "Select all" control
-
-        this.datatable.on('draw.dt', this._check_boxes_callback_on_draw()); // Update global count
-
-        this.datatable.on('xhr.dt', this._check_boxes_callback_on_xhr()); // Handle row selection event
-
-        this.datatable.on('select.dt deselect.dt', this._check_boxes_callback_on_select()); // Handle click on "Select all" control
-
-        $('thead', this.datatable.table().container()).on('click', 'input[type="checkbox"]', this._check_boxes_callback_checkbox_on_click()); // Handle click on heading containing "Select all" control
-
+        this.info('Add check_boxes callbacks to : datatable');
+        // Update state of "Select all" control
+        this.datatable.on('draw.dt', this._check_boxes_callback_on_draw());
+        // Update global count
+        this.datatable.on('xhr.dt', this._check_boxes_callback_on_xhr());
+        // Handle row selection event
+        this.datatable.on('select.dt deselect.dt', this._check_boxes_callback_on_select());
+        // Handle click on "Select all" control
+        $('thead', this.datatable.table().container()).on('click', 'input[type="checkbox"]', this._check_boxes_callback_checkbox_on_click());
+        // Handle click on heading containing "Select all" control
         return $('thead', this.datatable.table().container()).on('click', 'th:first-child', this._check_boxes_callback_th_on_click());
     }
   },
@@ -3052,39 +2594,32 @@ WithCheckBoxes.instance_methods = {
   },
   update_select_all_ctrl: function update_select_all_ctrl() {
     var chkbox_all, chkbox_checked, select_all, table;
-
     if (this.datatable == null) {
       this.error("update_select_all_ctrl: Datatable instance is null");
       return false;
     }
-
     table = this.datatable.table().container();
     select_all = $('thead input[type="checkbox"]', table).get(0);
     chkbox_all = $('tbody input[type="checkbox"]', table);
     chkbox_checked = $('tbody input[type="checkbox"]:checked', table);
-
     if (select_all == null) {
       return false;
-    } // If none of the checkboxes are checked
-
-
+    }
+    // If none of the checkboxes are checked
     if (chkbox_checked.length === 0) {
       select_all.checked = false;
-
       if ('indeterminate' in select_all) {
         select_all.indeterminate = false;
-      } // If all of the checkboxes are checked
-
+      }
+      // If all of the checkboxes are checked
     } else if (chkbox_checked.length === chkbox_all.length) {
       select_all.checked = true;
-
       if ('indeterminate' in select_all) {
         select_all.indeterminate = false;
       }
     } else {
       // If some of the checkboxes are checked
       select_all.checked = true;
-
       if ('indeterminate' in select_all) {
         select_all.indeterminate = true;
       }
@@ -3095,7 +2630,6 @@ WithCheckBoxes.instance_methods = {
   //############
   _check_boxes_callback_on_ajax: function _check_boxes_callback_on_ajax() {
     var _this = this;
-
     return function (d) {
       var e;
       e = {
@@ -3107,21 +2641,18 @@ WithCheckBoxes.instance_methods = {
   },
   _check_boxes_callback_on_created_row: function _check_boxes_callback_on_created_row() {
     var _this2 = this;
-
     return function (row) {
       return _this2._add_row_if_checked($(row));
     };
   },
   _check_boxes_callback_on_draw: function _check_boxes_callback_on_draw() {
     var _this3 = this;
-
     return function () {
       return _this3.update_select_all_ctrl();
     };
   },
   _check_boxes_callback_on_xhr: function _check_boxes_callback_on_xhr() {
     var _this4 = this;
-
     return function (e, settings, json, _xhr) {
       if (json != null && json['records_selected'] != null) {
         return _this4._update_select_all_global_count(json['records_selected']);
@@ -3132,24 +2663,20 @@ WithCheckBoxes.instance_methods = {
   },
   _check_boxes_callback_on_select: function _check_boxes_callback_on_select() {
     var _this5 = this;
-
     return function (e, api, _type, _items) {
       if (e.type === 'select') {
         $('tr.selected input[type="checkbox"]', api.table().container()).prop('checked', true);
       } else {
         $('tr:not(.selected) input[type="checkbox"]', api.table().container()).prop('checked', false);
-      } // Update state of "Select all" control
-
-
+      }
+      // Update state of "Select all" control
       return _this5.update_select_all_ctrl();
     };
   },
   _check_boxes_callback_checkbox_on_click: function _check_boxes_callback_checkbox_on_click() {
     var _this6 = this;
-
     return function (event) {
       event.stopPropagation();
-
       if (event.target.checked) {
         return _this6.select_all_rows();
       } else {
@@ -3173,7 +2700,6 @@ WithCheckBoxes.instance_methods = {
   _add_row_if_checked: function _add_row_if_checked(tr) {
     var checkbox;
     checkbox = $($(tr).find('input[type="checkbox"]')[0]);
-
     if (checkbox.is(':checked')) {
       return this.select_row(tr);
     }
@@ -3199,11 +2725,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-
 var _context_menu = _interopRequireDefault(__webpack_require__(/*! ../context_menu.coffee */ "./src/context_menu.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 var WithContextMenu;
 WithContextMenu = {};
 WithContextMenu.class_methods = {
@@ -3213,12 +2736,10 @@ WithContextMenu.class_methods = {
   clean_context_menu: function clean_context_menu(event) {
     var target;
     target = $(event.target);
-
     if (target.is('a') && target.hasClass('submenu')) {
       event.preventDefault();
       return;
     }
-
     return WithContextMenu.class_methods.context_menu_hide();
   },
   context_menu_hide: function context_menu_hide() {
@@ -3233,15 +2754,13 @@ WithContextMenu.instance_methods = {
     if (!this._context_menu_enabled()) {
       return false;
     }
-
     switch (callback_type) {
       case 'before_init':
         this.info('Add context_menu callbacks to : createdRow');
         return this.callbacks['createdRow'].push(this._context_menu_callback_on_created_row());
-
       case 'after_init':
-        this.info('Add context_menu callbacks to : datatable'); // Handle right click on datatable
-
+        this.info('Add context_menu callbacks to : datatable');
+        // Handle right click on datatable
         return $('tbody', this.datatable.table().container()).on('contextmenu', this._context_menu_callback_on_contextmenu());
     }
   },
@@ -3250,32 +2769,24 @@ WithContextMenu.instance_methods = {
   //############
   _context_menu_callback_on_created_row: function _context_menu_callback_on_created_row() {
     var _this = this;
-
     return function (row) {
       return _this._enable_contextual_menu_for_row(row);
     };
   },
   _context_menu_callback_on_contextmenu: function _context_menu_callback_on_contextmenu() {
     var _this2 = this;
-
     return function (event) {
       var target, tr;
       target = $(event.target);
-
       if (target.is('a')) {
         return;
       }
-
       tr = target.parents('tr').first();
-
       if (!tr.hasClass('has-context-menu')) {
         return;
       }
-
       event.preventDefault();
-
       _this2._handle_row_selection(tr);
-
       return _context_menu["default"].show(event);
     };
   },
@@ -3332,7 +2843,6 @@ WithDebug.instance_methods = {
   //############
   _debug_callback_on_ajax: function _debug_callback_on_ajax() {
     var _this = this;
-
     return function (d) {
       var debug_dump, debug_log, e;
       debug_log = !!_this._param('dtf_debug_log');
@@ -3378,7 +2888,6 @@ WithFilters.instance_methods = {
   find_filter_by_name: function find_filter_by_name(column_name) {
     var column;
     column = this.find_column_by_name(column_name);
-
     if (column != null) {
       return this._find_filter(this.filters, column[0]);
     }
@@ -3390,15 +2899,12 @@ WithFilters.instance_methods = {
     var i, len;
     i = 0;
     len = filters.length;
-
     while (i < len) {
       if (filters[i].column_id === column_id) {
         return [i, filters[i]];
       }
-
       i++;
     }
-
     return null;
   }
 };
@@ -3545,9 +3051,7 @@ Object.defineProperty(exports, "DatatableBase", ({
     return _datatable_base["default"];
   }
 }));
-
 var _datatable_base = _interopRequireDefault(__webpack_require__(/*! ./model/datatable_base.coffee */ "./src/model/datatable_base.coffee"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 })();
 
