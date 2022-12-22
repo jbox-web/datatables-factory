@@ -57,4 +57,10 @@ class SelectFilter extends SelectBase
     @_save_state(@column_id, value: current_value)
 
 
+  _html_input_field: ->
+    input = super()
+    $(input)
+      .attr('data-placeholder', @filter_default_label)
+
+
 export default SelectFilter
