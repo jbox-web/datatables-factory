@@ -88,9 +88,6 @@ class DatatableBase extends Extendable
     # Create the real datatable
     @init_datatable()
 
-    # Create datatable filters
-    @init_filters()
-
     # Call after callback (good to apply CSS rules after rendering)
     @after_init()
 

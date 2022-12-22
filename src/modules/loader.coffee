@@ -85,18 +85,26 @@ Loader.instance_methods =
   init_datatable: ->
     @info('Create Datatable')
 
-    @datatable = $(@dt_id).DataTable(@dt_options)
+    # create filters just after dt initialization
+    $(@dt_id).on 'preInit.dt', (event, settings) =>
+      @info('preInit.dt callback was called, set filters if exist')
+
+      @datatable = new $.fn.dataTable.Api(settings)
+      @init_filters(event)
+
+    $(@dt_id).DataTable(@dt_options)
 
     @info('Datatable created')
 
 
-  init_filters: ->
+  init_filters: (event)  ->
     return if @filters.length == 0
 
     @info('Load Datatable filters')
 
     @datatable_filter = new DatatableFilter(this, @filters, @filters_applied, @logger)
     @datatable_filter.load()
+    @datatable_filter.apply_default_filters(event)
 
     form = $(@dt_id + '_wrapper').parent()
 

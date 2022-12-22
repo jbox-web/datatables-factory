@@ -27,7 +27,6 @@ class DatatableFilter extends Extendable
   load: ->
     @_load_filters()
     @_bind_datatable()
-    @_apply_filters()
 
 
   find_by_column_id: (column_id) ->
@@ -89,9 +88,7 @@ class DatatableFilter extends Extendable
 
   apply_default_filters: (event) ->
     @info 'apply_default_filters'
-    @dump event
-
-    @_apply_filters()
+    @_apply_filters(event)
 
 
   ###################
@@ -143,9 +140,11 @@ class DatatableFilter extends Extendable
     @_save()
 
 
-  _apply_filters: ->
+  _apply_filters: (event) ->
     # return to avoid a useless datatable reload
     return if @filters_applied.length == 0
+
+    @dump event
 
     # apply filters
     for item in @filters_applied
@@ -154,7 +153,8 @@ class DatatableFilter extends Extendable
         filter.set(item.value)
 
     # reload datatable
-    @_draw()
+    if event.type == 'click'
+      @_draw()
 
 
   _dt_on_save: (event, settings, data) ->
