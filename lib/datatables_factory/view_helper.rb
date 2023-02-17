@@ -84,6 +84,7 @@ module DatatablesFactory
             _:    t('datatables.buttons.pageLength._'),
             '-1': t('datatables.buttons.pageLength.-1'),
           },
+          colvisRestore: t('datatables.buttons.colvisRestore'),
         },
       }
     end
