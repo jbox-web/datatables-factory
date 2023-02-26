@@ -123,6 +123,7 @@ Loader.instance_methods =
     @_loader_load_ajax_callbacks()
     @_loader_load_created_row_callbacks()
     @_loader_load_draw_callbacks()
+    @_loader_load_buttons_callbacks()
 
 
   ############################
@@ -181,6 +182,13 @@ Loader.instance_methods =
           c(settings)
 
     @dt_options = $.extend {}, @dt_options, local_opts
+
+
+  _loader_load_buttons_callbacks: ->
+    @info('Build datatable callbacks options : buttons')
+
+    @callbacks['buttons']['select_all']      = { success: [(_data, _status, _xhr) => @datatable.ajax.reload()] }
+    @callbacks['buttons']['reset_selection'] = { success: [(_data, _status, _xhr) => @datatable.ajax.reload()] }
 
 
   _select: (obj, predicate) ->

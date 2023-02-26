@@ -119,9 +119,6 @@ WithButtons.instance_methods =
     on_error   = if callbacks.error? then callbacks.error else []
     on_success = if callbacks.success? then callbacks.success else []
 
-    # add datatable reload callback at the end
-    on_success.push((_data, _status, _xhr) => @datatable.ajax.reload())
-
     {
       beforeSend: (xhr, settings) =>
         for c in on_send
