@@ -2121,6 +2121,22 @@ Loader.class_methods = {
   //#######################
   // Public Class methods #
   //#######################
+  ajax: function ajax(url, data, callback) {
+    return $.ajax({
+      url: url,
+      type: 'POST',
+      data: data,
+      statusCode: {
+        422: function _() {
+          alert("Votre session a expiré, veuillez vous reconnecter.");
+          return window.location.href = "/users/login/";
+        }
+      },
+      success: function success(data, _textStatus, _jqXHR) {
+        return callback(data);
+      }
+    });
+  },
   load_datatables: function load_datatables() {
     return $('[data-toggle=datatable]').each(function () {
       var data, loader;
@@ -2231,33 +2247,12 @@ Loader.instance_methods = {
   // Private Instance methods #
   //###########################
   _loader_load_ajax_callbacks: function _loader_load_ajax_callbacks() {
-    var callbacks, local_opts;
+    var local_opts;
     this.info('Build datatable callbacks options : ajax');
-    // Keep a local reference for the ajax option
-    callbacks = this.callbacks['ajax'];
     if (this.callbacks['ajax'].length > 0) {
-      local_opts = {
-        ajax: {
-          url: this.dt_options['source'],
-          type: 'POST',
-          data: function data(d) {
-            var c, data, i, len;
-            data = {};
-            for (i = 0, len = callbacks.length; i < len; i++) {
-              c = callbacks[i];
-              data = $.extend({}, data, c(d));
-            }
-            return data;
-          }
-        }
-      };
+      local_opts = this._build_ajax_option_with_callbacks();
     } else {
-      local_opts = {
-        ajax: {
-          url: this.dt_options['source'],
-          type: 'POST'
-        }
-      };
+      local_opts = this._build_ajax_option_without_callbacks();
     }
     return this.dt_options = $.extend({}, this.dt_options, local_opts);
   },
@@ -2321,6 +2316,31 @@ Loader.instance_methods = {
       }
     }
     return res;
+  },
+  _build_ajax_option_with_callbacks: function _build_ajax_option_with_callbacks() {
+    var callbacks, url;
+    // Keep a local reference for the ajax option
+    url = this.dt_options['source'];
+    callbacks = this.callbacks['ajax'];
+    return {
+      ajax: function ajax(data, callback, _settings) {
+        var c, i, len;
+        for (i = 0, len = callbacks.length; i < len; i++) {
+          c = callbacks[i];
+          data = $.extend({}, data, c(data));
+        }
+        return Loader.class_methods.ajax(url, data, callback);
+      }
+    };
+  },
+  _build_ajax_option_without_callbacks: function _build_ajax_option_without_callbacks() {
+    var url;
+    url = this.dt_options['source'];
+    return {
+      ajax: function ajax(data, callback, _settings) {
+        return Loader.class_methods.ajax(url, data, callback);
+      }
+    };
   }
 };
 var _default = Loader;

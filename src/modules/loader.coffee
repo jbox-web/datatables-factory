@@ -11,6 +11,20 @@ Loader.class_methods =
   # Public Class methods #
   ########################
 
+  ajax: (url, data, callback) ->
+    $.ajax
+      url: url
+      type: 'POST'
+      data: data
+      statusCode:
+        422: ->
+          alert "Votre session a expiré, veuillez vous reconnecter."
+          window.location.href = "/users/login/"
+
+      success: (data, _textStatus, _jqXHR) ->
+        callback(data)
+
+
   load_datatables: ->
     $('[data-toggle=datatable]').each ->
       data = $(this).data()
@@ -133,25 +147,10 @@ Loader.instance_methods =
   _loader_load_ajax_callbacks: ->
     @info('Build datatable callbacks options : ajax')
 
-    # Keep a local reference for the ajax option
-    callbacks = @callbacks['ajax']
-
     if @callbacks['ajax'].length > 0
-      local_opts =
-        ajax:
-          url:  @dt_options['source']
-          type: 'POST'
-          data: (d) ->
-            data = {}
-            for c in callbacks
-              data = $.extend {}, data, c(d)
-            data
-
+      local_opts = @_build_ajax_option_with_callbacks()
     else
-      local_opts =
-        ajax:
-          url:  @dt_options['source']
-          type: 'POST'
+      local_opts = @_build_ajax_option_without_callbacks()
 
     @dt_options = $.extend {}, @dt_options, local_opts
 
@@ -195,6 +194,25 @@ Loader.instance_methods =
     res = {}
     res[k] = v for k, v of obj when predicate(k, v)
     res
+
+
+  _build_ajax_option_with_callbacks: ->
+    # Keep a local reference for the ajax option
+    url       = @dt_options['source']
+    callbacks = @callbacks['ajax']
+
+    ajax: (data, callback, _settings) ->
+      for c in callbacks
+        data = $.extend {}, data, c(data)
+
+      Loader.class_methods.ajax(url, data, callback)
+
+
+  _build_ajax_option_without_callbacks: ->
+    url = @dt_options['source']
+
+    ajax: (data, callback, _settings) ->
+      Loader.class_methods.ajax(url, data, callback)
 
 
 export default Loader
