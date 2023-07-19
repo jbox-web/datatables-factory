@@ -2224,7 +2224,8 @@ Loader.instance_methods = {
   loader_load_callbacks: function loader_load_callbacks() {
     this._loader_load_ajax_callbacks();
     this._loader_load_created_row_callbacks();
-    return this._loader_load_draw_callbacks();
+    this._loader_load_draw_callbacks();
+    return this._loader_load_buttons_callbacks();
   },
   //###########################
   // Private Instance methods #
@@ -2295,6 +2296,20 @@ Loader.instance_methods = {
       }
     };
     return this.dt_options = $.extend({}, this.dt_options, local_opts);
+  },
+  _loader_load_buttons_callbacks: function _loader_load_buttons_callbacks() {
+    var _this2 = this;
+    this.info('Build datatable callbacks options : buttons');
+    this.callbacks['buttons']['select_all'] = {
+      success: [function (_data, _status, _xhr) {
+        return _this2.datatable.ajax.reload();
+      }]
+    };
+    return this.callbacks['buttons']['reset_selection'] = {
+      success: [function (_data, _status, _xhr) {
+        return _this2.datatable.ajax.reload();
+      }]
+    };
   },
   _select: function _select(obj, predicate) {
     var k, res, v;
@@ -2445,16 +2460,11 @@ WithButtons.instance_methods = {
     return this.buttons[idx] = button;
   },
   _build_ajax_options: function _build_ajax_options(button) {
-    var _this2 = this;
     var callbacks, on_error, on_send, on_success;
     callbacks = this.callbacks['buttons'][button];
     on_send = callbacks.beforeSend != null ? callbacks.beforeSend : [];
     on_error = callbacks.error != null ? callbacks.error : [];
     on_success = callbacks.success != null ? callbacks.success : [];
-    // add datatable reload callback at the end
-    on_success.push(function (_data, _status, _xhr) {
-      return _this2.datatable.ajax.reload();
-    });
     return {
       beforeSend: function beforeSend(xhr, settings) {
         var c, j, len1, results;
