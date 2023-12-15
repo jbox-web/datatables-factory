@@ -43,7 +43,7 @@
     "eslint-module-utils": "^2.6.2",
     "eslint-plugin-coffee": "^0.1.15",
     "eslint-webpack-plugin": "^3.0.1",
-    "has": "^1.0.3",
+    "has": "^1.0.4",
     "minimatch": "^3.0.4",
     "object.values": "^1.1.2",
     "path": "^0.12.7",
