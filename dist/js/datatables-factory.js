@@ -486,7 +486,8 @@ function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-var DatatableFilter;
+var DatatableFilter, merge;
+merge = __webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/cjs.js");
 DatatableFilter = function () {
   var DatatableFilter = /*#__PURE__*/function (_Extendable) {
     _inherits(DatatableFilter, _Extendable);
@@ -520,32 +521,45 @@ DatatableFilter = function () {
     }, {
       key: "save_state",
       value: function save_state(column_id, data) {
-        var tmp;
+        var overwrite_merge, state, tmp;
         this.info("Save current filter state (".concat(column_id, ")"));
-        if (this.instance != null && this.instance.fnSettings() != null) {
-          if (!this.instance.fnSettings().oLoadedState) {
-            this.instance.fnSettings().oLoadedState = {};
-          }
-          // @_dump_dt_filters_state()
-          if (this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null) {
-            this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] = data;
-          } else {
-            tmp = {};
-            tmp[this.dt_id] = {};
-            tmp[this.dt_id][column_id] = data;
-            this.instance.fnSettings().oLoadedState.dt_filters_state = tmp;
-          }
-          // @_dump_dt_filters_state()
-          return this._save();
-        } else {
-          return this.error("save_state: Datatable instance is null");
+        if (!this._instance_present_for('save_state')) {
+          return;
         }
+        // get current state
+        state = this._get_state();
+        // build tmp hash
+        tmp = {};
+        tmp["dt_filters_state"] = {};
+        tmp['dt_filters_state'][this.dt_id] = {};
+        tmp['dt_filters_state'][this.dt_id][column_id] = data;
+        // for multi-select: otherwise users cannot delete tags from input
+        // See: https://github.com/TehShrike/deepmerge?tab=readme-ov-file#arraymerge-example-overwrite-target-array
+        overwrite_merge = function overwrite_merge(destinationArray, sourceArray, options) {
+          return sourceArray;
+        };
+        // deep merge it with current state
+        state = merge(state, tmp, {
+          arrayMerge: overwrite_merge
+        });
+        // update DT state
+        this._set_state(state);
+        // save DT state
+        return this._save();
       }
     }, {
       key: "has_state_for",
       value: function has_state_for(column_id) {
-        if (this.instance != null && this.instance.fnSettings() != null && this.instance.fnSettings().oLoadedState != null && this.instance.fnSettings().oLoadedState.dt_filters_state != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id] != null && this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id] != null) {
-          return this.instance.fnSettings().oLoadedState.dt_filters_state[this.dt_id][column_id];
+        var state;
+        this.info("Get current filter state (".concat(column_id, ")"));
+        if (!this._instance_present_for('has_state_for')) {
+          return;
+        }
+        // get current state
+        state = this._get_state();
+        // search value for *column_id* or return null
+        if (state != null && state['dt_filters_state'] != null && state['dt_filters_state'][this.dt_id] != null && state['dt_filters_state'][this.dt_id][column_id] != null) {
+          return state['dt_filters_state'][this.dt_id][column_id];
         } else {
           return null;
         }
@@ -553,7 +567,7 @@ DatatableFilter = function () {
     }, {
       key: "set_search_value",
       value: function set_search_value(column_id, value) {
-        return this.instance.fnSettings().aoPreSearchCols[column_id].sSearch = value;
+        return this._get_instance().aoPreSearchCols[column_id].sSearch = value;
       }
     }, {
       key: "run_filter",
@@ -624,6 +638,9 @@ DatatableFilter = function () {
         onsave_callback = function onsave_callback(event, settings, data) {
           _this2._dt_on_save(event, settings, data);
         };
+        // This event allows modification of the state saving object prior to actually doing the save,
+        // including addition or other state properties (for plug-ins) or modification of a DataTables core property.
+        // See: https://datatables.net/reference/event/stateSaveParams
         $(this.datatable.dt_id).off('stateSaveParams.dt').on('stateSaveParams.dt', onsave_callback);
         // set ondraw callback
         ondraw_callback = function ondraw_callback(event, settings, json) {
@@ -656,13 +673,15 @@ DatatableFilter = function () {
           return this._draw();
         }
       }
+
+      // (<jQuery event object>, <DataTables settings object>, <State information to be saved>)
     }, {
       key: "_dt_on_save",
       value: function _dt_on_save(event, settings, data) {
+        var state;
         this.info("Datatable has been saved");
-        if (settings.oLoadedState && settings.oLoadedState.dt_filters_state != null) {
-          return data.dt_filters_state = settings.oLoadedState.dt_filters_state;
-        }
+        state = this._get_state();
+        return data['dt_filters_state'] = state['dt_filters_state'];
       }
     }, {
       key: "_dt_on_draw",
@@ -690,19 +709,37 @@ DatatableFilter = function () {
     }, {
       key: "_save",
       value: function _save() {
-        return this.instance.fnSettings().oApi._fnSaveState(this.instance.fnSettings());
+        return this._get_instance().oApi._fnSaveState(this._get_instance());
       }
     }, {
       key: "_draw",
       value: function _draw() {
-        return this.instance.fnDraw(this.instance.fnSettings());
+        return this.instance.fnDraw(this._get_instance());
       }
     }, {
-      key: "_dump_dt_filters_state",
-      value: function _dump_dt_filters_state() {
-        var object;
-        object = this.instance.fnSettings().oLoadedState.dt_filters_state != null ? this.instance.fnSettings().oLoadedState.dt_filters_state : {};
-        return this.dump(object);
+      key: "_instance_present_for",
+      value: function _instance_present_for(method) {
+        if (this.instance == null && this._get_instance() == null) {
+          this.error("".concat(method, ": Datatable instance is null"));
+          return false;
+        } else {
+          return true;
+        }
+      }
+    }, {
+      key: "_get_instance",
+      value: function _get_instance() {
+        return this.instance.fnSettings();
+      }
+    }, {
+      key: "_get_state",
+      value: function _get_state() {
+        return this._get_instance().oLoadedState;
+      }
+    }, {
+      key: "_set_state",
+      value: function _set_state(state) {
+        return this._get_instance().oLoadedState = state;
       }
     }]);
     return DatatableFilter;
@@ -2949,6 +2986,149 @@ WithLogger.instance_methods = {
   }
 };
 var _default = exports["default"] = WithLogger;
+
+/***/ }),
+
+/***/ "./node_modules/deepmerge/dist/cjs.js":
+/*!********************************************!*\
+  !*** ./node_modules/deepmerge/dist/cjs.js ***!
+  \********************************************/
+/***/ ((module) => {
+
+
+
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+	return Array.isArray(val) ? [] : {}
+}
+
+function cloneUnlessOtherwiseSpecified(value, options) {
+	return (options.clone !== false && options.isMergeableObject(value))
+		? deepmerge(emptyTarget(value), value, options)
+		: value
+}
+
+function defaultArrayMerge(target, source, options) {
+	return target.concat(source).map(function(element) {
+		return cloneUnlessOtherwiseSpecified(element, options)
+	})
+}
+
+function getMergeFunction(key, options) {
+	if (!options.customMerge) {
+		return deepmerge
+	}
+	var customMerge = options.customMerge(key);
+	return typeof customMerge === 'function' ? customMerge : deepmerge
+}
+
+function getEnumerableOwnPropertySymbols(target) {
+	return Object.getOwnPropertySymbols
+		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
+			return Object.propertyIsEnumerable.call(target, symbol)
+		})
+		: []
+}
+
+function getKeys(target) {
+	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
+}
+
+function propertyIsOnObject(object, property) {
+	try {
+		return property in object
+	} catch(_) {
+		return false
+	}
+}
+
+// Protects from prototype poisoning and unexpected merging up the prototype chain.
+function propertyIsUnsafe(target, key) {
+	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
+}
+
+function mergeObject(target, source, options) {
+	var destination = {};
+	if (options.isMergeableObject(target)) {
+		getKeys(target).forEach(function(key) {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+		});
+	}
+	getKeys(source).forEach(function(key) {
+		if (propertyIsUnsafe(target, key)) {
+			return
+		}
+
+		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
+			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+		} else {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+		}
+	});
+	return destination
+}
+
+function deepmerge(target, source, options) {
+	options = options || {};
+	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+	// implementations can use it. The caller may not replace it.
+	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
+
+	var sourceIsArray = Array.isArray(source);
+	var targetIsArray = Array.isArray(target);
+	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+	if (!sourceAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(source, options)
+	} else if (sourceIsArray) {
+		return options.arrayMerge(target, source, options)
+	} else {
+		return mergeObject(target, source, options)
+	}
+}
+
+deepmerge.all = function deepmergeAll(array, options) {
+	if (!Array.isArray(array)) {
+		throw new Error('first argument should be an array')
+	}
+
+	return array.reduce(function(prev, next) {
+		return deepmerge(prev, next, options)
+	}, {})
+};
+
+var deepmerge_1 = deepmerge;
+
+module.exports = deepmerge_1;
+
 
 /***/ }),
 

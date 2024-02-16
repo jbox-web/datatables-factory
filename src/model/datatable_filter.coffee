@@ -1,3 +1,5 @@
+merge = require('deepmerge')
+
 import Extendable        from '../extendable.coffee'
 import WithLogger        from '../modules/with_logger.coffee'
 import TextFilter        from './filters/text_filter.coffee'
@@ -36,44 +38,55 @@ class DatatableFilter extends Extendable
   save_state: (column_id, data) ->
     @info "Save current filter state (#{column_id})"
 
-    if @instance? and @instance.fnSettings()?
-      if !@instance.fnSettings().oLoadedState
-        @instance.fnSettings().oLoadedState = {}
+    # instance might not be present (session expired?)
+    return if !@_instance_present_for('save_state')
 
-      # @_dump_dt_filters_state()
+    # get current state
+    state = @_get_state()
 
-      if  @instance.fnSettings().oLoadedState.dt_filters_state? and
-          @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]?
+    # build tmp hash
+    tmp = {}
+    tmp["dt_filters_state"] = {}
+    tmp['dt_filters_state'][@dt_id] = {}
+    tmp['dt_filters_state'][@dt_id][column_id] = data
 
-        @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id] = data
-      else
-        tmp = {}
-        tmp[@dt_id] = {}
-        tmp[@dt_id][column_id] = data
-        @instance.fnSettings().oLoadedState.dt_filters_state = tmp
+    # for multi-select: otherwise users cannot delete tags from input
+    # See: https://github.com/TehShrike/deepmerge?tab=readme-ov-file#arraymerge-example-overwrite-target-array
+    overwrite_merge = (destinationArray, sourceArray, options) =>
+      sourceArray
 
-      # @_dump_dt_filters_state()
+    # deep merge it with current state
+    state = merge(state, tmp, { arrayMerge: overwrite_merge })
 
-      @_save()
-    else
-      @error "save_state: Datatable instance is null"
+    # update DT state
+    @_set_state(state)
+
+    # save DT state
+    @_save()
 
 
   has_state_for: (column_id) ->
-    if  @instance? and
-        @instance.fnSettings()? and
-        @instance.fnSettings().oLoadedState? and
-        @instance.fnSettings().oLoadedState.dt_filters_state? and
-        @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id]? and
-        @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id]?
+    @info "Get current filter state (#{column_id})"
 
-      @instance.fnSettings().oLoadedState.dt_filters_state[@dt_id][column_id]
+    # instance might not be present (session expired?)
+    return if !@_instance_present_for('has_state_for')
+
+    # get current state
+    state = @_get_state()
+
+    # search value for *column_id* or return null
+    if  state? and
+        state['dt_filters_state']? and
+        state['dt_filters_state'][@dt_id]? and
+        state['dt_filters_state'][@dt_id][column_id]?
+
+      state['dt_filters_state'][@dt_id][column_id]
     else
       null
 
 
   set_search_value: (column_id, value) ->
-    @instance.fnSettings().aoPreSearchCols[column_id].sSearch = value
+    @_get_instance().aoPreSearchCols[column_id].sSearch = value
 
 
   run_filter: (column_id, value) ->
@@ -127,6 +140,9 @@ class DatatableFilter extends Extendable
       @_dt_on_save(event, settings, data)
       return
 
+    # This event allows modification of the state saving object prior to actually doing the save,
+    # including addition or other state properties (for plug-ins) or modification of a DataTables core property.
+    # See: https://datatables.net/reference/event/stateSaveParams
     $(@datatable.dt_id).off('stateSaveParams.dt').on('stateSaveParams.dt', onsave_callback)
 
     # set ondraw callback
@@ -157,11 +173,11 @@ class DatatableFilter extends Extendable
       @_draw()
 
 
+  # (<jQuery event object>, <DataTables settings object>, <State information to be saved>)
   _dt_on_save: (event, settings, data) ->
     @info "Datatable has been saved"
-
-    if settings.oLoadedState and settings.oLoadedState.dt_filters_state?
-      data.dt_filters_state = settings.oLoadedState.dt_filters_state
+    state = @_get_state()
+    data['dt_filters_state'] = state['dt_filters_state']
 
 
   _dt_on_draw: (event, settings, json) ->
@@ -179,21 +195,31 @@ class DatatableFilter extends Extendable
 
 
   _save: ->
-    @instance.fnSettings().oApi._fnSaveState @instance.fnSettings()
+    @_get_instance().oApi._fnSaveState @_get_instance()
 
 
   _draw: ->
-    @instance.fnDraw @instance.fnSettings()
+    @instance.fnDraw @_get_instance()
 
 
-  _dump_dt_filters_state: ->
-    object =
-      if @instance.fnSettings().oLoadedState.dt_filters_state?
-        @instance.fnSettings().oLoadedState.dt_filters_state
-      else
-        {}
+  _instance_present_for: (method) ->
+    if !@instance? and !@_get_instance()?
+      @error "#{method}: Datatable instance is null"
+      return false
+    else
+      return true
 
-    @dump object
+
+  _get_instance: ->
+    @instance.fnSettings()
+
+
+  _get_state: ->
+    @_get_instance().oLoadedState
+
+
+  _set_state: (state) ->
+    @_get_instance().oLoadedState = state
 
 
 export default DatatableFilter
