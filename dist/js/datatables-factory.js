@@ -545,7 +545,7 @@ DatatableFilter = function () {
         // update DT state
         this._set_state(state);
         // save DT state
-        return this._save();
+        return this._save_state();
       }
     }, {
       key: "has_state_for",
@@ -567,12 +567,14 @@ DatatableFilter = function () {
     }, {
       key: "set_search_value",
       value: function set_search_value(column_id, value) {
-        return this._get_instance().aoPreSearchCols[column_id].sSearch = value;
+        this.info("Set search value (".concat(column_id, ")"));
+        return this._set_search_value(column_id, value);
       }
     }, {
       key: "run_filter",
       value: function run_filter(column_id, value) {
-        return this.instance.fnFilter(value, column_id);
+        this.info("Run filter (".concat(column_id, ")"));
+        return this._run_filter(column_id, value);
       }
     }, {
       key: "reset_filters",
@@ -583,12 +585,12 @@ DatatableFilter = function () {
           filter = ref[_column_id];
           filter.reset(event);
         }
-        return this._draw();
+        return this._draw_instance();
       }
     }, {
       key: "apply_default_filters",
       value: function apply_default_filters(event) {
-        this.info('apply_default_filters');
+        this.info('Apply default filters');
         return this._apply_filters(event);
       }
 
@@ -648,7 +650,7 @@ DatatableFilter = function () {
         };
         $(this.datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback);
         // we need to make sure that the yadcf state will be saved after page reload
-        return this._save();
+        return this._save_state();
       }
     }, {
       key: "_apply_filters",
@@ -670,7 +672,7 @@ DatatableFilter = function () {
         }
         // reload datatable
         if (event.type === 'click') {
-          return this._draw();
+          return this._draw_instance();
         }
       }
 
@@ -707,16 +709,6 @@ DatatableFilter = function () {
         return results;
       }
     }, {
-      key: "_save",
-      value: function _save() {
-        return this._get_instance().oApi._fnSaveState(this._get_instance());
-      }
-    }, {
-      key: "_draw",
-      value: function _draw() {
-        return this.instance.fnDraw(this._get_instance());
-      }
-    }, {
       key: "_instance_present_for",
       value: function _instance_present_for(method) {
         if (this.instance == null && this._get_instance() == null) {
@@ -732,6 +724,21 @@ DatatableFilter = function () {
         return this.instance.fnSettings();
       }
     }, {
+      key: "_draw_instance",
+      value: function _draw_instance() {
+        return this.instance.fnDraw(this._get_instance());
+      }
+    }, {
+      key: "_run_filter",
+      value: function _run_filter(column_id, value) {
+        return this.instance.fnFilter(value, column_id);
+      }
+    }, {
+      key: "_set_search_value",
+      value: function _set_search_value(column_id, value) {
+        return this._get_instance().aoPreSearchCols[column_id].sSearch = value;
+      }
+    }, {
       key: "_get_state",
       value: function _get_state() {
         return this._get_instance().oLoadedState;
@@ -740,6 +747,11 @@ DatatableFilter = function () {
       key: "_set_state",
       value: function _set_state(state) {
         return this._get_instance().oLoadedState = state;
+      }
+    }, {
+      key: "_save_state",
+      value: function _save_state() {
+        return this._get_instance().oApi._fnSaveState(this._get_instance());
       }
     }]);
     return DatatableFilter;

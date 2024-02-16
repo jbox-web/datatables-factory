@@ -62,7 +62,7 @@ class DatatableFilter extends Extendable
     @_set_state(state)
 
     # save DT state
-    @_save()
+    @_save_state()
 
 
   has_state_for: (column_id) ->
@@ -86,21 +86,23 @@ class DatatableFilter extends Extendable
 
 
   set_search_value: (column_id, value) ->
-    @_get_instance().aoPreSearchCols[column_id].sSearch = value
+    @info "Set search value (#{column_id})"
+    @_set_search_value(column_id, value)
 
 
   run_filter: (column_id, value) ->
-    @instance.fnFilter value, column_id
+    @info "Run filter (#{column_id})"
+    @_run_filter(column_id, value)
 
 
   reset_filters: (event) ->
     for _column_id, filter of @loaded_filters
       filter.reset(event)
-    @_draw()
+    @_draw_instance()
 
 
   apply_default_filters: (event) ->
-    @info 'apply_default_filters'
+    @info 'Apply default filters'
     @_apply_filters(event)
 
 
@@ -153,7 +155,7 @@ class DatatableFilter extends Extendable
     $(@datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback)
 
     # we need to make sure that the yadcf state will be saved after page reload
-    @_save()
+    @_save_state()
 
 
   _apply_filters: (event) ->
@@ -170,7 +172,7 @@ class DatatableFilter extends Extendable
 
     # reload datatable
     if event.type == 'click'
-      @_draw()
+      @_draw_instance()
 
 
   # (<jQuery event object>, <DataTables settings object>, <State information to be saved>)
@@ -194,14 +196,6 @@ class DatatableFilter extends Extendable
         filter.reload(event)
 
 
-  _save: ->
-    @_get_instance().oApi._fnSaveState @_get_instance()
-
-
-  _draw: ->
-    @instance.fnDraw @_get_instance()
-
-
   _instance_present_for: (method) ->
     if !@instance? and !@_get_instance()?
       @error "#{method}: Datatable instance is null"
@@ -214,12 +208,28 @@ class DatatableFilter extends Extendable
     @instance.fnSettings()
 
 
+  _draw_instance: ->
+    @instance.fnDraw(@_get_instance())
+
+
+  _run_filter: (column_id, value) ->
+    @instance.fnFilter(value, column_id)
+
+
+  _set_search_value: (column_id, value) ->
+    @_get_instance().aoPreSearchCols[column_id].sSearch = value
+
+
   _get_state: ->
     @_get_instance().oLoadedState
 
 
   _set_state: (state) ->
     @_get_instance().oLoadedState = state
+
+
+  _save_state: ->
+    @_get_instance().oApi._fnSaveState(@_get_instance())
 
 
 export default DatatableFilter
