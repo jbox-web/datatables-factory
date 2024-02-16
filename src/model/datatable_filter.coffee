@@ -23,7 +23,7 @@ class DatatableFilter extends Extendable
     # Set datatable instance
     @dt_id    = @datatable.dt_id_strip
     @dt_class = @datatable.dt_class
-    @instance = @datatable.datatable.settings()[0].oInstance
+    @instance = @datatable.datatable
 
 
   load: ->
@@ -179,7 +179,7 @@ class DatatableFilter extends Extendable
   _dt_on_save: (event, settings, data) ->
     @info "Datatable has been saved"
     state = @_get_state()
-    data['dt_filters_state'] = state['dt_filters_state']
+    data['dt_filters_state'] = state['dt_filters_state'] if state?
 
 
   _dt_on_draw: (event, settings, json) ->
@@ -197,39 +197,35 @@ class DatatableFilter extends Extendable
 
 
   _instance_present_for: (method) ->
-    if !@instance? and !@_get_instance()?
+    if !@instance?
       @error "#{method}: Datatable instance is null"
       return false
     else
       return true
 
 
-  _get_instance: ->
-    @instance.fnSettings()
-
-
   _draw_instance: ->
-    @instance.fnDraw(@_get_instance())
+    @instance.draw()
 
 
   _run_filter: (column_id, value) ->
-    @instance.fnFilter(value, column_id)
+    @instance.columns(column_id).search(value).draw(false)
 
 
   _set_search_value: (column_id, value) ->
-    @_get_instance().aoPreSearchCols[column_id].sSearch = value
+    @instance.context[0].aoPreSearchCols[column_id].sSearch = value
 
 
   _get_state: ->
-    @_get_instance().oLoadedState
+    @instance.state.loaded()
 
 
   _set_state: (state) ->
-    @_get_instance().oLoadedState = state
+    @instance.context[0].oLoadedState = state
 
 
   _save_state: ->
-    @_get_instance().oApi._fnSaveState(@_get_instance())
+    @instance.state.save()
 
 
 export default DatatableFilter

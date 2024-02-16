@@ -504,7 +504,7 @@ DatatableFilter = function () {
       // Set datatable instance
       _this.dt_id = _this.datatable.dt_id_strip;
       _this.dt_class = _this.datatable.dt_class;
-      _this.instance = _this.datatable.datatable.settings()[0].oInstance;
+      _this.instance = _this.datatable.datatable;
       return _this;
     }
     _createClass(DatatableFilter, [{
@@ -683,7 +683,9 @@ DatatableFilter = function () {
         var state;
         this.info("Datatable has been saved");
         state = this._get_state();
-        return data['dt_filters_state'] = state['dt_filters_state'];
+        if (state != null) {
+          return data['dt_filters_state'] = state['dt_filters_state'];
+        }
       }
     }, {
       key: "_dt_on_draw",
@@ -711,7 +713,7 @@ DatatableFilter = function () {
     }, {
       key: "_instance_present_for",
       value: function _instance_present_for(method) {
-        if (this.instance == null && this._get_instance() == null) {
+        if (this.instance == null) {
           this.error("".concat(method, ": Datatable instance is null"));
           return false;
         } else {
@@ -719,39 +721,34 @@ DatatableFilter = function () {
         }
       }
     }, {
-      key: "_get_instance",
-      value: function _get_instance() {
-        return this.instance.fnSettings();
-      }
-    }, {
       key: "_draw_instance",
       value: function _draw_instance() {
-        return this.instance.fnDraw(this._get_instance());
+        return this.instance.draw();
       }
     }, {
       key: "_run_filter",
       value: function _run_filter(column_id, value) {
-        return this.instance.fnFilter(value, column_id);
+        return this.instance.columns(column_id).search(value).draw(false);
       }
     }, {
       key: "_set_search_value",
       value: function _set_search_value(column_id, value) {
-        return this._get_instance().aoPreSearchCols[column_id].sSearch = value;
+        return this.instance.context[0].aoPreSearchCols[column_id].sSearch = value;
       }
     }, {
       key: "_get_state",
       value: function _get_state() {
-        return this._get_instance().oLoadedState;
+        return this.instance.state.loaded();
       }
     }, {
       key: "_set_state",
       value: function _set_state(state) {
-        return this._get_instance().oLoadedState = state;
+        return this.instance.context[0].oLoadedState = state;
       }
     }, {
       key: "_save_state",
       value: function _save_state() {
-        return this._get_instance().oApi._fnSaveState(this._get_instance());
+        return this.instance.state.save();
       }
     }]);
     return DatatableFilter;
