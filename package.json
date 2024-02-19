@@ -21,6 +21,7 @@
     "url": "https://github.com/jbox-web/datatables-factory/issues"
   },
   "dependencies": {
+    "compare-versions": "^6.1.0",
     "deepmerge": "^4.3.1",
     "jquery": ">=3.6.0",
     "object-dig": "^0.1.3"

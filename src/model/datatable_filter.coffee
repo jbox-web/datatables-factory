@@ -213,7 +213,11 @@ class DatatableFilter extends Extendable
 
 
   _set_search_value: (column_id, value) ->
-    @instance.context[0].aoPreSearchCols[column_id].sSearch = value
+    if @datatable.dt_v2
+      key = 'search'
+    else
+      key = 'sSearch'
+    @instance.context[0].aoPreSearchCols[column_id][key] = value
 
 
   _get_state: ->

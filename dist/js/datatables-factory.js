@@ -286,6 +286,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _compareVersions = __webpack_require__(/*! compare-versions */ "./node_modules/compare-versions/lib/esm/index.js");
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ../extendable.coffee */ "./src/extendable.coffee"));
 var _loader = _interopRequireDefault(__webpack_require__(/*! ../modules/loader.coffee */ "./src/modules/loader.coffee"));
 var _with_logger = _interopRequireDefault(__webpack_require__(/*! ../modules/with_logger.coffee */ "./src/modules/with_logger.coffee"));
@@ -337,6 +338,9 @@ DatatableBase = function () {
       _this.callbacks['buttons'] = {};
       _this.callbacks['buttons']['select_all'] = {};
       _this.callbacks['buttons']['reset_selection'] = {};
+      // Check datatables version
+      _this.dt_version = $.fn.dataTable.version;
+      _this.dt_v2 = (0, _compareVersions.compare)(_this.dt_version, '2.0.0', '>=');
       return _this;
     }
 
@@ -733,7 +737,13 @@ DatatableFilter = function () {
     }, {
       key: "_set_search_value",
       value: function _set_search_value(column_id, value) {
-        return this.instance.context[0].aoPreSearchCols[column_id].sSearch = value;
+        var key;
+        if (this.datatable.dt_v2) {
+          key = 'search';
+        } else {
+          key = 'sSearch';
+        }
+        return this.instance.context[0].aoPreSearchCols[column_id][key] = value;
       }
     }, {
       key: "_get_state",
@@ -2998,6 +3008,312 @@ var _default = exports["default"] = WithLogger;
 
 /***/ }),
 
+/***/ "./node_modules/compare-versions/lib/esm/compare.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/compare.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   compare: () => (/* binding */ compare)
+/* harmony export */ });
+/* harmony import */ var _compareVersions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compareVersions */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
+
+/**
+ * Compare [semver](https://semver.org/) version strings using the specified operator.
+ *
+ * @param v1 First version to compare
+ * @param v2 Second version to compare
+ * @param operator Allowed arithmetic operator to use
+ * @returns `true` if the comparison between the firstVersion and the secondVersion satisfies the operator, `false` otherwise.
+ *
+ * @example
+ * ```
+ * compare('10.1.8', '10.0.4', '>'); // return true
+ * compare('10.0.1', '10.0.1', '='); // return true
+ * compare('10.1.1', '10.2.2', '<'); // return true
+ * compare('10.1.1', '10.2.2', '<='); // return true
+ * compare('10.1.1', '10.2.2', '>='); // return false
+ * ```
+ */
+const compare = (v1, v2, operator) => {
+    // validate input operator
+    assertValidOperator(operator);
+    // since result of compareVersions can only be -1 or 0 or 1
+    // a simple map can be used to replace switch
+    const res = (0,_compareVersions__WEBPACK_IMPORTED_MODULE_0__.compareVersions)(v1, v2);
+    return operatorResMap[operator].includes(res);
+};
+const operatorResMap = {
+    '>': [1],
+    '>=': [0, 1],
+    '=': [0],
+    '<=': [-1, 0],
+    '<': [-1],
+    '!=': [-1, 1],
+};
+const allowedOperators = Object.keys(operatorResMap);
+const assertValidOperator = (op) => {
+    if (typeof op !== 'string') {
+        throw new TypeError(`Invalid operator type, expected string but got ${typeof op}`);
+    }
+    if (allowedOperators.indexOf(op) === -1) {
+        throw new Error(`Invalid operator, expected one of ${allowedOperators.join('|')}`);
+    }
+};
+//# sourceMappingURL=compare.js.map
+
+/***/ }),
+
+/***/ "./node_modules/compare-versions/lib/esm/compareVersions.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/compareVersions.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   compareVersions: () => (/* binding */ compareVersions)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+
+/**
+ * Compare [semver](https://semver.org/) version strings to find greater, equal or lesser.
+ * This library supports the full semver specification, including comparing versions with different number of digits like `1.0.0`, `1.0`, `1`, and pre-release versions like `1.0.0-alpha`.
+ * @param v1 - First version to compare
+ * @param v2 - Second version to compare
+ * @returns Numeric value compatible with the [Array.sort(fn) interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#Parameters).
+ */
+const compareVersions = (v1, v2) => {
+    // validate input and split into segments
+    const n1 = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v1);
+    const n2 = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v2);
+    // pop off the patch
+    const p1 = n1.pop();
+    const p2 = n2.pop();
+    // validate numbers
+    const r = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(n1, n2);
+    if (r !== 0)
+        return r;
+    // validate pre-release
+    if (p1 && p2) {
+        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(p1.split('.'), p2.split('.'));
+    }
+    else if (p1 || p2) {
+        return p1 ? -1 : 1;
+    }
+    return 0;
+};
+//# sourceMappingURL=compareVersions.js.map
+
+/***/ }),
+
+/***/ "./node_modules/compare-versions/lib/esm/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/index.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   compare: () => (/* reexport safe */ _compare__WEBPACK_IMPORTED_MODULE_0__.compare),
+/* harmony export */   compareVersions: () => (/* reexport safe */ _compareVersions__WEBPACK_IMPORTED_MODULE_1__.compareVersions),
+/* harmony export */   satisfies: () => (/* reexport safe */ _satisfies__WEBPACK_IMPORTED_MODULE_2__.satisfies),
+/* harmony export */   validate: () => (/* reexport safe */ _validate__WEBPACK_IMPORTED_MODULE_3__.validate),
+/* harmony export */   validateStrict: () => (/* reexport safe */ _validate__WEBPACK_IMPORTED_MODULE_3__.validateStrict)
+/* harmony export */ });
+/* harmony import */ var _compare__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare */ "./node_modules/compare-versions/lib/esm/compare.js");
+/* harmony import */ var _compareVersions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./compareVersions */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
+/* harmony import */ var _satisfies__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./satisfies */ "./node_modules/compare-versions/lib/esm/satisfies.js");
+/* harmony import */ var _validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./validate */ "./node_modules/compare-versions/lib/esm/validate.js");
+
+
+
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/compare-versions/lib/esm/satisfies.js":
+/*!************************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/satisfies.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   satisfies: () => (/* binding */ satisfies)
+/* harmony export */ });
+/* harmony import */ var _compare__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare */ "./node_modules/compare-versions/lib/esm/compare.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+
+
+/**
+ * Match [npm semver](https://docs.npmjs.com/cli/v6/using-npm/semver) version range.
+ *
+ * @param version Version number to match
+ * @param range Range pattern for version
+ * @returns `true` if the version number is within the range, `false` otherwise.
+ *
+ * @example
+ * ```
+ * satisfies('1.1.0', '^1.0.0'); // return true
+ * satisfies('1.1.0', '~1.0.0'); // return false
+ * ```
+ */
+const satisfies = (version, range) => {
+    // clean input
+    range = range.replace(/([><=]+)\s+/g, '$1');
+    // handle multiple comparators
+    if (range.includes('||')) {
+        return range.split('||').some((r) => satisfies(version, r));
+    }
+    else if (range.includes(' - ')) {
+        const [a, b] = range.split(' - ', 2);
+        return satisfies(version, `>=${a} <=${b}`);
+    }
+    else if (range.includes(' ')) {
+        return range
+            .trim()
+            .replace(/\s{2,}/g, ' ')
+            .split(' ')
+            .every((r) => satisfies(version, r));
+    }
+    // if no range operator then "="
+    const m = range.match(/^([<>=~^]+)/);
+    const op = m ? m[1] : '=';
+    // if gt/lt/eq then operator compare
+    if (op !== '^' && op !== '~')
+        return (0,_compare__WEBPACK_IMPORTED_MODULE_0__.compare)(version, range, op);
+    // else range of either "~" or "^" is assumed
+    const [v1, v2, v3, , vp] = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(version);
+    const [r1, r2, r3, , rp] = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(range);
+    const v = [v1, v2, v3];
+    const r = [r1, r2 !== null && r2 !== void 0 ? r2 : 'x', r3 !== null && r3 !== void 0 ? r3 : 'x'];
+    // validate pre-release
+    if (rp) {
+        if (!vp)
+            return false;
+        if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v, r) !== 0)
+            return false;
+        if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(vp.split('.'), rp.split('.')) === -1)
+            return false;
+    }
+    // first non-zero number
+    const nonZero = r.findIndex((v) => v !== '0') + 1;
+    // pointer to where segments can be >=
+    const i = op === '~' ? 2 : nonZero > 1 ? nonZero : 1;
+    // before pointer must be equal
+    if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(0, i), r.slice(0, i)) !== 0)
+        return false;
+    // after pointer must be >=
+    if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(i), r.slice(i)) === -1)
+        return false;
+    return true;
+};
+//# sourceMappingURL=satisfies.js.map
+
+/***/ }),
+
+/***/ "./node_modules/compare-versions/lib/esm/utils.js":
+/*!********************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/utils.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   compareSegments: () => (/* binding */ compareSegments),
+/* harmony export */   semver: () => (/* binding */ semver),
+/* harmony export */   validateAndParse: () => (/* binding */ validateAndParse)
+/* harmony export */ });
+const semver = /^[v^~<>=]*?(\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+))?(?:-([\da-z\-]+(?:\.[\da-z\-]+)*))?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?)?)?$/i;
+const validateAndParse = (version) => {
+    if (typeof version !== 'string') {
+        throw new TypeError('Invalid argument expected string');
+    }
+    const match = version.match(semver);
+    if (!match) {
+        throw new Error(`Invalid argument not valid semver ('${version}' received)`);
+    }
+    match.shift();
+    return match;
+};
+const isWildcard = (s) => s === '*' || s === 'x' || s === 'X';
+const tryParse = (v) => {
+    const n = parseInt(v, 10);
+    return isNaN(n) ? v : n;
+};
+const forceType = (a, b) => typeof a !== typeof b ? [String(a), String(b)] : [a, b];
+const compareStrings = (a, b) => {
+    if (isWildcard(a) || isWildcard(b))
+        return 0;
+    const [ap, bp] = forceType(tryParse(a), tryParse(b));
+    if (ap > bp)
+        return 1;
+    if (ap < bp)
+        return -1;
+    return 0;
+};
+const compareSegments = (a, b) => {
+    for (let i = 0; i < Math.max(a.length, b.length); i++) {
+        const r = compareStrings(a[i] || '0', b[i] || '0');
+        if (r !== 0)
+            return r;
+    }
+    return 0;
+};
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ "./node_modules/compare-versions/lib/esm/validate.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/compare-versions/lib/esm/validate.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   validate: () => (/* binding */ validate),
+/* harmony export */   validateStrict: () => (/* binding */ validateStrict)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+
+/**
+ * Validate [semver](https://semver.org/) version strings.
+ *
+ * @param version Version number to validate
+ * @returns `true` if the version number is a valid semver version number, `false` otherwise.
+ *
+ * @example
+ * ```
+ * validate('1.0.0-rc.1'); // return true
+ * validate('1.0-rc.1'); // return false
+ * validate('foo'); // return false
+ * ```
+ */
+const validate = (version) => typeof version === 'string' && /^[v\d]/.test(version) && _utils__WEBPACK_IMPORTED_MODULE_0__.semver.test(version);
+/**
+ * Validate [semver](https://semver.org/) version strings strictly. Will not accept wildcards and version ranges.
+ *
+ * @param version Version number to validate
+ * @returns `true` if the version number is a valid semver version number `false` otherwise
+ *
+ * @example
+ * ```
+ * validate('1.0.0-rc.1'); // return true
+ * validate('1.0-rc.1'); // return false
+ * validate('foo'); // return false
+ * ```
+ */
+const validateStrict = (version) => typeof version === 'string' &&
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/.test(version);
+//# sourceMappingURL=validate.js.map
+
+/***/ }),
+
 /***/ "./node_modules/deepmerge/dist/cjs.js":
 /*!********************************************!*\
   !*** ./node_modules/deepmerge/dist/cjs.js ***!
@@ -3219,6 +3535,35 @@ module.exports = function (target) {
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};

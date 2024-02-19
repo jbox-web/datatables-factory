@@ -1,3 +1,5 @@
+import { compare } from 'compare-versions'
+
 import Extendable      from '../extendable.coffee'
 import Loader          from '../modules/loader.coffee'
 import WithLogger      from '../modules/with_logger.coffee'
@@ -70,6 +72,11 @@ class DatatableBase extends Extendable
     @callbacks['buttons']                    = {}
     @callbacks['buttons']['select_all']      = {}
     @callbacks['buttons']['reset_selection'] = {}
+
+    # Check datatables version
+    @dt_version = $.fn.dataTable.version
+    @dt_v2 = compare(@dt_version, '2.0.0', '>=')
+
 
   ###########################
   # Public Instance methods #
