@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = DatatablesFactory::VERSION::STRING
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Nicolas Rodriguez']
-  s.email       = ['nicoladmin@free.fr']
+  s.email       = ['nico@nicoladmin.fr']
   s.homepage    = 'https://github.com/jbox-web/datatables-factory'
   s.summary     = 'A Rails engine that provides helpers for ajax-datatables-rails'
   s.license     = 'MIT'
