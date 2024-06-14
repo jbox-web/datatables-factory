@@ -19,9 +19,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: '20.11'
+          node-version: '20.14'
 
       - name: Setup NodeJS cache
         uses: actions/cache@v4
