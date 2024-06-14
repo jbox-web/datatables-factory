@@ -12,11 +12,11 @@ Gem::Specification.new do |s|
   s.summary     = 'A Rails engine that provides helpers for ajax-datatables-rails'
   s.license     = 'MIT'
 
-  s.required_ruby_version = '>= 2.7.0'
+  s.required_ruby_version = '>= 3.0.0'
 
   s.files = `git ls-files`.split("\n")
 
-  s.add_runtime_dependency 'rails', '>= 6.0'
+  s.add_runtime_dependency 'rails', '>= 6.1'
   s.add_runtime_dependency 'zeitwerk'
 
   s.add_development_dependency 'appraisal'
@@ -26,5 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sqlite3', '~> 1.4.0'
+  s.add_development_dependency 'sqlite3'
 end
