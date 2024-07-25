@@ -3005,7 +3005,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   compare: () => (/* binding */ compare)
 /* harmony export */ });
-/* harmony import */ var _compareVersions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compareVersions */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
+/* harmony import */ var _compareVersions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compareVersions.js */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
 
 /**
  * Compare [semver](https://semver.org/) version strings using the specified operator.
@@ -3029,7 +3029,7 @@ const compare = (v1, v2, operator) => {
     assertValidOperator(operator);
     // since result of compareVersions can only be -1 or 0 or 1
     // a simple map can be used to replace switch
-    const res = (0,_compareVersions__WEBPACK_IMPORTED_MODULE_0__.compareVersions)(v1, v2);
+    const res = (0,_compareVersions_js__WEBPACK_IMPORTED_MODULE_0__.compareVersions)(v1, v2);
     return operatorResMap[operator].includes(res);
 };
 const operatorResMap = {
@@ -3063,7 +3063,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   compareVersions: () => (/* binding */ compareVersions)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./node_modules/compare-versions/lib/esm/utils.js");
 
 /**
  * Compare [semver](https://semver.org/) version strings to find greater, equal or lesser.
@@ -3074,18 +3074,18 @@ __webpack_require__.r(__webpack_exports__);
  */
 const compareVersions = (v1, v2) => {
     // validate input and split into segments
-    const n1 = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v1);
-    const n2 = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v2);
+    const n1 = (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v1);
+    const n2 = (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.validateAndParse)(v2);
     // pop off the patch
     const p1 = n1.pop();
     const p2 = n2.pop();
     // validate numbers
-    const r = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(n1, n2);
+    const r = (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(n1, n2);
     if (r !== 0)
         return r;
     // validate pre-release
     if (p1 && p2) {
-        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(p1.split('.'), p2.split('.'));
+        return (0,_utils_js__WEBPACK_IMPORTED_MODULE_0__.compareSegments)(p1.split('.'), p2.split('.'));
     }
     else if (p1 || p2) {
         return p1 ? -1 : 1;
@@ -3104,16 +3104,16 @@ const compareVersions = (v1, v2) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   compare: () => (/* reexport safe */ _compare__WEBPACK_IMPORTED_MODULE_0__.compare),
-/* harmony export */   compareVersions: () => (/* reexport safe */ _compareVersions__WEBPACK_IMPORTED_MODULE_1__.compareVersions),
-/* harmony export */   satisfies: () => (/* reexport safe */ _satisfies__WEBPACK_IMPORTED_MODULE_2__.satisfies),
-/* harmony export */   validate: () => (/* reexport safe */ _validate__WEBPACK_IMPORTED_MODULE_3__.validate),
-/* harmony export */   validateStrict: () => (/* reexport safe */ _validate__WEBPACK_IMPORTED_MODULE_3__.validateStrict)
+/* harmony export */   compare: () => (/* reexport safe */ _compare_js__WEBPACK_IMPORTED_MODULE_0__.compare),
+/* harmony export */   compareVersions: () => (/* reexport safe */ _compareVersions_js__WEBPACK_IMPORTED_MODULE_1__.compareVersions),
+/* harmony export */   satisfies: () => (/* reexport safe */ _satisfies_js__WEBPACK_IMPORTED_MODULE_2__.satisfies),
+/* harmony export */   validate: () => (/* reexport safe */ _validate_js__WEBPACK_IMPORTED_MODULE_3__.validate),
+/* harmony export */   validateStrict: () => (/* reexport safe */ _validate_js__WEBPACK_IMPORTED_MODULE_3__.validateStrict)
 /* harmony export */ });
-/* harmony import */ var _compare__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare */ "./node_modules/compare-versions/lib/esm/compare.js");
-/* harmony import */ var _compareVersions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./compareVersions */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
-/* harmony import */ var _satisfies__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./satisfies */ "./node_modules/compare-versions/lib/esm/satisfies.js");
-/* harmony import */ var _validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./validate */ "./node_modules/compare-versions/lib/esm/validate.js");
+/* harmony import */ var _compare_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare.js */ "./node_modules/compare-versions/lib/esm/compare.js");
+/* harmony import */ var _compareVersions_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./compareVersions.js */ "./node_modules/compare-versions/lib/esm/compareVersions.js");
+/* harmony import */ var _satisfies_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./satisfies.js */ "./node_modules/compare-versions/lib/esm/satisfies.js");
+/* harmony import */ var _validate_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./validate.js */ "./node_modules/compare-versions/lib/esm/validate.js");
 
 
 
@@ -3132,8 +3132,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   satisfies: () => (/* binding */ satisfies)
 /* harmony export */ });
-/* harmony import */ var _compare__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare */ "./node_modules/compare-versions/lib/esm/compare.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+/* harmony import */ var _compare_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compare.js */ "./node_modules/compare-versions/lib/esm/compare.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.js */ "./node_modules/compare-versions/lib/esm/utils.js");
 
 
 /**
@@ -3172,19 +3172,19 @@ const satisfies = (version, range) => {
     const op = m ? m[1] : '=';
     // if gt/lt/eq then operator compare
     if (op !== '^' && op !== '~')
-        return (0,_compare__WEBPACK_IMPORTED_MODULE_0__.compare)(version, range, op);
+        return (0,_compare_js__WEBPACK_IMPORTED_MODULE_0__.compare)(version, range, op);
     // else range of either "~" or "^" is assumed
-    const [v1, v2, v3, , vp] = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(version);
-    const [r1, r2, r3, , rp] = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(range);
+    const [v1, v2, v3, , vp] = (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(version);
+    const [r1, r2, r3, , rp] = (0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.validateAndParse)(range);
     const v = [v1, v2, v3];
     const r = [r1, r2 !== null && r2 !== void 0 ? r2 : 'x', r3 !== null && r3 !== void 0 ? r3 : 'x'];
     // validate pre-release
     if (rp) {
         if (!vp)
             return false;
-        if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v, r) !== 0)
+        if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v, r) !== 0)
             return false;
-        if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(vp.split('.'), rp.split('.')) === -1)
+        if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(vp.split('.'), rp.split('.')) === -1)
             return false;
     }
     // first non-zero number
@@ -3192,10 +3192,10 @@ const satisfies = (version, range) => {
     // pointer to where segments can be >=
     const i = op === '~' ? 2 : nonZero > 1 ? nonZero : 1;
     // before pointer must be equal
-    if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(0, i), r.slice(0, i)) !== 0)
+    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(0, i), r.slice(0, i)) !== 0)
         return false;
     // after pointer must be >=
-    if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(i), r.slice(i)) === -1)
+    if ((0,_utils_js__WEBPACK_IMPORTED_MODULE_1__.compareSegments)(v.slice(i), r.slice(i)) === -1)
         return false;
     return true;
 };
@@ -3266,7 +3266,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   validate: () => (/* binding */ validate),
 /* harmony export */   validateStrict: () => (/* binding */ validateStrict)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./node_modules/compare-versions/lib/esm/utils.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./node_modules/compare-versions/lib/esm/utils.js");
 
 /**
  * Validate [semver](https://semver.org/) version strings.
@@ -3281,7 +3281,7 @@ __webpack_require__.r(__webpack_exports__);
  * validate('foo'); // return false
  * ```
  */
-const validate = (version) => typeof version === 'string' && /^[v\d]/.test(version) && _utils__WEBPACK_IMPORTED_MODULE_0__.semver.test(version);
+const validate = (version) => typeof version === 'string' && /^[v\d]/.test(version) && _utils_js__WEBPACK_IMPORTED_MODULE_0__.semver.test(version);
 /**
  * Validate [semver](https://semver.org/) version strings strictly. Will not accept wildcards and version ranges.
  *
