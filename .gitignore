@@ -16,3 +16,6 @@ spec/dummy/tmp/
 
 # Ignore NodeJS files
 /node_modules/
+
+# Ignore MacOS files
+.DS_Store
