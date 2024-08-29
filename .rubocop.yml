@@ -1,12 +1,16 @@
+---
+require:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+  - rubocop-rspec_rails
+
 AllCops:
   NewCops: enable
-  SuggestExtensions: false
   TargetRubyVersion: '3.0'
   Exclude:
     - bin/*
-
-Gemspec/DevelopmentDependencies:
-  Enabled: false
+    - lib/datatables-factory.rb
 
 Gemspec/RequireMFA:
   Enabled: false
@@ -57,13 +61,6 @@ Layout/HashAlignment:
 Metrics/MethodLength:
   Max: 12
 
-Metrics/ModuleLength:
-  Max: 140
+Metrics/ClassLength:
+  Max: 110
 
-##########
-# NAMING #
-##########
-
-Naming/FileName:
-  Exclude:
-    - lib/datatables-factory.rb

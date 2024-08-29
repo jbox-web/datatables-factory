@@ -47,7 +47,7 @@ module DatatablesFactory
 
     def label_filter_by(label, prefix: true)
       label  = t("datatables.filter.#{label}")
-      label  = prefix ? label.downcase : label
+      label  = label.downcase if prefix
       prefix = prefix ? "#{t('text.filter_by')} " : ''
       "#{prefix}#{label}"
     end
@@ -80,7 +80,7 @@ module DatatablesFactory
           rows: t('datatables.select.rows'),
         },
         buttons:        {
-          pageLength: {
+          pageLength:    {
             _:    t('datatables.buttons.pageLength._'),
             '-1': t('datatables.buttons.pageLength.-1'),
           },

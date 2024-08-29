@@ -52,8 +52,8 @@ module DatatablesFactory
       options[:html]             ||= {}
       options[:html][:role]      ||= 'form'
       options[:layout]           ||= :horizontal
-      options[:acts_like_form_tag] =   true
-      options[:datatable]          =   self
+      options[:acts_like_form_tag] = true
+      options[:datatable]          = self
 
       layout = "form-#{options[:layout]}"
       options[:html][:class] = [options[:html][:class], layout].compact.join(' ')
@@ -106,7 +106,7 @@ module DatatablesFactory
 
 
       def final_namespace
-        @final_namespace ||= @namespace.prepend(:datatables).map(&:to_s).map(&:camelize)
+        @final_namespace ||= @namespace.prepend(:datatables).map { |x| x.to_s.camelize }
       end
 
 
