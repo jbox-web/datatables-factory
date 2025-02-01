@@ -442,6 +442,7 @@ DatatableBase = function () {
   //######################
   // Instance attributes #
   //######################
+  DatatableBase.prototype.datatable = null;
   DatatableBase.prototype.columns = [];
   DatatableBase.prototype.buttons = [];
   DatatableBase.prototype.filters = [];
@@ -2319,17 +2320,18 @@ Loader.instance_methods = {
     return this.dt_options = $.extend({}, this.dt_options, local_opts);
   },
   _loader_load_buttons_callbacks: function _loader_load_buttons_callbacks() {
-    var _this2 = this;
+    var callback;
     this.info('Build datatable callbacks options : buttons');
+    callback = function callback(dt_class, _data, _status, _xhr) {
+      var klass;
+      klass = Loader.class_methods.constantize(dt_class);
+      return klass.instance.datatable.ajax.reload();
+    };
     this.callbacks['buttons']['select_all'] = {
-      success: [function (_data, _status, _xhr) {
-        return _this2.datatable.ajax.reload();
-      }]
+      success: [callback]
     };
     return this.callbacks['buttons']['reset_selection'] = {
-      success: [function (_data, _status, _xhr) {
-        return _this2.datatable.ajax.reload();
-      }]
+      success: [callback]
     };
   },
   _select: function _select(obj, predicate) {
@@ -2505,7 +2507,8 @@ WithButtons.instance_methods = {
     return this.buttons[idx] = button;
   },
   _build_ajax_options: function _build_ajax_options(button) {
-    var callbacks, on_error, on_send, on_success;
+    var callbacks, dt_class, on_error, on_send, on_success;
+    dt_class = this.dt_class;
     callbacks = this.callbacks['buttons'][button];
     on_send = callbacks.beforeSend != null ? callbacks.beforeSend : [];
     on_error = callbacks.error != null ? callbacks.error : [];
@@ -2516,7 +2519,7 @@ WithButtons.instance_methods = {
         results = [];
         for (j = 0, len1 = on_send.length; j < len1; j++) {
           c = on_send[j];
-          results.push(c(xhr, settings));
+          results.push(c(dt_class, xhr, settings));
         }
         return results;
       },
@@ -2525,7 +2528,7 @@ WithButtons.instance_methods = {
         results = [];
         for (j = 0, len1 = on_error.length; j < len1; j++) {
           c = on_error[j];
-          results.push(c(xhr, status, _error));
+          results.push(c(dt_class, xhr, status, _error));
         }
         return results;
       },
@@ -2534,7 +2537,7 @@ WithButtons.instance_methods = {
         results = [];
         for (j = 0, len1 = on_success.length; j < len1; j++) {
           c = on_success[j];
-          results.push(c(data, status, xhr));
+          results.push(c(dt_class, data, status, xhr));
         }
         return results;
       }

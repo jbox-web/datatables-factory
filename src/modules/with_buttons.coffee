@@ -114,6 +114,7 @@ WithButtons.instance_methods =
 
 
   _build_ajax_options: (button) ->
+    dt_class   = @dt_class
     callbacks  = @callbacks['buttons'][button]
     on_send    = if callbacks.beforeSend? then callbacks.beforeSend else []
     on_error   = if callbacks.error? then callbacks.error else []
@@ -122,13 +123,13 @@ WithButtons.instance_methods =
     {
       beforeSend: (xhr, settings) =>
         for c in on_send
-          c(xhr, settings)
+          c(dt_class, xhr, settings)
       error: (xhr, status, error) =>
         for c in on_error
-          c(xhr, status, error)
+          c(dt_class, xhr, status, error)
       success: (data, status, xhr) =>
         for c in on_success
-          c(data, status, xhr)
+          c(dt_class, data, status, xhr)
     }
 
 

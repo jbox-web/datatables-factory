@@ -186,8 +186,12 @@ Loader.instance_methods =
   _loader_load_buttons_callbacks: ->
     @info('Build datatable callbacks options : buttons')
 
-    @callbacks['buttons']['select_all']      = { success: [(_data, _status, _xhr) => @datatable.ajax.reload()] }
-    @callbacks['buttons']['reset_selection'] = { success: [(_data, _status, _xhr) => @datatable.ajax.reload()] }
+    callback = (dt_class, _data, _status, _xhr) ->
+      klass = Loader.class_methods.constantize(dt_class)
+      klass.instance.datatable.ajax.reload()
+
+    @callbacks['buttons']['select_all']      = { success: [callback] }
+    @callbacks['buttons']['reset_selection'] = { success: [callback] }
 
 
   _select: (obj, predicate) ->

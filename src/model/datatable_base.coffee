@@ -44,6 +44,7 @@ class DatatableBase extends Extendable
   # Instance attributes #
   #######################
 
+  datatable: null
   columns: []
   buttons: []
   filters: []
