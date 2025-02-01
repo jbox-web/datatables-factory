@@ -22,7 +22,14 @@ module.exports = {
             loader: 'coffee-loader',
             options: {
               transpile: {
-                presets: ["@babel/env"]
+                presets: [
+                  ['@babel/env', {
+                    'targets': {
+                      'node': '6.10'
+                    },
+                    'modules': false
+                  }]
+                ]
               }
             }
           }
