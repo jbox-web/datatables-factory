@@ -1016,6 +1016,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1051,7 +1052,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   return _createClass(RangeBase, [{
     key: "create_html",
     value: function create_html() {
-      _get(_getPrototypeOf(RangeBase.prototype), "create_html", this).call(this);
+      _superPropGet(RangeBase, "create_html", this, 3)([]);
       // add outer wrapper to hold both filter and reset button
       $("".concat(this.container_id)).append(this._html_wrapper_outer());
       // add inner wrapper to hold both filter and reset button
@@ -1070,7 +1071,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     value: function bind_inputs() {
       var _this2 = this;
       var delay, onclick_callback, onkeyup_callback;
-      _get(_getPrototypeOf(RangeBase.prototype), "bind_inputs", this).call(this);
+      _superPropGet(RangeBase, "bind_inputs", this, 3)([]);
       // bind input fields
       delay = this.options.filter_delay || 0;
       onkeyup_callback = function onkeyup_callback(event) {
@@ -1088,7 +1089,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "restore_state",
     value: function restore_state() {
       var restored_from, restored_to, saved_state;
-      _get(_getPrototypeOf(RangeBase.prototype), "restore_state", this).call(this);
+      _superPropGet(RangeBase, "restore_state", this, 3)([]);
       saved_state = this.datatable_filter.has_state_for(this.column_id);
       if (saved_state != null) {
         restored_from = saved_state.from;
@@ -1106,7 +1107,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "reset",
     value: function reset(event) {
-      _get(_getPrototypeOf(RangeBase.prototype), "reset", this).call(this, event);
+      _superPropGet(RangeBase, "reset", this, 3)([event]);
       $("#".concat(this.from_id)).val('');
       $("#".concat(this.from_id)).removeClass('inuse');
       $("#".concat(this.to_id)).val('');
@@ -1222,7 +1223,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "_debug_log",
     value: function _debug_log() {
-      _get(_getPrototypeOf(RangeBase.prototype), "_debug_log", this).call(this);
+      _superPropGet(RangeBase, "_debug_log", this, 3)([]);
       this.logger.info("container_id: ".concat(this.container_id));
       this.logger.info("wrapper_outer_id: ".concat(this.wrapper_outer_id));
       this.logger.info("wrapper_inner_id: ".concat(this.wrapper_inner_id));
@@ -1261,6 +1262,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1297,7 +1299,7 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
   return _createClass(RangeDateFilter, [{
     key: "bind_inputs",
     value: function bind_inputs() {
-      _get(_getPrototypeOf(RangeDateFilter.prototype), "bind_inputs", this).call(this);
+      _superPropGet(RangeDateFilter, "bind_inputs", this, 3)([]);
       // load datepicker with callbacks
       $("#".concat(this.from_id)).datepicker($.extend(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
@@ -1332,7 +1334,7 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
     key: "_range_change",
     value: function _range_change(event) {
       var current_value, date_from, date_to, from, search_value, to;
-      _get(_getPrototypeOf(RangeDateFilter.prototype), "_range_change", this).call(this, event);
+      _superPropGet(RangeDateFilter, "_range_change", this, 3)([event]);
       if (this._skip_key_codes().includes(event.keyCode)) {
         return;
       }
@@ -1408,6 +1410,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1435,7 +1438,7 @@ RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
     key: "_range_change",
     value: function _range_change(event) {
       var current_value, max, min, search_value;
-      _get(_getPrototypeOf(RangeNumberFilter.prototype), "_range_change", this).call(this, event);
+      _superPropGet(RangeNumberFilter, "_range_change", this, 3)([event]);
       if (this._skip_key_codes().includes(event.keyCode)) {
         return;
       }
@@ -1500,6 +1503,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1532,7 +1536,7 @@ SelectBase = function () {
     return _createClass(SelectBase, [{
       key: "create_html",
       value: function create_html() {
-        _get(_getPrototypeOf(SelectBase.prototype), "create_html", this).call(this);
+        _superPropGet(SelectBase, "create_html", this, 3)([]);
         // add a wrapper to hold both filter and reset button
         $("".concat(this.container_id)).append(this._html_wrapper());
         // add input fields
@@ -1547,7 +1551,7 @@ SelectBase = function () {
       value: function bind_inputs() {
         var _this2 = this;
         var onchange_callback, onclick_callback;
-        _get(_getPrototypeOf(SelectBase.prototype), "bind_inputs", this).call(this);
+        _superPropGet(SelectBase, "bind_inputs", this, 3)([]);
         // bind select field
         onchange_callback = function onchange_callback(event) {
           _this2._select_change(event);
@@ -1564,7 +1568,7 @@ SelectBase = function () {
       key: "restore_state",
       value: function restore_state() {
         var restored_value, saved_state;
-        _get(_getPrototypeOf(SelectBase.prototype), "restore_state", this).call(this);
+        _superPropGet(SelectBase, "restore_state", this, 3)([]);
         saved_state = this.datatable_filter.has_state_for(this.column_id);
         if (saved_state != null) {
           restored_value = saved_state.value;
@@ -1577,7 +1581,7 @@ SelectBase = function () {
     }, {
       key: "reset",
       value: function reset(event) {
-        _get(_getPrototypeOf(SelectBase.prototype), "reset", this).call(this, event);
+        _superPropGet(SelectBase, "reset", this, 3)([event]);
         $("#".concat(this.select_id)).val('');
         $("#".concat(this.select_id)).removeClass('inuse');
         // set search value (datatable reload will be triggered later)
@@ -1588,7 +1592,7 @@ SelectBase = function () {
     }, {
       key: "reload",
       value: function reload(event) {
-        _get(_getPrototypeOf(SelectBase.prototype), "reload", this).call(this, event);
+        _superPropGet(SelectBase, "reload", this, 3)([event]);
         $("#".concat(this.select_id)).empty();
         $("#".concat(this.select_id)).append(this._select_options());
         return this.restore_state();
@@ -1663,7 +1667,7 @@ SelectBase = function () {
     }, {
       key: "_debug_log",
       value: function _debug_log() {
-        _get(_getPrototypeOf(SelectBase.prototype), "_debug_log", this).call(this);
+        _superPropGet(SelectBase, "_debug_log", this, 3)([]);
         this.logger.info("container_id: ".concat(this.container_id));
         this.logger.info("wrapper_id: ".concat(this.wrapper_id));
         this.logger.info("select_id: ".concat(this.select_id));
@@ -1703,6 +1707,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1727,7 +1732,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
   }, {
     key: "set",
     value: function set(value) {
-      _get(_getPrototypeOf(SelectFilter.prototype), "set", this).call(this, value);
+      _superPropGet(SelectFilter, "set", this, 3)([value]);
       // set search value (datatable reload will be triggered later)
       this._set_search_value(this.column_id, value);
       // save current value
@@ -1762,7 +1767,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_select_change",
     value: function _select_change(event) {
       var current_value, search_value;
-      _get(_getPrototypeOf(SelectFilter.prototype), "_select_change", this).call(this, event);
+      _superPropGet(SelectFilter, "_select_change", this, 3)([event]);
       current_value = this.current_value();
       if (this._empty_value(current_value)) {
         search_value = '';
@@ -1782,7 +1787,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_html_input_field",
     value: function _html_input_field() {
       var input;
-      input = _get(_getPrototypeOf(SelectFilter.prototype), "_html_input_field", this).call(this);
+      input = _superPropGet(SelectFilter, "_html_input_field", this, 3)([]);
       return $(input).attr('data-placeholder', this.filter_default_label);
     }
   }]);
@@ -1815,6 +1820,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1840,7 +1846,7 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     key: "set",
     value: function set(value) {
       var search_value;
-      _get(_getPrototypeOf(SelectMultiFilter.prototype), "set", this).call(this, value);
+      _superPropGet(SelectMultiFilter, "set", this, 3)([value]);
       search_value = this._cast_value(value);
       // set search value (datatable reload will be triggered later)
       this._set_search_value(this.column_id, search_value);
@@ -1876,7 +1882,7 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_select_change",
     value: function _select_change(event) {
       var current_value, search_value;
-      _get(_getPrototypeOf(SelectMultiFilter.prototype), "_select_change", this).call(this, event);
+      _superPropGet(SelectMultiFilter, "_select_change", this, 3)([event]);
       current_value = this.current_value();
       if (this._empty_value(current_value)) {
         search_value = '';
@@ -1896,7 +1902,7 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_html_input_field",
     value: function _html_input_field() {
       var input;
-      input = _get(_getPrototypeOf(SelectMultiFilter.prototype), "_html_input_field", this).call(this);
+      input = _superPropGet(SelectMultiFilter, "_html_input_field", this, 3)([]);
       return $(input).attr('multiple', true).attr('data-placeholder', this.filter_default_label);
     }
   }, {
@@ -1934,6 +1940,7 @@ function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstruct
 function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
 function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
 function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
 function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
@@ -1958,7 +1965,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
   return _createClass(TextFilter, [{
     key: "create_html",
     value: function create_html() {
-      _get(_getPrototypeOf(TextFilter.prototype), "create_html", this).call(this);
+      _superPropGet(TextFilter, "create_html", this, 3)([]);
       // add a wrapper to hold both filter and reset button
       $("".concat(this.container_id)).append(this._html_wrapper());
       // add input fields
@@ -1977,7 +1984,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     value: function bind_inputs() {
       var _this2 = this;
       var delay, onclick_callback, onkeyup_callback;
-      _get(_getPrototypeOf(TextFilter.prototype), "bind_inputs", this).call(this);
+      _superPropGet(TextFilter, "bind_inputs", this, 3)([]);
       // bind input field
       delay = this.options.filter_delay || 0;
       onkeyup_callback = function onkeyup_callback(event) {
@@ -1994,7 +2001,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     key: "restore_state",
     value: function restore_state() {
       var restored_value, saved_state;
-      _get(_getPrototypeOf(TextFilter.prototype), "restore_state", this).call(this);
+      _superPropGet(TextFilter, "restore_state", this, 3)([]);
       saved_state = this.datatable_filter.has_state_for(this.column_id);
       if (saved_state != null) {
         restored_value = saved_state.value;
@@ -2007,7 +2014,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "reset",
     value: function reset(event) {
-      _get(_getPrototypeOf(TextFilter.prototype), "reset", this).call(this, event);
+      _superPropGet(TextFilter, "reset", this, 3)([event]);
       $("#".concat(this.input_id)).val('');
       $("#".concat(this.input_id)).removeClass('inuse');
       // set search value (datatable reload will be triggered later)
@@ -2018,7 +2025,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "set",
     value: function set(value) {
-      _get(_getPrototypeOf(TextFilter.prototype), "set", this).call(this, value);
+      _superPropGet(TextFilter, "set", this, 3)([value]);
       $("#".concat(this.input_id)).val(value);
       if (value !== '') {
         $("#".concat(this.input_id)).addClass('inuse');
@@ -3554,7 +3561,7 @@ module.exports = function (target) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it uses a non-standard name for the exports (exports).
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 var exports = __webpack_exports__;
 /*!**************************!*\
