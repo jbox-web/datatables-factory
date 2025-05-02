@@ -2654,7 +2654,8 @@ Loader.class_methods = {
     return $.ajax({
       url: url,
       type: 'POST',
-      data: data,
+      data: JSON.stringify(data),
+      contentType: 'application/json',
       statusCode: {
         422: function _() {
           alert("Votre session a expiré, veuillez vous reconnecter.");
