@@ -1,3 +1,5 @@
+import Utils from '../utils.coffee'
+
 WithCheckBoxes = {}
 
 WithCheckBoxes.class_methods =
@@ -122,7 +124,7 @@ WithCheckBoxes.instance_methods =
       e =
         selected:     @get_selected_checkbox_ids()
         not_selected: @get_not_selected_checkbox_ids()
-      $.extend {}, d, e
+      Utils.merge_hash(d, e)
 
 
   _check_boxes_callback_on_created_row: ->

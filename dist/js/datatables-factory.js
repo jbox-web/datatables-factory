@@ -1754,6 +1754,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _utils = _interopRequireDefault(__webpack_require__(/*! ../../utils.coffee */ "./src/utils.coffee"));
 var _range_base = _interopRequireDefault(__webpack_require__(/*! ./range_base.coffee */ "./src/model/filters/range_base.coffee"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
@@ -1793,7 +1794,7 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
     _this.range_type = 'date';
     // fetch datepicker data
     _this.filter_plugin = _this.options.filter_plugin;
-    _this.filter_plugin_options = $.extend({}, {
+    _this.filter_plugin_options = _utils["default"].merge_hash({
       onSelect: _this._date_select
     }, _this.options.filter_plugin_options);
     return _this;
@@ -1804,12 +1805,12 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
     value: function bind_inputs() {
       _superPropGet(RangeDateFilter, "bind_inputs", this, 3)([]);
       // load datepicker with callbacks
-      $("#".concat(this.from_id)).datepicker($.extend(this.filter_plugin_options, {
+      $("#".concat(this.from_id)).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
           $("#".concat(this.to_id)).datepicker('option', 'minDate', selected_date);
         }
       }));
-      return $("#".concat(this.to_id)).datepicker($.extend(this.filter_plugin_options, {
+      return $("#".concat(this.to_id)).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
           $("#".concat(this.from_id)).datepicker('option', 'maxDate', selected_date);
         }
@@ -2632,6 +2633,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _utils = _interopRequireDefault(__webpack_require__(/*! ../utils.coffee */ "./src/utils.coffee"));
 var _logger = _interopRequireDefault(__webpack_require__(/*! ../logger.coffee */ "./src/logger.coffee"));
 var _datatable_filter = _interopRequireDefault(__webpack_require__(/*! ../model/datatable_filter.coffee */ "./src/model/datatable_filter.coffee"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
@@ -2784,7 +2786,7 @@ Loader.instance_methods = {
     } else {
       local_opts = this._build_ajax_option_without_callbacks();
     }
-    return this.dt_options = $.extend({}, this.dt_options, local_opts);
+    return this.dt_options = _utils["default"].merge_hash(this.dt_options, local_opts);
   },
   _loader_load_created_row_callbacks: function _loader_load_created_row_callbacks() {
     var callbacks, local_opts;
@@ -2802,7 +2804,7 @@ Loader.instance_methods = {
         return results;
       }
     };
-    return this.dt_options = $.extend({}, this.dt_options, local_opts);
+    return this.dt_options = _utils["default"].merge_hash(this.dt_options, local_opts);
   },
   _loader_load_draw_callbacks: function _loader_load_draw_callbacks() {
     var callbacks, local_opts;
@@ -2820,7 +2822,7 @@ Loader.instance_methods = {
         return results;
       }
     };
-    return this.dt_options = $.extend({}, this.dt_options, local_opts);
+    return this.dt_options = _utils["default"].merge_hash(this.dt_options, local_opts);
   },
   _loader_load_buttons_callbacks: function _loader_load_buttons_callbacks() {
     var callback;
@@ -2858,7 +2860,7 @@ Loader.instance_methods = {
         var c, i, len;
         for (i = 0, len = callbacks.length; i < len; i++) {
           c = callbacks[i];
-          data = $.extend({}, data, c(data));
+          data = _utils["default"].merge_hash(data, c(data));
         }
         return Loader.class_methods.ajax(url, data, callback);
       }
@@ -2882,7 +2884,7 @@ var _default = exports["default"] = Loader;
 /*!*****************************************!*\
   !*** ./src/modules/with_buttons.coffee ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 
@@ -2890,6 +2892,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _utils = _interopRequireDefault(__webpack_require__(/*! ../utils.coffee */ "./src/utils.coffee"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var WithButtons;
 WithButtons = {};
 WithButtons.class_methods = {
@@ -3053,12 +3057,12 @@ WithButtons.instance_methods = {
       method: button.method
     };
     if (params) {
-      options = $.extend({}, options, {
+      options = _utils["default"].merge_hash(options, {
         data: params
       });
     }
     if (ajax_options) {
-      options = $.extend({}, options, ajax_options);
+      options = _utils["default"].merge_hash(options, ajax_options);
     }
     return $.ajax(options);
   }
@@ -3071,7 +3075,7 @@ var _default = exports["default"] = WithButtons;
 /*!*********************************************!*\
   !*** ./src/modules/with_check_boxes.coffee ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 
@@ -3079,6 +3083,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _utils = _interopRequireDefault(__webpack_require__(/*! ../utils.coffee */ "./src/utils.coffee"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var WithCheckBoxes;
 WithCheckBoxes = {};
 WithCheckBoxes.class_methods = {
@@ -3196,7 +3202,7 @@ WithCheckBoxes.instance_methods = {
         selected: _this.get_selected_checkbox_ids(),
         not_selected: _this.get_not_selected_checkbox_ids()
       };
-      return $.extend({}, d, e);
+      return _utils["default"].merge_hash(d, e);
     };
   },
   _check_boxes_callback_on_created_row: function _check_boxes_callback_on_created_row() {
@@ -3374,7 +3380,7 @@ var _default = exports["default"] = WithContextMenu;
 /*!***************************************!*\
   !*** ./src/modules/with_debug.coffee ***!
   \***************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 
@@ -3382,6 +3388,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _utils = _interopRequireDefault(__webpack_require__(/*! ../utils.coffee */ "./src/utils.coffee"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 var WithDebug;
 WithDebug = {};
 WithDebug.class_methods = {};
@@ -3409,7 +3417,7 @@ WithDebug.instance_methods = {
         dtf_debug_log: debug_log,
         dtf_debug_dump: debug_dump
       };
-      return $.extend({}, d, e);
+      return _utils["default"].merge_hash(d, e);
     };
   },
   //###########################
@@ -3505,6 +3513,40 @@ WithLogger.instance_methods = {
   }
 };
 var _default = exports["default"] = WithLogger;
+
+/***/ }),
+
+/***/ "./src/utils.coffee":
+/*!**************************!*\
+  !*** ./src/utils.coffee ***!
+  \**************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var Utils;
+Utils = /*#__PURE__*/function () {
+  function Utils() {
+    _classCallCheck(this, Utils);
+  }
+  return _createClass(Utils, null, [{
+    key: "merge_hash",
+    value: function merge_hash(hash1, hash2) {
+      return $.extend(true, {}, hash1, hash2);
+    }
+  }]);
+}();
+var _default = exports["default"] = Utils;
 
 /***/ })
 

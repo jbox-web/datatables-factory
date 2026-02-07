@@ -1,5 +1,6 @@
 dig = require('object-dig')
 
+import Utils           from '../utils.coffee'
 import Logger          from '../logger.coffee'
 import DatatableFilter from '../model/datatable_filter.coffee'
 
@@ -153,7 +154,7 @@ Loader.instance_methods =
     else
       local_opts = @_build_ajax_option_without_callbacks()
 
-    @dt_options = $.extend {}, @dt_options, local_opts
+    @dt_options = Utils.merge_hash(@dt_options, local_opts)
 
 
   _loader_load_created_row_callbacks: ->
@@ -167,7 +168,7 @@ Loader.instance_methods =
         for c in callbacks
           c(row, data, index, cells)
 
-    @dt_options = $.extend {}, @dt_options, local_opts
+    @dt_options = Utils.merge_hash(@dt_options, local_opts)
 
 
   _loader_load_draw_callbacks: ->
@@ -181,7 +182,7 @@ Loader.instance_methods =
         for c in callbacks
           c(settings)
 
-    @dt_options = $.extend {}, @dt_options, local_opts
+    @dt_options = Utils.merge_hash(@dt_options, local_opts)
 
 
   _loader_load_buttons_callbacks: ->
@@ -208,7 +209,7 @@ Loader.instance_methods =
 
     ajax: (data, callback, _settings) ->
       for c in callbacks
-        data = $.extend {}, data, c(data)
+        data = Utils.merge_hash(data, c(data))
 
       Loader.class_methods.ajax(url, data, callback)
 

@@ -1,3 +1,4 @@
+import Utils     from '../../utils.coffee'
 import RangeBase from './range_base.coffee'
 
 class RangeDateFilter extends RangeBase
@@ -10,19 +11,19 @@ class RangeDateFilter extends RangeBase
 
     # fetch datepicker data
     @filter_plugin         = @options.filter_plugin
-    @filter_plugin_options = $.extend({}, { onSelect: @_date_select }, @options.filter_plugin_options)
+    @filter_plugin_options = Utils.merge_hash({ onSelect: @_date_select }, @options.filter_plugin_options)
 
 
   bind_inputs: ->
     super()
 
     # load datepicker with callbacks
-    $("##{@from_id}").datepicker $.extend(@filter_plugin_options, onClose: (selected_date) ->
+    $("##{@from_id}").datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) ->
       $("##{@to_id}").datepicker 'option', 'minDate', selected_date
       return
     )
 
-    $("##{@to_id}").datepicker $.extend(@filter_plugin_options, onClose: (selected_date) ->
+    $("##{@to_id}").datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) ->
       $("##{@from_id}").datepicker 'option', 'maxDate', selected_date
       return
     )

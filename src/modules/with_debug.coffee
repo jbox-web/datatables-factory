@@ -1,3 +1,5 @@
+import Utils from '../utils.coffee'
+
 WithDebug = {}
 
 WithDebug.class_methods = {}
@@ -27,7 +29,7 @@ WithDebug.instance_methods =
       e =
         dtf_debug_log:  debug_log
         dtf_debug_dump: debug_dump
-      $.extend {}, d, e
+      Utils.merge_hash(d, e)
 
 
   ############################

@@ -1,3 +1,5 @@
+import Utils from '../utils.coffee'
+
 WithButtons = {}
 
 WithButtons.class_methods =
@@ -135,8 +137,8 @@ WithButtons.instance_methods =
 
   _call_url: (button, params, ajax_options) ->
     options = { url: button.url, method: button.method }
-    options = $.extend {}, options, data: params if params
-    options = $.extend {}, options, ajax_options if ajax_options
+    options = Utils.merge_hash(options, { data: params }) if params
+    options = Utils.merge_hash(options, ajax_options) if ajax_options
     $.ajax options
 
 
