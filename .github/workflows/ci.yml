@@ -24,13 +24,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.13'
+      - name: Setup mise
+        uses: jdx/mise-action@v3
 
       - name: Install NodeJS dependencies
-        run: make deps
+        run: mise deps
 
       - name: Run Webpack with linters
-        run: make build
+        run: mise build
