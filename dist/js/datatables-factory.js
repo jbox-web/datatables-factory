@@ -1552,13 +1552,14 @@ SelectBase = function () {
       key: "bind_inputs",
       value: function bind_inputs() {
         var _this2 = this;
-        var onchange_callback, onclick_callback;
+        var delay, onchange_callback, onclick_callback;
         _superPropGet(SelectBase, "bind_inputs", this, 3)([]);
         // bind select field
+        delay = this.options.filter_delay || 0;
         onchange_callback = function onchange_callback(event) {
           _this2._select_change(event);
         };
-        $("#".concat(this.select_id)).on('change', onchange_callback);
+        $("#".concat(this.select_id)).on('change', this._with_delay(onchange_callback, delay));
         // bind reset button
         onclick_callback = function onclick_callback(event) {
           _this2._select_clear(event);

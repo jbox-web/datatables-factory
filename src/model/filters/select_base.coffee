@@ -39,11 +39,13 @@ class SelectBase extends BaseFilter
     super()
 
     # bind select field
+    delay = @options.filter_delay or 0
+
     onchange_callback = (event) =>
       @_select_change(event)
       return
 
-    $("##{@select_id}").on('change', onchange_callback)
+    $("##{@select_id}").on('change', @_with_delay(onchange_callback, delay))
 
     # bind reset button
     onclick_callback = (event) =>
