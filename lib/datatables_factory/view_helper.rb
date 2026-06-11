@@ -21,7 +21,7 @@ module DatatablesFactory
 
 
     def bootstrap_datatables_for(name, opts = {}, &block)
-      css_opts  = { width: '100%', class: 'table table-striped table-bordered display responsive no-wrap' }
+      css_opts  = { width: '100%', class: 'table table-striped dt-responsive align-middle w-100' }
       html_opts = opts.delete(:html_opts) { {} }
       html_opts = html_opts.merge(css_opts)
       opts      = opts.deep_merge(datatables_factory_options)

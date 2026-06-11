@@ -142,7 +142,7 @@ module DatatablesFactory
 
 
       def link_to_select_all(selector)
-        opts = { title: "#{t('button.check_all')}/#{t('button.uncheck_all')}" }
+        opts = { title: "#{t('button.check_all')}/#{t('button.uncheck_all')}", class: 'form-check-input' }
         check_box_tag("#{selector}-select_all", '1', false, opts)
       end
 

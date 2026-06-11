@@ -2249,7 +2249,7 @@ Loader.instance_methods = {
     return this.info('Datatable created');
   },
   init_filters: function init_filters(event) {
-    var form;
+    var form, ref, reset_class;
     if (this.filters.length === 0) {
       return;
     }
@@ -2261,9 +2261,12 @@ Loader.instance_methods = {
     if (form != null) {
       $(form).find('.yadcf-filter-wrapper').each(function () {
         $(this).children().wrapAll('<div class="col-md-12"></div>').wrapAll('<div class="input-group"></div>');
-        return $(this).children().wrapAll('<div class="form-group row"></div>');
+        return $(this).children().wrapAll('<div class="mb-3 row"></div>');
       });
-      $(form).find('.yadcf-filter-reset-button').addClass('btn btn-default').wrap('<span class="input-group-btn"></span>');
+      // Bootstrap 5 : le bouton reset est enfant direct de .input-group (plus de wrapper .input-group-btn)
+      // La classe du bouton est configurable via dtf_options (filter_reset_button_class)
+      reset_class = ((ref = this.dtf_options) != null ? ref['filter_reset_button_class'] : void 0) || 'btn btn-secondary';
+      $(form).find('.yadcf-filter-reset-button').addClass(reset_class);
       $(form).find('.yadcf-filter').addClass('form-control');
     }
     return this.info('Datatable filters loaded');
