@@ -135,6 +135,9 @@ Loader.instance_methods =
       $(form).find('.yadcf-filter-reset-button').addClass(reset_class)
       $(form).find('.yadcf-filter').addClass('form-control')
 
+      # Optional icon declared on the Rails side (f.text_field :name, icon: 'magnifying-glass')
+      @_prepend_filter_icons(form)
+
     @info('Datatable filters loaded')
 
 
@@ -148,6 +151,19 @@ Loader.instance_methods =
   ############################
   # Private Instance methods #
   ############################
+
+  # Prepend a FontAwesome icon (input-group-text) to each filter declaring an
+  # `icon` option. Styling/responsive behavior is left to the host application
+  # through the .dtf-filter-icon class.
+  _prepend_filter_icons: (form) ->
+    for filter in @filters
+      continue if !filter.icon?
+
+      group = $(form).find("##{filter.filter_container_id} .input-group").first()
+      continue if group.length == 0 || group.children('.dtf-filter-icon').length > 0
+
+      group.prepend("<span class=\"input-group-text dtf-filter-icon\"><i class=\"fa-solid fa-#{filter.icon}\"></i></span>")
+
 
   _loader_load_ajax_callbacks: ->
     @info('Build datatable callbacks options : ajax')

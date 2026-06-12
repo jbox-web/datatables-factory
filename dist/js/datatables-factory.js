@@ -2268,6 +2268,8 @@ Loader.instance_methods = {
       reset_class = ((ref = this.dtf_options) != null ? ref['filter_reset_button_class'] : void 0) || 'btn btn-secondary';
       $(form).find('.yadcf-filter-reset-button').addClass(reset_class);
       $(form).find('.yadcf-filter').addClass('form-control');
+      // Optional icon declared on the Rails side (f.text_field :name, icon: 'magnifying-glass')
+      this._prepend_filter_icons(form);
     }
     return this.info('Datatable filters loaded');
   },
@@ -2280,6 +2282,27 @@ Loader.instance_methods = {
   //###########################
   // Private Instance methods #
   //###########################
+
+  // Prepend a FontAwesome icon (input-group-text) to each filter declaring an
+  // `icon` option. Styling/responsive behavior is left to the host application
+  // through the .dtf-filter-icon class.
+  _prepend_filter_icons: function _prepend_filter_icons(form) {
+    var filter, group, i, len, ref, results;
+    ref = this.filters;
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      filter = ref[i];
+      if (filter.icon == null) {
+        continue;
+      }
+      group = $(form).find("#".concat(filter.filter_container_id, " .input-group")).first();
+      if (group.length === 0 || group.children('.dtf-filter-icon').length > 0) {
+        continue;
+      }
+      results.push(group.prepend("<span class=\"input-group-text dtf-filter-icon\"><i class=\"fa-solid fa-".concat(filter.icon, "\"></i></span>")));
+    }
+    return results;
+  },
   _loader_load_ajax_callbacks: function _loader_load_ajax_callbacks() {
     var local_opts;
     this.info('Build datatable callbacks options : ajax');
