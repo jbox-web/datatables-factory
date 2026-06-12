@@ -29,6 +29,8 @@ WithCheckBoxes.instance_methods =
         @info('Add check_boxes callbacks to : createdRow')
         @callbacks['createdRow'].push @_check_boxes_callback_on_created_row()
 
+        @_restrict_touch_selection_to_check_boxes()
+
       when 'after_init'
         @info('Add check_boxes callbacks to : datatable')
 
@@ -178,6 +180,23 @@ WithCheckBoxes.instance_methods =
   _check_boxes_enabled: ->
     column = @find_column_by_name('check_box')
     column?
+
+
+  # On touch devices, rows are selected through the checkbox column only :
+  # a tap on the rest of the row no longer toggles the selection (accidental
+  # taps while browsing). Only applies when the table has a checkbox column
+  # (this module is a noop otherwise) and no custom selector is already set.
+  _restrict_touch_selection_to_check_boxes: ->
+    return if !window.matchMedia?('(pointer: coarse)').matches
+
+    select = @dt_options['select']
+    return if !select? || select == false
+
+    select = {} if select == true
+    return if select['selector']?
+
+    select['selector'] = 'td.check_box'
+    @dt_options['select'] = select
 
 
   _add_row_if_checked: (tr) ->

@@ -2612,7 +2612,8 @@ WithCheckBoxes.instance_methods = {
         this.info('Add check_boxes callbacks to : ajax');
         this.callbacks['ajax'].push(this._check_boxes_callback_on_ajax());
         this.info('Add check_boxes callbacks to : createdRow');
-        return this.callbacks['createdRow'].push(this._check_boxes_callback_on_created_row());
+        this.callbacks['createdRow'].push(this._check_boxes_callback_on_created_row());
+        return this._restrict_touch_selection_to_check_boxes();
       case 'after_init':
         this.info('Add check_boxes callbacks to : datatable');
         // Update state of "Select all" control
@@ -2765,6 +2766,28 @@ WithCheckBoxes.instance_methods = {
     column = this.find_column_by_name('check_box');
     return column != null;
   },
+  // On touch devices, rows are selected through the checkbox column only :
+  // a tap on the rest of the row no longer toggles the selection (accidental
+  // taps while browsing). Only applies when the table has a checkbox column
+  // (this module is a noop otherwise) and no custom selector is already set.
+  _restrict_touch_selection_to_check_boxes: function _restrict_touch_selection_to_check_boxes() {
+    var select;
+    if (!(typeof window.matchMedia === "function" ? window.matchMedia('(pointer: coarse)').matches : void 0)) {
+      return;
+    }
+    select = this.dt_options['select'];
+    if (select == null || select === false) {
+      return;
+    }
+    if (select === true) {
+      select = {};
+    }
+    if (select['selector'] != null) {
+      return;
+    }
+    select['selector'] = 'td.check_box';
+    return this.dt_options['select'] = select;
+  },
   _add_row_if_checked: function _add_row_if_checked(tr) {
     var checkbox;
     checkbox = $($(tr).find('input[type="checkbox"]')[0]);
@@ -2818,6 +2841,7 @@ WithContextMenu.instance_methods = {
   // LOADER #
   //#########
   with_context_menu_set_callbacks: function with_context_menu_set_callbacks(callback_type) {
+    var tbody;
     if (!this._context_menu_enabled()) {
       return false;
     }
@@ -2827,8 +2851,11 @@ WithContextMenu.instance_methods = {
         return this.callbacks['createdRow'].push(this._context_menu_callback_on_created_row());
       case 'after_init':
         this.info('Add context_menu callbacks to : datatable');
+        tbody = $('tbody', this.datatable.table().container());
         // Handle right click on datatable
-        return $('tbody', this.datatable.table().container()).on('contextmenu', this._context_menu_callback_on_contextmenu());
+        tbody.on('contextmenu', this._context_menu_callback_on_contextmenu());
+        // Handle long-press on touch devices (parity with right click)
+        return this._context_menu_bind_long_press(tbody);
     }
   },
   //############
@@ -2860,6 +2887,73 @@ WithContextMenu.instance_methods = {
   //###########################
   // Private Instance methods #
   //###########################
+
+  // Long-press (~500ms) on a row opens the context menu, like right click does.
+  // The timer is canceled when the finger moves (scroll) or is lifted early.
+  // Android already fires 'contextmenu' on long-press : the timer is canceled
+  // to avoid a double rendering. preventDefault on 'touchend' suppresses the
+  // synthetic click that would otherwise close the menu right away.
+  _context_menu_bind_long_press: function _context_menu_bind_long_press(tbody) {
+    var _this3 = this;
+    var fired, start, timer;
+    timer = null;
+    fired = false;
+    start = null;
+    tbody.on('touchstart', function (event) {
+      var target, touch, tr;
+      fired = false;
+      touch = event.originalEvent.touches[0];
+      if (touch == null) {
+        return;
+      }
+      target = $(event.target);
+      if (target.is('a')) {
+        return;
+      }
+      tr = target.parents('tr').first();
+      if (!tr.hasClass('has-context-menu')) {
+        return;
+      }
+      start = {
+        pageX: touch.pageX,
+        pageY: touch.pageY,
+        clientY: touch.clientY,
+        target: event.target
+      };
+      return timer = setTimeout(function () {
+        timer = null;
+        fired = true;
+        _this3._handle_row_selection(tr);
+        return _context_menu["default"].show(start);
+      }, 500);
+    });
+    tbody.on('touchmove', function (event) {
+      var touch;
+      if (timer == null) {
+        return;
+      }
+      touch = event.originalEvent.touches[0];
+      if (Math.abs(touch.pageX - start.pageX) > 10 || Math.abs(touch.pageY - start.pageY) > 10) {
+        clearTimeout(timer);
+        return timer = null;
+      }
+    });
+    tbody.on('touchend touchcancel', function (event) {
+      if (timer != null) {
+        clearTimeout(timer);
+      }
+      timer = null;
+      if (fired) {
+        return event.preventDefault();
+      }
+    });
+    return tbody.on('contextmenu', function () {
+      if (timer != null) {
+        clearTimeout(timer);
+      }
+      return timer = null;
+    });
+  },
   _context_menu_enabled: function _context_menu_enabled() {
     return this.dtf_options.context_menu != null && (this.dtf_options.context_menu === true || this.dtf_options.context_menu === 'true');
   },
