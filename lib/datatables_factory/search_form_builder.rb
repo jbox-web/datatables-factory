@@ -34,7 +34,8 @@ module DatatablesFactory
 
 
     def multi_select(name, opts = {}, container_opts = {})
-      opts = opts.deep_merge(filter_type: 'multi_select', filter_plugin_options: { width: 'element' })
+      # remove_button : croix de suppression sur chaque tag (parité select2)
+      opts = opts.deep_merge(filter_type: 'multi_select', filter_plugin_options: { plugins: ['remove_button'] })
       select_field(name, opts, container_opts)
     end
 
@@ -48,8 +49,23 @@ module DatatablesFactory
 
 
       def select_field(name, opts = {}, container_opts = {})
-        opts = opts.deep_merge(filter_plugin: 'select2', filter_plugin_options: { minimumResultsForSearch: '-1' })
+        opts = select_plugin_defaults(opts).deep_merge(opts)
         basic_field(name, opts, container_opts)
+      end
+
+
+      # Plugin defaults — an explicit opts[:filter_plugin] wins over the tom-select default
+      def select_plugin_defaults(opts)
+        if opts[:filter_plugin] == 'select2'
+          defaults = { filter_plugin_options: { minimumResultsForSearch: '-1' } }
+          defaults[:filter_plugin_options][:width] = 'element' if opts[:filter_type] == 'multi_select'
+        else
+          # dropdownParent: body — sinon le dropdown est clippé par l'overflow des en-têtes DataTables
+          defaults = { filter_plugin: 'tom-select', filter_plugin_options: { dropdownParent: 'body' } }
+          # controlInput: nil disables the search box (single selects pick from a short list)
+          defaults[:filter_plugin_options][:controlInput] = nil if opts[:filter_type] == 'select'
+        end
+        defaults
       end
 
 

@@ -1554,12 +1554,12 @@ SelectBase = function () {
         var _this2 = this;
         var delay, onchange_callback, onclick_callback;
         _superPropGet(SelectBase, "bind_inputs", this, 3)([]);
-        // bind select field
+        // build select field callback (bound on the plugin instance in _initialize_select_plugin)
         delay = this.options.filter_delay || 0;
         onchange_callback = function onchange_callback(event) {
           _this2._select_change(event);
         };
-        $("#".concat(this.select_id)).on('change', this._with_delay(onchange_callback, delay));
+        this.onchange_callback = this._with_delay(onchange_callback, delay);
         // bind reset button
         onclick_callback = function onclick_callback(event) {
           _this2._select_clear(event);
@@ -1575,7 +1575,7 @@ SelectBase = function () {
         saved_state = this.datatable_filter.has_state_for(this.column_id);
         if (saved_state != null) {
           restored_value = saved_state.value;
-          $("#".concat(this.select_id)).val(restored_value);
+          this._set_select_value(restored_value);
           if (restored_value !== '-1') {
             return $("#".concat(this.select_id)).addClass('inuse');
           }
@@ -1585,7 +1585,7 @@ SelectBase = function () {
       key: "reset",
       value: function reset(event) {
         _superPropGet(SelectBase, "reset", this, 3)([event]);
-        $("#".concat(this.select_id)).val('');
+        this._clear_select_value();
         $("#".concat(this.select_id)).removeClass('inuse');
         // set search value (datatable reload will be triggered later)
         this._set_search_value(this.column_id, '');
@@ -1595,9 +1595,17 @@ SelectBase = function () {
     }, {
       key: "reload",
       value: function reload(event) {
+        var ref, ref1;
         _superPropGet(SelectBase, "reload", this, 3)([event]);
         $("#".concat(this.select_id)).empty();
         $("#".concat(this.select_id)).append(this._select_options());
+        // re-read options and selection from the underlying <select>
+        if ((ref = this.select_plugin) != null) {
+          ref.clearOptions();
+        }
+        if ((ref1 = this.select_plugin) != null) {
+          ref1.sync();
+        }
         return this.restore_state();
       }
 
@@ -1637,7 +1645,7 @@ SelectBase = function () {
         if (this._empty_value(current_value)) {
           return;
         }
-        $("#".concat(this.select_id)).val('-1');
+        this._set_select_value('-1');
         $("#".concat(this.select_id)).removeClass('inuse');
         // run filter (triggers a datatable reload)
         this._run_filter(this.column_id, '');
@@ -1646,15 +1654,55 @@ SelectBase = function () {
           value: '-1'
         });
       }
+
+      // set value without triggering a 'change' event (and a datatable reload)
+    }, {
+      key: "_set_select_value",
+      value: function _set_select_value(value) {
+        if (this.select_plugin != null) {
+          return this.select_plugin.setValue(value, true);
+        } else {
+          return $("#".concat(this.select_id)).val(value);
+        }
+      }
+
+      // clear value without triggering a 'change' event (and a datatable reload)
+    }, {
+      key: "_clear_select_value",
+      value: function _clear_select_value() {
+        if (this.select_plugin != null) {
+          return this.select_plugin.clear(true);
+        } else {
+          return $("#".concat(this.select_id)).val('');
+        }
+      }
     }, {
       key: "_initialize_select_plugin",
       value: function _initialize_select_plugin() {
         var _this4 = this;
-        var callback, select2;
+        var callback, select, select2, wrapper;
         this.logger.info("".concat(this.name(), " : _initialize_select_plugin"));
         switch (this.filter_plugin) {
+          case 'tom-select':
+            select = document.getElementById(this.select_id);
+            this.select_plugin = new TomSelect(select, this.filter_plugin_options || {});
+            // tom-select emits 'change' through its own emitter, not as a DOM event
+            this.select_plugin.on('change', this.onchange_callback);
+            // prevent clicks on the widget from bubbling to the table header (sort).
+            // 'click' only : tom-select retains focus through a document-level 'mousedown'
+            // handler — stopping mousedown propagation would close the dropdown instantly
+            wrapper = $("#".concat(this.select_id)).next();
+            if (wrapper != null && wrapper.hasClass('ts-wrapper')) {
+              callback = function callback(event) {
+                return _this4.stop_propagation(event);
+              };
+              return wrapper.on('click', callback);
+            }
+            break;
           case 'select2':
             $("#".concat(this.select_id)).select2(this.filter_plugin_options);
+            // select2 triggers 'change' as a jQuery event on the original select
+            $("#".concat(this.select_id)).on('change', this.onchange_callback);
             select2 = $("#".concat(this.select_id)).next();
             if (select2 != null && select2.hasClass('select2-container')) {
               callback = function callback(event) {
@@ -1664,6 +1712,8 @@ SelectBase = function () {
             }
             break;
           default:
+            // fallback on the native select element
+            $("#".concat(this.select_id)).on('change', this.onchange_callback);
             return this.logger.error("Unknown select type: ".concat(this.filter_plugin));
         }
       }

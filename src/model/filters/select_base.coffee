@@ -38,14 +38,14 @@ class SelectBase extends BaseFilter
   bind_inputs: ->
     super()
 
-    # bind select field
+    # build select field callback (bound on the plugin instance in _initialize_select_plugin)
     delay = @options.filter_delay or 0
 
     onchange_callback = (event) =>
       @_select_change(event)
       return
 
-    $("##{@select_id}").on('change', @_with_delay(onchange_callback, delay))
+    @onchange_callback = @_with_delay(onchange_callback, delay)
 
     # bind reset button
     onclick_callback = (event) =>
@@ -65,7 +65,7 @@ class SelectBase extends BaseFilter
     if saved_state?
       restored_value = saved_state.value
 
-      $("##{@select_id}").val(restored_value)
+      @_set_select_value(restored_value)
 
       if restored_value != '-1'
         $("##{@select_id}").addClass('inuse')
@@ -74,7 +74,7 @@ class SelectBase extends BaseFilter
   reset: (event) ->
     super(event)
 
-    $("##{@select_id}").val('')
+    @_clear_select_value()
     $("##{@select_id}").removeClass('inuse')
 
     # set search value (datatable reload will be triggered later)
@@ -89,6 +89,10 @@ class SelectBase extends BaseFilter
 
     $("##{@select_id}").empty()
     $("##{@select_id}").append(@_select_options())
+
+    # re-read options and selection from the underlying <select>
+    @select_plugin?.clearOptions()
+    @select_plugin?.sync()
 
     @restore_state()
 
@@ -126,7 +130,7 @@ class SelectBase extends BaseFilter
     current_value = @current_value()
     return if @_empty_value(current_value)
 
-    $("##{@select_id}").val('-1')
+    @_set_select_value('-1')
     $("##{@select_id}").removeClass('inuse')
 
     # run filter (triggers a datatable reload)
@@ -136,12 +140,47 @@ class SelectBase extends BaseFilter
     @_save_state(@column_id, value: '-1')
 
 
+  # set value without triggering a 'change' event (and a datatable reload)
+  _set_select_value: (value) ->
+    if @select_plugin?
+      @select_plugin.setValue(value, true)
+    else
+      $("##{@select_id}").val(value)
+
+
+  # clear value without triggering a 'change' event (and a datatable reload)
+  _clear_select_value: ->
+    if @select_plugin?
+      @select_plugin.clear(true)
+    else
+      $("##{@select_id}").val('')
+
+
   _initialize_select_plugin: ->
     @logger.info "#{@name()} : _initialize_select_plugin"
 
     switch @filter_plugin
+      when 'tom-select'
+        select = document.getElementById(@select_id)
+        @select_plugin = new TomSelect(select, @filter_plugin_options or {})
+
+        # tom-select emits 'change' through its own emitter, not as a DOM event
+        @select_plugin.on('change', @onchange_callback)
+
+        # prevent clicks on the widget from bubbling to the table header (sort).
+        # 'click' only : tom-select retains focus through a document-level 'mousedown'
+        # handler — stopping mousedown propagation would close the dropdown instantly
+        wrapper = $("##{@select_id}").next()
+        if wrapper? and wrapper.hasClass('ts-wrapper')
+          callback = (event) =>
+            @stop_propagation(event)
+          wrapper.on('click', callback)
       when 'select2'
         $("##{@select_id}").select2 @filter_plugin_options
+
+        # select2 triggers 'change' as a jQuery event on the original select
+        $("##{@select_id}").on('change', @onchange_callback)
+
         select2 = $("##{@select_id}").next()
         if select2? and select2.hasClass('select2-container')
           callback = (event) =>
@@ -150,6 +189,8 @@ class SelectBase extends BaseFilter
             .on('click', callback)
             .on('mousedown', callback)
       else
+        # fallback on the native select element
+        $("##{@select_id}").on('change', @onchange_callback)
         @logger.error("Unknown select type: #{@filter_plugin}")
 
 

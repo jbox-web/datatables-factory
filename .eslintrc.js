@@ -9,6 +9,7 @@ module.exports = {
   ],
   "globals": {
     "$": true,
+    "TomSelect": true,
   },
   "overrides": [
     {
