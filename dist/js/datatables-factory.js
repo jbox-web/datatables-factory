@@ -2862,7 +2862,9 @@ WithCheckBoxes.instance_methods = {
     }
   },
   _update_select_all_global_count: function _update_select_all_global_count(count) {
-    return $("".concat(this.dt_id, "_wrapper .selected-count")).html("Nombre total d'éléments sélectionnés : ").append($('<span>').attr('id', 'selected-count-number').html(count));
+    var label, ref;
+    label = ((ref = this.dtf_options) != null ? ref['selected_count_label'] : void 0) || 'Total selected: ';
+    return $("".concat(this.dt_id, "_wrapper .selected-count")).html(label).append($('<span>').attr('id', 'selected-count-number').html(count));
   }
 };
 var _default = exports["default"] = WithCheckBoxes;

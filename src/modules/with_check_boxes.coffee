@@ -206,8 +206,9 @@ WithCheckBoxes.instance_methods =
 
 
   _update_select_all_global_count: (count) ->
+    label = @dtf_options?['selected_count_label'] || 'Total selected: '
     $("#{@dt_id}_wrapper .selected-count")
-      .html("Nombre total d'éléments sélectionnés : ")
+      .html(label)
       .append $('<span>').attr('id', 'selected-count-number').html(count)
 
 

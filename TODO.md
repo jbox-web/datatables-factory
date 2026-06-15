@@ -29,9 +29,6 @@
   ```
   Rendre configurable via `dtf_options` (callback ou URL de redirection).
 
-- [ ] **Label "Nombre total d'éléments sélectionnés"** (`src/modules/with_check_boxes.coffee` ligne ~211)
-  String en français hardcodée dans `_update_select_all_global_count`. Rendre configurable via `dtf_options`.
-
 ---
 
 ## Couplage aux internals de DataTables
