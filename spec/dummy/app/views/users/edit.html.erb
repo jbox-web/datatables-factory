@@ -1,0 +1,24 @@
+<div class="d-flex align-items-center mb-4">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-pen me-2 text-primary"></i>Éditer <%= @user.first_name %> <%= @user.last_name %>
+  </h2>
+  <%= link_to user_path(@user), class: 'btn btn-sm btn-light ms-auto' do %>
+    <i class="fa-solid fa-arrow-left me-1"></i>Retour
+  <% end %>
+</div>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <p class="text-muted"><em>Formulaire d'édition — démo uniquement.</em></p>
+    <dl class="row mb-0">
+      <dt class="col-sm-3">First name</dt>
+      <dd class="col-sm-9"><%= @user.first_name %></dd>
+      <dt class="col-sm-3">Last name</dt>
+      <dd class="col-sm-9"><%= @user.last_name %></dd>
+      <dt class="col-sm-3">Email</dt>
+      <dd class="col-sm-9"><%= @user.email %></dd>
+      <dt class="col-sm-3">Role</dt>
+      <dd class="col-sm-9"><span class="badge bg-secondary"><%= @user.role %></span></dd>
+    </dl>
+  </div>
+</div>

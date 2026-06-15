@@ -1,0 +1,44 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-layer-group me-2 text-primary"></i>Namespaced
+  </h2>
+  <span class="badge bg-light text-dark border ms-3"><code>namespace: [:acme]</code></span>
+</div>
+<p class="text-muted mb-4">
+  La classe JS est montée sur <code>window.Datatables.Acme.NamespacedDatatable</code>.
+  Le <code>dt_class</code> généré est <strong>Datatables.Acme.NamespacedDatatable</strong>.
+</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :namespaced,
+        namespace: [:acme],
+        source: api_namespaced_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        order: [[0, 'asc']],
+      ) do |dt|
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role', sortable: false
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+<script>
+  window.Datatables = window.Datatables || {}
+  window.Datatables.Acme = window.Datatables.Acme || {}
+  class NamespacedDatatable extends DatatableBase {}
+  window.Datatables.Acme.NamespacedDatatable = NamespacedDatatable
+
+  $(function() {
+    DatatableBase.load_datatables()
+  })
+</script>
+<% end %>

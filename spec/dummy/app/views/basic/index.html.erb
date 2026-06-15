@@ -1,0 +1,41 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-table me-2 text-primary"></i>Basic
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">AJAX · tri · pagination · recherche globale</span>
+</div>
+<p class="text-muted mb-4">Table DataTables minimale avec chargement AJAX. Aucune feature avancée — c'est la baseline.</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :basic,
+        source: api_basic_datatable_path,
+        serverSide: true,
+        stateSave: true,
+        order: [[1, 'asc']],
+      ) do |dt|
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role',    sortable: true, searchable: false
+        dt.head_for :age,        label: 'Age',     sortable: true, searchable: false
+        dt.head_for :created_at, label: 'Created', sortable: true, searchable: false
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+<script>
+  window.Datatables = window.Datatables || {}
+  class BasicDatatable extends DatatableBase {}
+  window.Datatables.BasicDatatable = BasicDatatable
+
+  $(function() {
+    DatatableBase.load_datatables()
+  })
+</script>
+<% end %>

@@ -1,0 +1,79 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-filter me-2 text-primary"></i>Filters
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">text · select · range_number · range_date</span>
+</div>
+<p class="text-muted mb-4">Filtres colonne. Les filtres sont persistés via DataTables <code>stateSave</code>.</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :filters,
+        source: api_filters_datatable_path,
+        serverSide: true,
+        stateSave: true,
+        order: [[1, 'asc']],
+        dom: datatable_dom_with_selected_and_buttons,
+      ) do |dt|
+        dt.button action: 'reset_filters',
+                  button_name: 'reset_filters',
+                  text: '<i class="fa-solid fa-rotate-left"></i>',
+                  titleAttr: 'Reset all filters'
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role'
+        dt.head_for :age,        label: 'Age'
+        dt.head_for :created_at, label: 'Created'
+
+        concat(dt.search_form { |f|
+          safe_join([
+            content_tag(:div, class: 'row g-3 mb-4') {
+              safe_join([
+                content_tag(:div, class: 'col-md-3') {
+                  safe_join([
+                    content_tag(:label, 'First name', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.text_field(:first_name, { icon: 'magnifying-glass' }, {}),
+                  ])
+                },
+                content_tag(:div, class: 'col-md-3') {
+                  safe_join([
+                    content_tag(:label, 'Role', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.select(:role, { icon: 'user-tag' }, {}),
+                  ])
+                },
+                content_tag(:div, class: 'col-md-3') {
+                  safe_join([
+                    content_tag(:label, 'Age', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.range(:age, { filter_default_label: ['Min', 'Max'], icon: 'hashtag' }, {}),
+                  ])
+                },
+                content_tag(:div, class: 'col-md-3') {
+                  safe_join([
+                    content_tag(:label, 'Created', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.range_date(:created_at, datatable_options_for_range_date.merge(icon: 'calendar-days'), {}),
+                  ])
+                },
+              ])
+            },
+          ])
+        })
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+<script>
+  window.Datatables = window.Datatables || {}
+  class FiltersDatatable extends DatatableBase {}
+  window.Datatables.FiltersDatatable = FiltersDatatable
+
+  $(function() {
+    DatatableBase.load_datatables()
+  })
+</script>
+<% end %>

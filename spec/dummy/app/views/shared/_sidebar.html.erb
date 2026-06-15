@@ -1,0 +1,32 @@
+<ul class="nav flex-column gap-1">
+  <li class="nav-item">
+    <%= link_to basic_path, class: "nav-link #{'active' if current_page?(basic_path)}" do %>
+      <i class="fa-solid fa-table fa-fw me-1"></i>Basic
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to buttons_path, class: "nav-link #{'active' if current_page?(buttons_path)}" do %>
+      <i class="fa-solid fa-wand-magic-sparkles fa-fw me-1"></i>Buttons
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to checkboxes_path, class: "nav-link #{'active' if current_page?(checkboxes_path)}" do %>
+      <i class="fa-solid fa-square-check fa-fw me-1"></i>Checkboxes
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to context_menu_path, class: "nav-link #{'active' if current_page?(context_menu_path)}" do %>
+      <i class="fa-solid fa-computer-mouse fa-fw me-1"></i>Context menu
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to filters_path, class: "nav-link #{'active' if current_page?(filters_path)}" do %>
+      <i class="fa-solid fa-filter fa-fw me-1"></i>Filters
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to namespaced_path, class: "nav-link #{'active' if current_page?(namespaced_path)}" do %>
+      <i class="fa-solid fa-layer-group fa-fw me-1"></i>Namespaced
+    <% end %>
+  </li>
+</ul>

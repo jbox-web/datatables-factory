@@ -1,0 +1,72 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-square-check me-2 text-primary"></i>Checkboxes
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">sélection multi-lignes · envoi des IDs</span>
+</div>
+<p class="text-muted mb-4">
+  La colonne <code>check_box</code> active la sélection multi-lignes.
+</p>
+
+<div class="mb-3">
+  <button id="show-selection" class="btn btn-primary btn-sm">
+    <i class="fa-solid fa-eye me-1"></i>Voir la sélection
+  </button>
+</div>
+
+<div id="selection-alert" class="alert alert-info d-none mb-3"></div>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :checkboxes,
+        source: api_checkboxes_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        select: { style: 'multi' },
+        order: [[1, 'asc']],
+      ) do |dt|
+        dt.head_for_check_box
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role', sortable: false, searchable: false
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+<script>
+  window.Datatables = window.Datatables || {}
+  class CheckboxesDatatable extends DatatableBase {
+    before_init() {
+      super.before_init()
+      // DT 2.x échappe le HTML — on injecte la checkbox côté client dans createdRow
+      this.callbacks['createdRow'].push(function(row) {
+        $(row).find('td.check_box').html('<input type="checkbox" class="form-check-input">')
+      })
+    }
+  }
+  window.Datatables.CheckboxesDatatable = CheckboxesDatatable
+
+  $(function() {
+    DatatableBase.load_datatables()
+
+    $('#show-selection').on('click', function() {
+      var instance = window.Datatables.CheckboxesDatatable.instance
+      if (!instance) return
+      var selected = instance.get_selected_checkbox_ids()
+      var $alert = $('#selection-alert')
+      if (selected.length === 0) {
+        $alert.text('No rows selected.')
+      } else {
+        $alert.text('Selected IDs: ' + selected.join(', '))
+      }
+      $alert.removeClass('d-none')
+    })
+  })
+</script>
+<% end %>

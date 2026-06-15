@@ -1,0 +1,46 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-wand-magic-sparkles me-2 text-primary"></i>Buttons
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">colvis · csv · pageLength</span>
+</div>
+<p class="text-muted mb-4">
+  Boutons DataTables : visibilité des colonnes, export CSV et choix du nombre de lignes.
+</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :buttons,
+        source: api_buttons_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        order: [[0, 'asc']],
+        layout: { topStart: 'buttons' },
+      ) do |dt|
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role',   sortable: false
+        dt.head_for :age,        label: 'Age',    sortable: true
+
+        dt.button extend: 'colvis'
+        dt.button extend: 'pageLength'
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>
+
+<% content_for :javascript do %>
+<script>
+  window.Datatables = window.Datatables || {}
+  class ButtonsDatatable extends DatatableBase {}
+  window.Datatables.ButtonsDatatable = ButtonsDatatable
+
+  $(function() {
+    DatatableBase.load_datatables()
+  })
+</script>
+<% end %>

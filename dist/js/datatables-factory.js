@@ -3,10 +3,10 @@
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
+	else if(typeof exports === 'object')
+		exports["DatatableBase"] = factory();
+	else
+		root["DatatableBase"] = factory();
 })(this, () => {
 return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
@@ -3341,6 +3341,7 @@ var _datatable_base = _interopRequireDefault(__webpack_require__(/*! ./model/dat
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 })();
 
+__webpack_exports__ = __webpack_exports__.DatatableBase;
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;
