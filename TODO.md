@@ -46,9 +46,6 @@
 
 ## Qualité / nettoyage
 
-- [ ] **Fallbacks IE8 dans `ContextMenu.window_size`** (`src/context_menu.coffee`)
-  Les branches `document.documentElement` et `document.body` pour `clientWidth/clientHeight` sont mortes. `window.innerWidth` / `window.innerHeight` suffisent.
-
 - [ ] **Constantes magiques de positionnement du context menu** (`src/context_menu.coffee` lignes ~72-78)
   `325` et `345` (hauteurs en pixels pour sous-menus) sont hardcodées. Calculer dynamiquement depuis la hauteur réelle du menu ou externaliser en option.
 

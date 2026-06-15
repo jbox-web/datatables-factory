@@ -5,19 +5,7 @@ class ContextMenu
   #################
 
   @window_size: ->
-    w = null
-    h = null
-    if window.innerWidth
-      w = window.innerWidth
-      h = window.innerHeight
-    else if document.documentElement
-      w = document.documentElement.clientWidth
-      h = document.documentElement.clientHeight
-    else
-      w = document.body.clientWidth
-      h = document.body.clientHeight
-
-    return { width: w, height: h }
+    { width: window.innerWidth, height: window.innerHeight }
 
 
   @show: (event) ->
