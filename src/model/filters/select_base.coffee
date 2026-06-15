@@ -67,7 +67,7 @@ class SelectBase extends BaseFilter
 
       @_set_select_value(restored_value)
 
-      if restored_value != '-1'
+      if restored_value != ''
         @_el(@select_id).addClass('inuse')
 
 
@@ -129,14 +129,14 @@ class SelectBase extends BaseFilter
     current_value = @current_value()
     return if @_empty_value(current_value)
 
-    @_set_select_value('-1')
+    @_set_select_value('')
     @_el(@select_id).removeClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, '')
 
     # save current value
-    @_save_state(@column_id, value: '-1')
+    @_save_state(@column_id, value: '')
 
 
   # set value without triggering a 'change' event (and a datatable reload)

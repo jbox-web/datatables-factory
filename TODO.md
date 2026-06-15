@@ -35,9 +35,6 @@
 - [ ] **`create_html` dupliqué dans chaque filtre** (`TextFilter`, `SelectBase`, `RangeBase`)
   La structure wrapper + input + reset button est identique dans les trois classes. La remonter dans `BaseFilter.create_html` avec `_html_input_field` comme hook à surcharger.
 
-- [ ] **Sentinel `-1` pour valeur vide dans `SelectFilter`** (`src/model/filters/select_filter.coffee`)
-  La valeur vide est représentée par la string `"-1"`. Fragile si une vraie option a cette valeur. Remplacer par `''` ou `null`.
-
 - [ ] **`while` avec index explicite dans les `_find_*`** (`datatable_base.coffee`, `with_buttons.coffee`, `with_filters.coffee`)
   `_find_column`, `_find_button`, `_find_filter` utilisent des boucles `while i < len`. Remplacer par `Array.prototype.find`.
 

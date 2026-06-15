@@ -1572,7 +1572,7 @@ SelectBase = function () {
         if (saved_state != null) {
           restored_value = saved_state.value;
           this._set_select_value(restored_value);
-          if (restored_value !== '-1') {
+          if (restored_value !== '') {
             return this._el(this.select_id).addClass('inuse');
           }
         }
@@ -1640,13 +1640,13 @@ SelectBase = function () {
         if (this._empty_value(current_value)) {
           return;
         }
-        this._set_select_value('-1');
+        this._set_select_value('');
         this._el(this.select_id).removeClass('inuse');
         // run filter (triggers a datatable reload)
         this._run_filter(this.column_id, '');
         // save current value
         return this._save_state(this.column_id, {
-          value: '-1'
+          value: ''
         });
       }
 
@@ -1796,7 +1796,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
     key: "_select_options",
     value: function _select_options() {
       var data, i, len, options, ref;
-      options = "<option value=\"-1\">".concat(this.filter_default_label, "</option>");
+      options = "<option value=\"\">".concat(this.filter_default_label, "</option>");
       if (this.dropdown_data != null) {
         ref = this.dropdown_data;
         for (i = 0, len = ref.length; i < len; i++) {
@@ -1809,7 +1809,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
   }, {
     key: "_empty_value",
     value: function _empty_value(value) {
-      return value === '-1';
+      return value === '';
     }
   }, {
     key: "_select_change",

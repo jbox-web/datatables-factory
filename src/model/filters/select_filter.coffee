@@ -25,7 +25,7 @@ class SelectFilter extends SelectBase
   ###################
 
   _select_options: ->
-    options = "<option value=\"-1\">#{@filter_default_label}</option>"
+    options = "<option value=\"\">#{@filter_default_label}</option>"
     if @dropdown_data?
       for data in @dropdown_data
         options += "<option value=\"#{data.value}\" >#{data.label}</option>"
@@ -33,7 +33,7 @@ class SelectFilter extends SelectBase
 
 
   _empty_value: (value) ->
-    value == '-1'
+    value == ''
 
 
   _select_change: (event) ->
