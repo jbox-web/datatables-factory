@@ -710,7 +710,10 @@ DatatableFilter = function () {
     }, {
       key: "_set_search_value",
       value: function _set_search_value(column_id, value) {
-        return this.instance.columns(column_id).search(value);
+        // Uses the internal aoPreSearchCols API to set the column search value without
+        // triggering a draw (columns().search() schedules a redraw in DT 2.x which
+        // breaks default filter pre-population and stateSave restore).
+        return this.instance.context[0].aoPreSearchCols[column_id]['search'] = value;
       }
     }, {
       key: "_get_state",
