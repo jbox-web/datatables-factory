@@ -8,7 +8,7 @@ class ContextMenu
     { width: window.innerWidth, height: window.innerHeight }
 
 
-  @show: (event) ->
+  @show: (event, url) ->
     mouse_x       = event.pageX
     mouse_y       = event.pageY
     mouse_y_c     = event.clientY
@@ -26,7 +26,7 @@ class ContextMenu
     $('#context-menu').html('')
 
     $.ajax
-      url: $(event.target).parents('tbody').first().data('url')
+      url: url
       data: $(event.target).parents('form').first().serialize()
       success: (result, _textStatus, _jqXHR) ->
         # $.parseHTML with null context prevents script execution (XSS mitigation)

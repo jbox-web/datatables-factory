@@ -12,9 +12,6 @@
 
 ## Sécurité
 
-- [ ] **URL du context menu lue depuis le DOM** (`src/context_menu.coffee` ligne ~41)
-  `$(event.target).parents('tbody').first().data('url')` — l'URL de la requête Ajax est lue depuis un attribut `data-url` dans le DOM. Une injection de `data-url` sur une ligne permet de cibler une URL arbitraire.
-
 ---
 
 ## Couplage aux internals de DataTables

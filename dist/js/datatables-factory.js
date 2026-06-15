@@ -49,7 +49,7 @@ ContextMenu = /*#__PURE__*/function () {
     }
   }, {
     key: "show",
-    value: function show(event) {
+    value: function show(event, url) {
       var max_height, max_width, menu_height, menu_width, mouse_x, mouse_y, mouse_y_c, render_x, render_y, window_height, window_width;
       mouse_x = event.pageX;
       mouse_y = event.pageY;
@@ -66,7 +66,7 @@ ContextMenu = /*#__PURE__*/function () {
       $('#context-menu').css('top', render_y + 'px');
       $('#context-menu').html('');
       return $.ajax({
-        url: $(event.target).parents('tbody').first().data('url'),
+        url: url,
         data: $(event.target).parents('form').first().serialize(),
         success: function success(result, _textStatus, _jqXHR) {
           var data, nodes, ws;
@@ -2893,7 +2893,7 @@ WithContextMenu.instance_methods = {
   // LOADER #
   //#########
   with_context_menu_set_callbacks: function with_context_menu_set_callbacks(callback_type) {
-    var tbody;
+    var tbody, url;
     if (!this._context_menu_enabled()) {
       return false;
     }
@@ -2904,10 +2904,12 @@ WithContextMenu.instance_methods = {
       case 'after_init':
         this.info('Add context_menu callbacks to : datatable');
         tbody = $('tbody', this.datatable.table().container());
+        // Capture URL once at init time — prevents DOM manipulation attacks
+        url = tbody.data('url');
         // Handle right click on datatable
-        tbody.on('contextmenu', this._context_menu_callback_on_contextmenu());
+        tbody.on('contextmenu', this._context_menu_callback_on_contextmenu(url));
         // Handle long-press on touch devices (parity with right click)
-        return this._context_menu_bind_long_press(tbody);
+        return this._context_menu_bind_long_press(tbody, url);
     }
   },
   //############
@@ -2919,7 +2921,7 @@ WithContextMenu.instance_methods = {
       return _this._enable_contextual_menu_for_row(row);
     };
   },
-  _context_menu_callback_on_contextmenu: function _context_menu_callback_on_contextmenu() {
+  _context_menu_callback_on_contextmenu: function _context_menu_callback_on_contextmenu(url) {
     var _this2 = this;
     return function (event) {
       var target, tr;
@@ -2933,7 +2935,7 @@ WithContextMenu.instance_methods = {
       }
       event.preventDefault();
       _this2._handle_row_selection(tr);
-      return _context_menu["default"].show(event);
+      return _context_menu["default"].show(event, url);
     };
   },
   //###########################
@@ -2945,7 +2947,7 @@ WithContextMenu.instance_methods = {
   // Android already fires 'contextmenu' on long-press : the timer is canceled
   // to avoid a double rendering. preventDefault on 'touchend' suppresses the
   // synthetic click that would otherwise close the menu right away.
-  _context_menu_bind_long_press: function _context_menu_bind_long_press(tbody) {
+  _context_menu_bind_long_press: function _context_menu_bind_long_press(tbody, url) {
     var _this3 = this;
     var fired, start, timer;
     timer = null;
@@ -2976,7 +2978,7 @@ WithContextMenu.instance_methods = {
         timer = null;
         fired = true;
         _this3._handle_row_selection(tr);
-        return _context_menu["default"].show(start);
+        return _context_menu["default"].show(start, url);
       }, 500);
     });
     tbody.on('touchmove', function (event) {

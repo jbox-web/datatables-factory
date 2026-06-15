@@ -39,11 +39,14 @@ WithContextMenu.instance_methods =
 
         tbody = $('tbody', @datatable.table().container())
 
+        # Capture URL once at init time — prevents DOM manipulation attacks
+        url = tbody.data('url')
+
         # Handle right click on datatable
-        tbody.on 'contextmenu', @_context_menu_callback_on_contextmenu()
+        tbody.on 'contextmenu', @_context_menu_callback_on_contextmenu(url)
 
         # Handle long-press on touch devices (parity with right click)
-        @_context_menu_bind_long_press(tbody)
+        @_context_menu_bind_long_press(tbody, url)
 
 
   #############
@@ -55,7 +58,7 @@ WithContextMenu.instance_methods =
       @_enable_contextual_menu_for_row(row)
 
 
-  _context_menu_callback_on_contextmenu: ->
+  _context_menu_callback_on_contextmenu: (url) ->
     (event) =>
       target = $(event.target)
       return if target.is('a')
@@ -65,7 +68,7 @@ WithContextMenu.instance_methods =
 
       event.preventDefault()
       @_handle_row_selection(tr)
-      ContextMenu.show(event)
+      ContextMenu.show(event, url)
 
 
   ############################
@@ -77,7 +80,7 @@ WithContextMenu.instance_methods =
   # Android already fires 'contextmenu' on long-press : the timer is canceled
   # to avoid a double rendering. preventDefault on 'touchend' suppresses the
   # synthetic click that would otherwise close the menu right away.
-  _context_menu_bind_long_press: (tbody) ->
+  _context_menu_bind_long_press: (tbody, url) ->
     timer = null
     fired = false
     start = null
@@ -98,7 +101,7 @@ WithContextMenu.instance_methods =
         timer = null
         fired = true
         @_handle_row_selection(tr)
-        ContextMenu.show(start)
+        ContextMenu.show(start, url)
       , 500)
 
     tbody.on 'touchmove', (event) ->
