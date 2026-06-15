@@ -1,5 +1,3 @@
-import merge from 'deepmerge'
-
 import Extendable        from '../extendable.coffee'
 import WithLogger        from '../modules/with_logger.coffee'
 import TextFilter        from './filters/text_filter.coffee'
@@ -24,6 +22,10 @@ class DatatableFilter extends Extendable
     @dt_class = @datatable.dt_class
     @instance = @datatable.datatable
 
+    # Restore filter state from the last saved DT state (if any)
+    saved_state = @instance.state.loaded()
+    @_filter_state = saved_state?['dt_filters_state'] or {}
+
 
   load: ->
     @_load_filters()
@@ -40,25 +42,10 @@ class DatatableFilter extends Extendable
     # instance might not be present (session expired?)
     return if !@_instance_present_for('save_state')
 
-    # get current state
-    state = @_get_state()
-
-    # build tmp hash
-    tmp = {}
-    tmp["dt_filters_state"] = {}
-    tmp['dt_filters_state'][@dt_id] = {}
-    tmp['dt_filters_state'][@dt_id][column_id] = data
-
-    # for multi-select: otherwise users cannot delete tags from input
-    # See: https://github.com/TehShrike/deepmerge?tab=readme-ov-file#arraymerge-example-overwrite-target-array
-    overwrite_merge = (destinationArray, sourceArray, options) =>
-      sourceArray
-
-    # deep merge it with current state
-    state = merge(state, tmp, { arrayMerge: overwrite_merge })
-
-    # update DT state
-    @_set_state(state)
+    # Update the filter state for this column directly — direct assignment
+    # is equivalent to deepmerge with overwrite_merge for arrays (multi-select).
+    @_filter_state[@dt_id] ?= {}
+    @_filter_state[@dt_id][column_id] = data
 
     # save DT state
     @_save_state()
@@ -70,18 +57,7 @@ class DatatableFilter extends Extendable
     # instance might not be present (session expired?)
     return if !@_instance_present_for('has_state_for')
 
-    # get current state
-    state = @_get_state()
-
-    # search value for *column_id* or return null
-    if  state? and
-        state['dt_filters_state']? and
-        state['dt_filters_state'][@dt_id]? and
-        state['dt_filters_state'][@dt_id][column_id]?
-
-      state['dt_filters_state'][@dt_id][column_id]
-    else
-      null
+    @_filter_state[@dt_id]?[column_id] or null
 
 
   set_search_value: (column_id, value) ->
@@ -177,8 +153,7 @@ class DatatableFilter extends Extendable
   # (<jQuery event object>, <DataTables settings object>, <State information to be saved>)
   _dt_on_save: (event, settings, data) ->
     @info "Datatable has been saved"
-    state = @_get_state()
-    data['dt_filters_state'] = state['dt_filters_state'] if state?
+    data['dt_filters_state'] = @_filter_state
 
 
   _dt_on_draw: (event, settings, json) ->
@@ -216,14 +191,6 @@ class DatatableFilter extends Extendable
     # triggering a draw (columns().search() schedules a redraw in DT 2.x which
     # breaks default filter pre-population and stateSave restore).
     @instance.context[0].aoPreSearchCols[column_id]['search'] = value
-
-
-  _get_state: ->
-    @instance.state.loaded()
-
-
-  _set_state: (state) ->
-    @instance.context[0].oLoadedState = state
 
 
   _save_state: ->
