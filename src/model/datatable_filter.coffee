@@ -1,4 +1,4 @@
-merge = require('deepmerge')
+import merge from 'deepmerge'
 
 import Extendable        from '../extendable.coffee'
 import WithLogger        from '../modules/with_logger.coffee'

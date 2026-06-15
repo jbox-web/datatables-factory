@@ -453,6 +453,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _deepmerge = _interopRequireDefault(__webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/cjs.js"));
 var _extendable = _interopRequireDefault(__webpack_require__(/*! ../extendable.coffee */ "./src/extendable.coffee"));
 var _with_logger = _interopRequireDefault(__webpack_require__(/*! ../modules/with_logger.coffee */ "./src/modules/with_logger.coffee"));
 var _text_filter = _interopRequireDefault(__webpack_require__(/*! ./filters/text_filter.coffee */ "./src/model/filters/text_filter.coffee"));
@@ -473,8 +474,7 @@ function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.
 function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
 function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
 function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
-var DatatableFilter, merge;
-merge = __webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/cjs.js");
+var DatatableFilter;
 DatatableFilter = function () {
   var DatatableFilter = /*#__PURE__*/function (_Extendable) {
     function DatatableFilter(datatable, filters, filters_applied, logger) {
@@ -526,7 +526,7 @@ DatatableFilter = function () {
           return sourceArray;
         };
         // deep merge it with current state
-        state = merge(state, tmp, {
+        state = (0, _deepmerge["default"])(state, tmp, {
           arrayMerge: overwrite_merge
         });
         // update DT state
@@ -2175,6 +2175,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
+var _objectDig = _interopRequireDefault(__webpack_require__(/*! object-dig */ "./node_modules/object-dig/dist/index.js"));
 var _utils = _interopRequireDefault(__webpack_require__(/*! ../utils.coffee */ "./src/utils.coffee"));
 var _logger = _interopRequireDefault(__webpack_require__(/*! ../logger.coffee */ "./src/logger.coffee"));
 var _datatable_filter = _interopRequireDefault(__webpack_require__(/*! ../model/datatable_filter.coffee */ "./src/model/datatable_filter.coffee"));
@@ -2186,9 +2187,7 @@ function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Sym
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 var Loader,
-  dig,
   hasProp = {}.hasOwnProperty;
-dig = __webpack_require__(/*! object-dig */ "./node_modules/object-dig/dist/index.js");
 Loader = {};
 Loader.class_methods = {
   //#######################
@@ -2274,7 +2273,7 @@ Loader.class_methods = {
   constantize: function constantize(string) {
     var constant, path;
     path = string.split('.');
-    constant = dig.apply(void 0, [window].concat(_toConsumableArray(path)));
+    constant = _objectDig["default"].apply(void 0, [window].concat(_toConsumableArray(path)));
     return constant;
   },
   to_underscore: function to_underscore(string) {

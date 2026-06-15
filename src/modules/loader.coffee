@@ -1,4 +1,4 @@
-dig = require('object-dig')
+import dig from 'object-dig'
 
 import Utils           from '../utils.coffee'
 import Logger          from '../logger.coffee'
