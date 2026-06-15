@@ -2781,12 +2781,12 @@ WithCheckBoxes.instance_methods = {
   },
   _check_boxes_callback_on_select: function _check_boxes_callback_on_select() {
     var _this5 = this;
-    return function (e, api, _type, _items) {
-      if (e.type === 'select') {
-        $('tr.selected input[type="checkbox"]', api.table().container()).prop('checked', true);
-      } else {
-        $('tr:not(.selected) input[type="checkbox"]', api.table().container()).prop('checked', false);
-      }
+    return function (e, api, _type, indexes) {
+      var checked;
+      checked = e.type === 'select';
+      api.rows(indexes).nodes().each(function (row) {
+        return $(row).find('input[type="checkbox"]').prop('checked', checked);
+      });
       // Update state of "Select all" control
       return _this5.update_select_all_ctrl();
     };

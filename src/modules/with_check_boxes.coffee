@@ -148,11 +148,10 @@ WithCheckBoxes.instance_methods =
 
 
   _check_boxes_callback_on_select: ->
-    (e, api, _type, _items) =>
-      if e.type == 'select'
-        $('tr.selected input[type="checkbox"]', api.table().container()).prop('checked', true)
-      else
-        $('tr:not(.selected) input[type="checkbox"]', api.table().container()).prop('checked', false)
+    (e, api, _type, indexes) =>
+      checked = e.type == 'select'
+      api.rows(indexes).nodes().each (row) ->
+        $(row).find('input[type="checkbox"]').prop('checked', checked)
 
       # Update state of "Select all" control
       @update_select_all_ctrl()
