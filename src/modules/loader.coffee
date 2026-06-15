@@ -12,16 +12,20 @@ Loader.class_methods =
   # Public Class methods #
   ########################
 
-  ajax: (url, data, callback) ->
+  ajax: (url, data, callback, dtf_options = {}) ->
+    on_422 = dtf_options['on_422'] or ->
+      msg      = dtf_options['session_expired_message'] or 'Session expired, please log in again.'
+      login_url = dtf_options['login_url'] or '/'
+      alert msg
+      window.location.href = login_url
+
     $.ajax
       url: url
       type: 'POST'
       data: JSON.stringify(data)
       contentType: 'application/json'
       statusCode:
-        422: ->
-          alert "Votre session a expiré, veuillez vous reconnecter."
-          window.location.href = "/users/login/"
+        422: on_422
 
       success: (data, _textStatus, _jqXHR) ->
         callback(data)
@@ -223,21 +227,23 @@ Loader.instance_methods =
 
   _build_ajax_option_with_callbacks: ->
     # Keep a local reference for the ajax option
-    url       = @dt_options['source']
-    callbacks = @callbacks['ajax']
+    url         = @dt_options['source']
+    callbacks   = @callbacks['ajax']
+    dtf_options = @dtf_options
 
     ajax: (data, callback, _settings) ->
       for c in callbacks
         data = Utils.merge_hash(data, c(data))
 
-      Loader.class_methods.ajax(url, data, callback)
+      Loader.class_methods.ajax(url, data, callback, dtf_options)
 
 
   _build_ajax_option_without_callbacks: ->
-    url = @dt_options['source']
+    url         = @dt_options['source']
+    dtf_options = @dtf_options
 
     ajax: (data, callback, _settings) ->
-      Loader.class_methods.ajax(url, data, callback)
+      Loader.class_methods.ajax(url, data, callback, dtf_options)
 
 
 export default Loader

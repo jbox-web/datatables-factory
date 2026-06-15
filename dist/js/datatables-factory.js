@@ -2195,16 +2195,22 @@ Loader.class_methods = {
   // Public Class methods #
   //#######################
   ajax: function ajax(url, data, callback) {
+    var dtf_options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var on_422;
+    on_422 = dtf_options['on_422'] || function () {
+      var login_url, msg;
+      msg = dtf_options['session_expired_message'] || 'Session expired, please log in again.';
+      login_url = dtf_options['login_url'] || '/';
+      alert(msg);
+      return window.location.href = login_url;
+    };
     return $.ajax({
       url: url,
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
       statusCode: {
-        422: function _() {
-          alert("Votre session a expiré, veuillez vous reconnecter.");
-          return window.location.href = "/users/login/";
-        }
+        422: on_422
       },
       success: function success(data, _textStatus, _jqXHR) {
         return callback(data);
@@ -2419,10 +2425,11 @@ Loader.instance_methods = {
     return res;
   },
   _build_ajax_option_with_callbacks: function _build_ajax_option_with_callbacks() {
-    var callbacks, url;
+    var callbacks, dtf_options, url;
     // Keep a local reference for the ajax option
     url = this.dt_options['source'];
     callbacks = this.callbacks['ajax'];
+    dtf_options = this.dtf_options;
     return {
       ajax: function ajax(data, callback, _settings) {
         var c, i, len;
@@ -2430,16 +2437,17 @@ Loader.instance_methods = {
           c = callbacks[i];
           data = _utils["default"].merge_hash(data, c(data));
         }
-        return Loader.class_methods.ajax(url, data, callback);
+        return Loader.class_methods.ajax(url, data, callback, dtf_options);
       }
     };
   },
   _build_ajax_option_without_callbacks: function _build_ajax_option_without_callbacks() {
-    var url;
+    var dtf_options, url;
     url = this.dt_options['source'];
+    dtf_options = this.dtf_options;
     return {
       ajax: function ajax(data, callback, _settings) {
-        return Loader.class_methods.ajax(url, data, callback);
+        return Loader.class_methods.ajax(url, data, callback, dtf_options);
       }
     };
   }

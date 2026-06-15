@@ -20,17 +20,6 @@
 
 ---
 
-## Strings applicatives hardcodées dans la lib
-
-- [ ] **Message 422 en français + URL hardcodée** (`src/modules/loader.coffee` ligne ~22)
-  ```
-  alert "Votre session a expiré, veuillez vous reconnecter."
-  window.location.href = "/users/login/"
-  ```
-  Rendre configurable via `dtf_options` (callback ou URL de redirection).
-
----
-
 ## Couplage aux internals de DataTables
 
 - [ ] **`_set_search_value` accède à `aoPreSearchCols`** (`src/model/datatable_filter.coffee` ligne ~215)
