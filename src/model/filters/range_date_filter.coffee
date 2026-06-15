@@ -18,13 +18,13 @@ class RangeDateFilter extends RangeBase
     super()
 
     # load datepicker with callbacks
-    $("##{@from_id}").datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) ->
-      $("##{@to_id}").datepicker 'option', 'minDate', selected_date
+    @_el(@from_id).datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) =>
+      @_el(@to_id).datepicker 'option', 'minDate', selected_date
       return
     )
 
-    $("##{@to_id}").datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) ->
-      $("##{@from_id}").datepicker 'option', 'maxDate', selected_date
+    @_el(@to_id).datepicker Utils.merge_hash(@filter_plugin_options, onClose: (selected_date) =>
+      @_el(@from_id).datepicker 'option', 'maxDate', selected_date
       return
     )
 
@@ -61,17 +61,17 @@ class RangeDateFilter extends RangeBase
     date_to   = @_date_or_empty_string(current_value.to)
 
     if date_from instanceof Date
-      $("##{@from_id}").addClass('inuse')
+      @_el(@from_id).addClass('inuse')
       from = current_value.from
     else
-      $("##{@from_id}").removeClass('inuse')
+      @_el(@from_id).removeClass('inuse')
       from = ''
 
     if date_to instanceof Date
-      $("##{@to_id}").addClass('inuse')
+      @_el(@to_id).addClass('inuse')
       to = current_value.to
     else
-      $("##{@to_id}").removeClass('inuse')
+      @_el(@to_id).removeClass('inuse')
       to = ''
 
     search_value = "#{from}#{@range_delimiter}#{to}"

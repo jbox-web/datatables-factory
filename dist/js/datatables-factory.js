@@ -901,6 +901,23 @@ BaseFilter = function () {
       //##################
       // PRIVATE METHODS #
       //##################
+
+      // DOM helpers — single jQuery dependency point
+    }, {
+      key: "_el",
+      value: function _el(id) {
+        return $("#".concat(id));
+      }
+    }, {
+      key: "_container",
+      value: function _container() {
+        return $(this.container_id);
+      }
+    }, {
+      key: "_container_find",
+      value: function _container_find(selector) {
+        return $("".concat(this.container_id, " ").concat(selector));
+      }
     }, {
       key: "_html_wrapper",
       value: function _html_wrapper() {
@@ -1055,16 +1072,16 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     value: function create_html() {
       _superPropGet(RangeBase, "create_html", this, 3)([]);
       // add outer wrapper to hold both filter and reset button
-      $("".concat(this.container_id)).append(this._html_wrapper_outer());
-      // add inner wrapper to hold both filter and reset button
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_wrapper_inner());
+      this._container().append(this._html_wrapper_outer());
+      // add inner wrapper
+      this._container_find('div.yadcf-filter-wrapper').append(this._html_wrapper_inner());
       // add input fields
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_start());
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_separator());
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper-inner")).append(this._html_range_end());
+      this._container_find('div.yadcf-filter-wrapper-inner').append(this._html_range_start());
+      this._container_find('div.yadcf-filter-wrapper-inner').append(this._html_range_separator());
+      this._container_find('div.yadcf-filter-wrapper-inner').append(this._html_range_end());
       // add reset button
       if (this.filter_reset_button) {
-        return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+        return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
       }
     }
   }, {
@@ -1078,13 +1095,13 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
       onkeyup_callback = function onkeyup_callback(event) {
         _this2._range_change(event);
       };
-      $("#".concat(this.from_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
-      $("#".concat(this.to_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
+      this._el(this.from_id).on('keyup', this._with_delay(onkeyup_callback, delay));
+      this._el(this.to_id).on('keyup', this._with_delay(onkeyup_callback, delay));
       // bind reset button
       onclick_callback = function onclick_callback(event) {
         _this2._range_clear(event);
       };
-      return $("#".concat(this.reset_id)).on('click', onclick_callback);
+      return this._el(this.reset_id).on('click', onclick_callback);
     }
   }, {
     key: "restore_state",
@@ -1096,12 +1113,10 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
         restored_from = saved_state.from;
         restored_to = saved_state.to;
         if (restored_from !== '') {
-          $("#".concat(this.from_id)).val(restored_from);
-          $("#".concat(this.from_id)).addClass('inuse');
+          this._el(this.from_id).val(restored_from).addClass('inuse');
         }
         if (restored_to !== '') {
-          $("#".concat(this.to_id)).val(restored_to);
-          return $("#".concat(this.to_id)).addClass('inuse');
+          return this._el(this.to_id).val(restored_to).addClass('inuse');
         }
       }
     }
@@ -1109,10 +1124,8 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "reset",
     value: function reset(event) {
       _superPropGet(RangeBase, "reset", this, 3)([event]);
-      $("#".concat(this.from_id)).val('');
-      $("#".concat(this.from_id)).removeClass('inuse');
-      $("#".concat(this.to_id)).val('');
-      $("#".concat(this.to_id)).removeClass('inuse');
+      this._el(this.from_id).val('').removeClass('inuse');
+      this._el(this.to_id).val('').removeClass('inuse');
       // set search value (datatable reload will be triggered later)
       this._set_search_value(this.column_id, '');
       // save current value
@@ -1122,8 +1135,8 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
     key: "current_value",
     value: function current_value() {
       return {
-        from: $("#".concat(this.from_id)).val(),
-        to: $("#".concat(this.to_id)).val()
+        from: this._el(this.from_id).val(),
+        to: this._el(this.to_id).val()
       };
     }
 
@@ -1209,10 +1222,8 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
       if (current_value.from === '' && current_value.to === '') {
         return;
       }
-      $("#".concat(this.from_id)).val('');
-      $("#".concat(this.from_id)).removeClass('inuse');
-      $("#".concat(this.to_id)).val('');
-      $("#".concat(this.to_id)).removeClass('inuse');
+      this._el(this.from_id).val('').removeClass('inuse');
+      this._el(this.to_id).val('').removeClass('inuse');
       // run filter (triggers a datatable reload)
       this._run_filter(this.column_id, this.range_delimiter);
       // save current value
@@ -1301,16 +1312,17 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
   return _createClass(RangeDateFilter, [{
     key: "bind_inputs",
     value: function bind_inputs() {
+      var _this2 = this;
       _superPropGet(RangeDateFilter, "bind_inputs", this, 3)([]);
       // load datepicker with callbacks
-      $("#".concat(this.from_id)).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
+      this._el(this.from_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
-          $("#".concat(this.to_id)).datepicker('option', 'minDate', selected_date);
+          _this2._el(_this2.to_id).datepicker('option', 'minDate', selected_date);
         }
       }));
-      return $("#".concat(this.to_id)).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
+      return this._el(this.to_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
         onClose: function onClose(selected_date) {
-          $("#".concat(this.from_id)).datepicker('option', 'maxDate', selected_date);
+          _this2._el(_this2.from_id).datepicker('option', 'maxDate', selected_date);
         }
       }));
     }
@@ -1344,17 +1356,17 @@ RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
       date_from = this._date_or_empty_string(current_value.from);
       date_to = this._date_or_empty_string(current_value.to);
       if (date_from instanceof Date) {
-        $("#".concat(this.from_id)).addClass('inuse');
+        this._el(this.from_id).addClass('inuse');
         from = current_value.from;
       } else {
-        $("#".concat(this.from_id)).removeClass('inuse');
+        this._el(this.from_id).removeClass('inuse');
         from = '';
       }
       if (date_to instanceof Date) {
-        $("#".concat(this.to_id)).addClass('inuse');
+        this._el(this.to_id).addClass('inuse');
         to = current_value.to;
       } else {
-        $("#".concat(this.to_id)).removeClass('inuse');
+        this._el(this.to_id).removeClass('inuse');
         to = '';
       }
       search_value = "".concat(from).concat(this.range_delimiter).concat(to);
@@ -1448,14 +1460,14 @@ RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
       min = this._int_or_empty_string(current_value.from);
       max = this._int_or_empty_string(current_value.to);
       if (min !== '') {
-        $("#".concat(this.from_id)).addClass('inuse');
+        this._el(this.from_id).addClass('inuse');
       } else {
-        $("#".concat(this.from_id)).removeClass('inuse');
+        this._el(this.from_id).removeClass('inuse');
       }
       if (max !== '') {
-        $("#".concat(this.to_id)).addClass('inuse');
+        this._el(this.to_id).addClass('inuse');
       } else {
-        $("#".concat(this.to_id)).removeClass('inuse');
+        this._el(this.to_id).removeClass('inuse');
       }
       search_value = "".concat(min).concat(this.range_delimiter).concat(max);
       // run filter (triggers a datatable reload)
@@ -1540,12 +1552,12 @@ SelectBase = function () {
       value: function create_html() {
         _superPropGet(SelectBase, "create_html", this, 3)([]);
         // add a wrapper to hold both filter and reset button
-        $("".concat(this.container_id)).append(this._html_wrapper());
+        this._container().append(this._html_wrapper());
         // add input fields
-        $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field());
+        this._container_find('div.yadcf-filter-wrapper').append(this._html_input_field());
         // add reset button
         if (this.filter_reset_button) {
-          return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+          return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
         }
       }
     }, {
@@ -1564,7 +1576,7 @@ SelectBase = function () {
         onclick_callback = function onclick_callback(event) {
           _this2._select_clear(event);
         };
-        $("#".concat(this.reset_id)).on('click', onclick_callback);
+        this._el(this.reset_id).on('click', onclick_callback);
         return this._initialize_select_plugin();
       }
     }, {
@@ -1577,7 +1589,7 @@ SelectBase = function () {
           restored_value = saved_state.value;
           this._set_select_value(restored_value);
           if (restored_value !== '-1') {
-            return $("#".concat(this.select_id)).addClass('inuse');
+            return this._el(this.select_id).addClass('inuse');
           }
         }
       }
@@ -1586,7 +1598,7 @@ SelectBase = function () {
       value: function reset(event) {
         _superPropGet(SelectBase, "reset", this, 3)([event]);
         this._clear_select_value();
-        $("#".concat(this.select_id)).removeClass('inuse');
+        this._el(this.select_id).removeClass('inuse');
         // set search value (datatable reload will be triggered later)
         this._set_search_value(this.column_id, '');
         // save current value
@@ -1597,8 +1609,7 @@ SelectBase = function () {
       value: function reload(event) {
         var ref, ref1;
         _superPropGet(SelectBase, "reload", this, 3)([event]);
-        $("#".concat(this.select_id)).empty();
-        $("#".concat(this.select_id)).append(this._select_options());
+        this._el(this.select_id).empty().append(this._select_options());
         // re-read options and selection from the underlying <select>
         if ((ref = this.select_plugin) != null) {
           ref.clearOptions();
@@ -1646,7 +1657,7 @@ SelectBase = function () {
           return;
         }
         this._set_select_value('-1');
-        $("#".concat(this.select_id)).removeClass('inuse');
+        this._el(this.select_id).removeClass('inuse');
         // run filter (triggers a datatable reload)
         this._run_filter(this.column_id, '');
         // save current value
@@ -1662,7 +1673,7 @@ SelectBase = function () {
         if (this.select_plugin != null) {
           return this.select_plugin.setValue(value, true);
         } else {
-          return $("#".concat(this.select_id)).val(value);
+          return this._el(this.select_id).val(value);
         }
       }
 
@@ -1673,7 +1684,7 @@ SelectBase = function () {
         if (this.select_plugin != null) {
           return this.select_plugin.clear(true);
         } else {
-          return $("#".concat(this.select_id)).val('');
+          return this._el(this.select_id).val('');
         }
       }
     }, {
@@ -1691,7 +1702,7 @@ SelectBase = function () {
             // prevent clicks on the widget from bubbling to the table header (sort).
             // 'click' only : tom-select retains focus through a document-level 'mousedown'
             // handler — stopping mousedown propagation would close the dropdown instantly
-            wrapper = $("#".concat(this.select_id)).next();
+            wrapper = this._el(this.select_id).next();
             if (wrapper != null && wrapper.hasClass('ts-wrapper')) {
               callback = function callback(event) {
                 return _this4.stop_propagation(event);
@@ -1700,10 +1711,10 @@ SelectBase = function () {
             }
             break;
           case 'select2':
-            $("#".concat(this.select_id)).select2(this.filter_plugin_options);
+            this._el(this.select_id).select2(this.filter_plugin_options);
             // select2 triggers 'change' as a jQuery event on the original select
-            $("#".concat(this.select_id)).on('change', this.onchange_callback);
-            select2 = $("#".concat(this.select_id)).next();
+            this._el(this.select_id).on('change', this.onchange_callback);
+            select2 = this._el(this.select_id).next();
             if (select2 != null && select2.hasClass('select2-container')) {
               callback = function callback(event) {
                 return _this4.stop_propagation(event);
@@ -1713,7 +1724,7 @@ SelectBase = function () {
             break;
           default:
             // fallback on the native select element
-            $("#".concat(this.select_id)).on('change', this.onchange_callback);
+            this._el(this.select_id).on('change', this.onchange_callback);
             return this.logger.error("Unknown select type: ".concat(this.filter_plugin));
         }
       }
@@ -1780,7 +1791,7 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
     // PUBLIC METHODS #
     //#################
     function current_value() {
-      return $.trim($("#".concat(this.select_id)).find('option:selected').val());
+      return $.trim(this._el(this.select_id).find('option:selected').val());
     }
   }, {
     key: "set",
@@ -1824,10 +1835,10 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
       current_value = this.current_value();
       if (this._empty_value(current_value)) {
         search_value = '';
-        $("#".concat(this.select_id)).removeClass('inuse');
+        this._el(this.select_id).removeClass('inuse');
       } else {
         search_value = current_value;
-        $("#".concat(this.select_id)).addClass('inuse');
+        this._el(this.select_id).addClass('inuse');
       }
       // run filter (triggers a datatable reload)
       this._run_filter(this.column_id, search_value);
@@ -1893,7 +1904,7 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
     // PUBLIC METHODS #
     //#################
     function current_value() {
-      return $("#".concat(this.select_id)).val();
+      return this._el(this.select_id).val();
     }
   }, {
     key: "set",
@@ -1939,10 +1950,10 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
       current_value = this.current_value();
       if (this._empty_value(current_value)) {
         search_value = '';
-        $("#".concat(this.select_id)).removeClass('inuse');
+        this._el(this.select_id).removeClass('inuse');
       } else {
         search_value = this._cast_value(current_value);
-        $("#".concat(this.select_id)).addClass('inuse');
+        this._el(this.select_id).addClass('inuse');
       }
       // run filter (triggers a datatable reload)
       this._run_filter(this.column_id, search_value);
@@ -2020,12 +2031,12 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     value: function create_html() {
       _superPropGet(TextFilter, "create_html", this, 3)([]);
       // add a wrapper to hold both filter and reset button
-      $("".concat(this.container_id)).append(this._html_wrapper());
+      this._container().append(this._html_wrapper());
       // add input fields
-      $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_input_field());
+      this._container_find('div.yadcf-filter-wrapper').append(this._html_input_field());
       // add reset button
       if (this.filter_reset_button) {
-        return $("".concat(this.container_id, " div.yadcf-filter-wrapper")).append(this._html_reset_button());
+        return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
       }
     }
 
@@ -2043,12 +2054,12 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       onkeyup_callback = function onkeyup_callback(event) {
         _this2._text_change(event);
       };
-      $("#".concat(this.input_id)).on('keyup', this._with_delay(onkeyup_callback, delay));
+      this._el(this.input_id).on('keyup', this._with_delay(onkeyup_callback, delay));
       // bind reset button
       onclick_callback = function onclick_callback(event) {
         _this2._text_clear(event);
       };
-      return $("#".concat(this.reset_id)).on('click', onclick_callback);
+      return this._el(this.reset_id).on('click', onclick_callback);
     }
   }, {
     key: "restore_state",
@@ -2058,9 +2069,9 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       saved_state = this.datatable_filter.has_state_for(this.column_id);
       if (saved_state != null) {
         restored_value = saved_state.value;
-        $("#".concat(this.input_id)).val(restored_value);
+        this._el(this.input_id).val(restored_value);
         if (restored_value !== '') {
-          return $("#".concat(this.input_id)).addClass('inuse');
+          return this._el(this.input_id).addClass('inuse');
         }
       }
     }
@@ -2068,8 +2079,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     key: "reset",
     value: function reset(event) {
       _superPropGet(TextFilter, "reset", this, 3)([event]);
-      $("#".concat(this.input_id)).val('');
-      $("#".concat(this.input_id)).removeClass('inuse');
+      this._el(this.input_id).val('').removeClass('inuse');
       // set search value (datatable reload will be triggered later)
       this._set_search_value(this.column_id, '');
       // save current value
@@ -2079,9 +2089,9 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     key: "set",
     value: function set(value) {
       _superPropGet(TextFilter, "set", this, 3)([value]);
-      $("#".concat(this.input_id)).val(value);
+      this._el(this.input_id).val(value);
       if (value !== '') {
-        $("#".concat(this.input_id)).addClass('inuse');
+        this._el(this.input_id).addClass('inuse');
       }
       // set search value (datatable reload will be triggered later)
       this._set_search_value(this.column_id, value);
@@ -2093,7 +2103,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
   }, {
     key: "current_value",
     value: function current_value() {
-      return $.trim($("#".concat(this.input_id)).val());
+      return $.trim(this._el(this.input_id).val());
     }
 
     //##################
@@ -2134,9 +2144,9 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       }
       current_value = this.current_value();
       if (this._empty_value(current_value)) {
-        $("#".concat(this.input_id)).removeClass('inuse');
+        this._el(this.input_id).removeClass('inuse');
       } else {
-        $("#".concat(this.input_id)).addClass('inuse');
+        this._el(this.input_id).addClass('inuse');
       }
       // run filter (triggers a datatable reload)
       this._run_filter(this.column_id, current_value);
@@ -2155,8 +2165,7 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
       if (this._empty_value(current_value)) {
         return;
       }
-      $("#".concat(this.input_id)).val('');
-      $("#".concat(this.input_id)).removeClass('inuse');
+      this._el(this.input_id).val('').removeClass('inuse');
       // run filter (triggers a datatable reload)
       this._run_filter(this.column_id, '');
       // save current value

@@ -28,19 +28,19 @@ class RangeBase extends BaseFilter
     super()
 
     # add outer wrapper to hold both filter and reset button
-    $("#{@container_id}").append @_html_wrapper_outer()
+    @_container().append @_html_wrapper_outer()
 
-    # add inner wrapper to hold both filter and reset button
-    $("#{@container_id} div.yadcf-filter-wrapper").append @_html_wrapper_inner()
+    # add inner wrapper
+    @_container_find('div.yadcf-filter-wrapper').append @_html_wrapper_inner()
 
     # add input fields
-    $("#{@container_id} div.yadcf-filter-wrapper-inner").append @_html_range_start()
-    $("#{@container_id} div.yadcf-filter-wrapper-inner").append @_html_range_separator()
-    $("#{@container_id} div.yadcf-filter-wrapper-inner").append @_html_range_end()
+    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_start()
+    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_separator()
+    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_end()
 
     # add reset button
     if @filter_reset_button
-      $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
+      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
 
 
   bind_inputs: ->
@@ -53,15 +53,15 @@ class RangeBase extends BaseFilter
       @_range_change(event)
       return
 
-    $("##{@from_id}").on('keyup', @_with_delay(onkeyup_callback, delay))
-    $("##{@to_id}").on('keyup', @_with_delay(onkeyup_callback, delay))
+    @_el(@from_id).on('keyup', @_with_delay(onkeyup_callback, delay))
+    @_el(@to_id).on('keyup', @_with_delay(onkeyup_callback, delay))
 
     # bind reset button
     onclick_callback = (event) =>
       @_range_clear(event)
       return
 
-    $("##{@reset_id}").on('click', onclick_callback)
+    @_el(@reset_id).on('click', onclick_callback)
 
 
   restore_state: ->
@@ -74,22 +74,17 @@ class RangeBase extends BaseFilter
       restored_to   = saved_state.to
 
       if restored_from != ''
-        $("##{@from_id}").val(restored_from)
-        $("##{@from_id}").addClass('inuse')
+        @_el(@from_id).val(restored_from).addClass('inuse')
 
       if restored_to != ''
-        $("##{@to_id}").val(restored_to)
-        $("##{@to_id}").addClass('inuse')
+        @_el(@to_id).val(restored_to).addClass('inuse')
 
 
   reset: (event) ->
     super(event)
 
-    $("##{@from_id}").val('')
-    $("##{@from_id}").removeClass('inuse')
-
-    $("##{@to_id}").val('')
-    $("##{@to_id}").removeClass('inuse')
+    @_el(@from_id).val('').removeClass('inuse')
+    @_el(@to_id).val('').removeClass('inuse')
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, '')
@@ -99,7 +94,7 @@ class RangeBase extends BaseFilter
 
 
   current_value: ->
-    { from: $("##{@from_id}").val(), to: $("##{@to_id}").val() }
+    { from: @_el(@from_id).val(), to: @_el(@to_id).val() }
 
 
   ###################
@@ -172,11 +167,8 @@ class RangeBase extends BaseFilter
     current_value = @current_value()
     return if current_value.from == '' and current_value.to == ''
 
-    $("##{@from_id}").val('')
-    $("##{@from_id}").removeClass('inuse')
-
-    $("##{@to_id}").val('')
-    $("##{@to_id}").removeClass('inuse')
+    @_el(@from_id).val('').removeClass('inuse')
+    @_el(@to_id).val('').removeClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, @range_delimiter)

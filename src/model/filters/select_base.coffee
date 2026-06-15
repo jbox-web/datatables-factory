@@ -25,14 +25,14 @@ class SelectBase extends BaseFilter
     super()
 
     # add a wrapper to hold both filter and reset button
-    $("#{@container_id}").append @_html_wrapper()
+    @_container().append @_html_wrapper()
 
     # add input fields
-    $("#{@container_id} div.yadcf-filter-wrapper").append @_html_input_field()
+    @_container_find('div.yadcf-filter-wrapper').append @_html_input_field()
 
     # add reset button
     if @filter_reset_button
-      $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
+      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
 
 
   bind_inputs: ->
@@ -52,7 +52,7 @@ class SelectBase extends BaseFilter
       @_select_clear(event)
       return
 
-    $("##{@reset_id}").on('click', onclick_callback)
+    @_el(@reset_id).on('click', onclick_callback)
 
     @_initialize_select_plugin()
 
@@ -68,14 +68,14 @@ class SelectBase extends BaseFilter
       @_set_select_value(restored_value)
 
       if restored_value != '-1'
-        $("##{@select_id}").addClass('inuse')
+        @_el(@select_id).addClass('inuse')
 
 
   reset: (event) ->
     super(event)
 
     @_clear_select_value()
-    $("##{@select_id}").removeClass('inuse')
+    @_el(@select_id).removeClass('inuse')
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, '')
@@ -87,8 +87,7 @@ class SelectBase extends BaseFilter
   reload: (event) ->
     super(event)
 
-    $("##{@select_id}").empty()
-    $("##{@select_id}").append(@_select_options())
+    @_el(@select_id).empty().append(@_select_options())
 
     # re-read options and selection from the underlying <select>
     @select_plugin?.clearOptions()
@@ -131,7 +130,7 @@ class SelectBase extends BaseFilter
     return if @_empty_value(current_value)
 
     @_set_select_value('-1')
-    $("##{@select_id}").removeClass('inuse')
+    @_el(@select_id).removeClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, '')
@@ -145,7 +144,7 @@ class SelectBase extends BaseFilter
     if @select_plugin?
       @select_plugin.setValue(value, true)
     else
-      $("##{@select_id}").val(value)
+      @_el(@select_id).val(value)
 
 
   # clear value without triggering a 'change' event (and a datatable reload)
@@ -153,7 +152,7 @@ class SelectBase extends BaseFilter
     if @select_plugin?
       @select_plugin.clear(true)
     else
-      $("##{@select_id}").val('')
+      @_el(@select_id).val('')
 
 
   _initialize_select_plugin: ->
@@ -170,18 +169,18 @@ class SelectBase extends BaseFilter
         # prevent clicks on the widget from bubbling to the table header (sort).
         # 'click' only : tom-select retains focus through a document-level 'mousedown'
         # handler — stopping mousedown propagation would close the dropdown instantly
-        wrapper = $("##{@select_id}").next()
+        wrapper = @_el(@select_id).next()
         if wrapper? and wrapper.hasClass('ts-wrapper')
           callback = (event) =>
             @stop_propagation(event)
           wrapper.on('click', callback)
       when 'select2'
-        $("##{@select_id}").select2 @filter_plugin_options
+        @_el(@select_id).select2 @filter_plugin_options
 
         # select2 triggers 'change' as a jQuery event on the original select
-        $("##{@select_id}").on('change', @onchange_callback)
+        @_el(@select_id).on('change', @onchange_callback)
 
-        select2 = $("##{@select_id}").next()
+        select2 = @_el(@select_id).next()
         if select2? and select2.hasClass('select2-container')
           callback = (event) =>
             @stop_propagation(event)
@@ -190,7 +189,7 @@ class SelectBase extends BaseFilter
             .on('mousedown', callback)
       else
         # fallback on the native select element
-        $("##{@select_id}").on('change', @onchange_callback)
+        @_el(@select_id).on('change', @onchange_callback)
         @logger.error("Unknown select type: #{@filter_plugin}")
 
 

@@ -98,6 +98,12 @@ class BaseFilter extends Extendable
   # PRIVATE METHODS #
   ###################
 
+  # DOM helpers — single jQuery dependency point
+  _el: (id) -> $("##{id}")
+  _container: -> $(@container_id)
+  _container_find: (selector) -> $("#{@container_id} #{selector}")
+
+
   _html_wrapper: ->
     options =
       id:    @wrapper_id

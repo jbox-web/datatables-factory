@@ -7,7 +7,7 @@ class SelectMultiFilter extends SelectBase
   ##################
 
   current_value: ->
-    $("##{@select_id}").val()
+    @_el(@select_id).val()
 
 
   set: (value) ->
@@ -45,10 +45,10 @@ class SelectMultiFilter extends SelectBase
 
     if @_empty_value(current_value)
       search_value = ''
-      $("##{@select_id}").removeClass('inuse')
+      @_el(@select_id).removeClass('inuse')
     else
       search_value = @_cast_value(current_value)
-      $("##{@select_id}").addClass('inuse')
+      @_el(@select_id).addClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, search_value)

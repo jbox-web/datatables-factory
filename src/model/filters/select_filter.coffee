@@ -7,13 +7,11 @@ class SelectFilter extends SelectBase
   ##################
 
   current_value: ->
-    $.trim $("##{@select_id}").find('option:selected').val()
+    $.trim @_el(@select_id).find('option:selected').val()
 
 
   set: (value) ->
     super(value)
-
-
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, value)
@@ -45,10 +43,10 @@ class SelectFilter extends SelectBase
 
     if @_empty_value(current_value)
       search_value = ''
-      $("##{@select_id}").removeClass('inuse')
+      @_el(@select_id).removeClass('inuse')
     else
       search_value = current_value
-      $("##{@select_id}").addClass('inuse')
+      @_el(@select_id).addClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, search_value)

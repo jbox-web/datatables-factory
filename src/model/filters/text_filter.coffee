@@ -15,14 +15,14 @@ class TextFilter extends BaseFilter
     super()
 
     # add a wrapper to hold both filter and reset button
-    $("#{@container_id}").append @_html_wrapper()
+    @_container().append @_html_wrapper()
 
     # add input fields
-    $("#{@container_id} div.yadcf-filter-wrapper").append @_html_input_field()
+    @_container_find('div.yadcf-filter-wrapper').append @_html_input_field()
 
     # add reset button
     if @filter_reset_button
-      $("#{@container_id} div.yadcf-filter-wrapper").append @_html_reset_button()
+      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
 
 
   ##################
@@ -39,14 +39,14 @@ class TextFilter extends BaseFilter
       @_text_change(event)
       return
 
-    $("##{@input_id}").on('keyup', @_with_delay(onkeyup_callback, delay))
+    @_el(@input_id).on('keyup', @_with_delay(onkeyup_callback, delay))
 
     # bind reset button
     onclick_callback = (event) =>
       @_text_clear(event)
       return
 
-    $("##{@reset_id}").on('click', onclick_callback)
+    @_el(@reset_id).on('click', onclick_callback)
 
 
   restore_state: ->
@@ -57,17 +57,16 @@ class TextFilter extends BaseFilter
     if saved_state?
       restored_value = saved_state.value
 
-      $("##{@input_id}").val(restored_value)
+      @_el(@input_id).val(restored_value)
 
       if restored_value != ''
-        $("##{@input_id}").addClass('inuse')
+        @_el(@input_id).addClass('inuse')
 
 
   reset: (event) ->
     super(event)
 
-    $("##{@input_id}").val('')
-    $("##{@input_id}").removeClass('inuse')
+    @_el(@input_id).val('').removeClass('inuse')
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, '')
@@ -79,8 +78,8 @@ class TextFilter extends BaseFilter
   set: (value) ->
     super(value)
 
-    $("##{@input_id}").val(value)
-    $("##{@input_id}").addClass('inuse') if value != ''
+    @_el(@input_id).val(value)
+    @_el(@input_id).addClass('inuse') if value != ''
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, value)
@@ -90,7 +89,7 @@ class TextFilter extends BaseFilter
 
 
   current_value: ->
-    $.trim $("##{@input_id}").val()
+    $.trim @_el(@input_id).val()
 
 
   ###################
@@ -128,9 +127,9 @@ class TextFilter extends BaseFilter
     current_value = @current_value()
 
     if @_empty_value(current_value)
-      $("##{@input_id}").removeClass('inuse')
+      @_el(@input_id).removeClass('inuse')
     else
-      $("##{@input_id}").addClass('inuse')
+      @_el(@input_id).addClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, current_value)
@@ -146,8 +145,7 @@ class TextFilter extends BaseFilter
     current_value = @current_value()
     return if @_empty_value(current_value)
 
-    $("##{@input_id}").val('')
-    $("##{@input_id}").removeClass('inuse')
+    @_el(@input_id).val('').removeClass('inuse')
 
     # run filter (triggers a datatable reload)
     @_run_filter(@column_id, '')

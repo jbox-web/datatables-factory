@@ -24,14 +24,14 @@ class RangeNumberFilter extends RangeBase
     max = @_int_or_empty_string(current_value.to)
 
     if min != ''
-      $("##{@from_id}").addClass('inuse')
+      @_el(@from_id).addClass('inuse')
     else
-      $("##{@from_id}").removeClass('inuse')
+      @_el(@from_id).removeClass('inuse')
 
     if max != ''
-      $("##{@to_id}").addClass('inuse')
+      @_el(@to_id).addClass('inuse')
     else
-      $("##{@to_id}").removeClass('inuse')
+      @_el(@to_id).removeClass('inuse')
 
     search_value = "#{min}#{@range_delimiter}#{max}"
 
