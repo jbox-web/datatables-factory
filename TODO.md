@@ -46,9 +46,6 @@
 
 ## Qualité / nettoyage
 
-- [ ] **Constantes magiques de positionnement du context menu** (`src/context_menu.coffee` lignes ~72-78)
-  `325` et `345` (hauteurs en pixels pour sous-menus) sont hardcodées. Calculer dynamiquement depuis la hauteur réelle du menu ou externaliser en option.
-
 - [ ] **`create_html` dupliqué dans chaque filtre** (`TextFilter`, `SelectBase`, `RangeBase`)
   La structure wrapper + input + reset button est identique dans les trois classes. La remonter dans `BaseFilter.create_html` avec `_html_input_field` comme hook à surcharger.
 

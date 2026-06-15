@@ -57,11 +57,11 @@ class ContextMenu
           render_y -= menu_height
           $('#context-menu').addClass('reverse-y')
           # adding class for submenu
-          if mouse_y_c < 325
+          if mouse_y_c < menu_height
             $('#context-menu .folder').addClass('down')
         else
           # adding class for submenu
-          if window_height - mouse_y_c < 345
+          if window_height - mouse_y_c < menu_height
             $('#context-menu .folder').addClass('up')
           $('#context-menu').removeClass('reverse-y')
 
