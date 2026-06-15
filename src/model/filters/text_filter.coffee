@@ -11,20 +11,6 @@ class TextFilter extends BaseFilter
     @reset_id     = "yadcf-filter-#{@datatable_filter.dt_id}-reset-#{@column_id}"
 
 
-  create_html: ->
-    super()
-
-    # add a wrapper to hold both filter and reset button
-    @_container().append @_html_wrapper()
-
-    # add input fields
-    @_container_find('div.yadcf-filter-wrapper').append @_html_input_field()
-
-    # add reset button
-    if @filter_reset_button
-      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
-
-
   ##################
   # PUBLIC METHODS #
   ##################

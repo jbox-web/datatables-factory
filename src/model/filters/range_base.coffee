@@ -25,7 +25,7 @@ class RangeBase extends BaseFilter
   ##################
 
   create_html: ->
-    super()
+    @logger.info "#{@name()} : create_html"
 
     # add outer wrapper to hold both filter and reset button
     @_container().append @_html_wrapper_outer()

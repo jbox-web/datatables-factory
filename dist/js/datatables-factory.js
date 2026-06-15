@@ -828,12 +828,15 @@ BaseFilter = function () {
       value: function name() {
         return "".concat(this.dt_class, "/").concat(this.constructor.name, "#").concat(this.column_id);
       }
-
-      // implementation (must be overriden)
     }, {
       key: "create_html",
       value: function create_html() {
-        return this.logger.info("".concat(this.name(), " : create_html"));
+        this.logger.info("".concat(this.name(), " : create_html"));
+        this._container().append(this._html_wrapper());
+        this._container_find('div.yadcf-filter-wrapper').append(this._html_input_field());
+        if (this.filter_reset_button) {
+          return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
+        }
       }
     }, {
       key: "bind_inputs",
@@ -1055,7 +1058,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
   return _createClass(RangeBase, [{
     key: "create_html",
     value: function create_html() {
-      _superPropGet(RangeBase, "create_html", this, 3)([]);
+      this.logger.info("".concat(this.name(), " : create_html"));
       // add outer wrapper to hold both filter and reset button
       this._container().append(this._html_wrapper_outer());
       // add inner wrapper
@@ -1533,19 +1536,6 @@ SelectBase = function () {
     //#################
     _inherits(SelectBase, _BaseFilter);
     return _createClass(SelectBase, [{
-      key: "create_html",
-      value: function create_html() {
-        _superPropGet(SelectBase, "create_html", this, 3)([]);
-        // add a wrapper to hold both filter and reset button
-        this._container().append(this._html_wrapper());
-        // add input fields
-        this._container_find('div.yadcf-filter-wrapper').append(this._html_input_field());
-        // add reset button
-        if (this.filter_reset_button) {
-          return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
-        }
-      }
-    }, {
       key: "bind_inputs",
       value: function bind_inputs() {
         var _this2 = this;
@@ -2010,25 +2000,12 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
     _this.reset_id = "yadcf-filter-".concat(_this.datatable_filter.dt_id, "-reset-").concat(_this.column_id);
     return _this;
   }
+
+  //#################
+  // PUBLIC METHODS #
+  //#################
   _inherits(TextFilter, _BaseFilter);
   return _createClass(TextFilter, [{
-    key: "create_html",
-    value: function create_html() {
-      _superPropGet(TextFilter, "create_html", this, 3)([]);
-      // add a wrapper to hold both filter and reset button
-      this._container().append(this._html_wrapper());
-      // add input fields
-      this._container_find('div.yadcf-filter-wrapper').append(this._html_input_field());
-      // add reset button
-      if (this.filter_reset_button) {
-        return this._container_find('div.yadcf-filter-wrapper').append(this._html_reset_button());
-      }
-    }
-
-    //#################
-    // PUBLIC METHODS #
-    //#################
-  }, {
     key: "bind_inputs",
     value: function bind_inputs() {
       var _this2 = this;

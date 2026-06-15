@@ -48,9 +48,12 @@ class BaseFilter extends Extendable
     "#{@dt_class}/#{this.constructor.name}##{@column_id}"
 
 
-  # implementation (must be overriden)
   create_html: ->
     @logger.info "#{@name()} : create_html"
+    @_container().append @_html_wrapper()
+    @_container_find('div.yadcf-filter-wrapper').append @_html_input_field()
+    if @filter_reset_button
+      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
 
 
   bind_inputs: ->
