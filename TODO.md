@@ -26,6 +26,3 @@
 
 ## Qualité / nettoyage
 
-- [ ] **Attributs de tableau déclarés au niveau classe dans `DatatableBase`** (`src/model/datatable_base.coffee` lignes ~48-52)
-  `columns: []`, `buttons: []`, etc. déclarés comme propriétés de classe sont des références partagées entre toutes les instances. Le constructeur les réassigne immédiatement donc ça ne mord pas en pratique, mais c'est trompeur. Les supprimer ou les déplacer dans le constructeur.
-

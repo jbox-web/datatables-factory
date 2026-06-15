@@ -39,21 +39,13 @@ class DatatableBase extends Extendable
   @instance: null
   @dtf_options: null
 
-  #######################
-  # Instance attributes #
-  #######################
-
-  datatable: null
-  columns: []
-  buttons: []
-  filters: []
-  filters_applied: []
-  callbacks: {}
-
-
   constructor: (@dt_class, @dt_id, @dt_options, @dtf_options, @logger) ->
     # Call Extendable parent
     super()
+
+    # Instance attributes
+    @datatable       = null
+    @callbacks       = {}
 
     # Extract some options
     @columns         = @dt_options['columns'] || []

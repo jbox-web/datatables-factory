@@ -306,6 +306,9 @@ DatatableBase = function () {
       _this.dt_options = dt_options;
       _this.dtf_options = dtf_options;
       _this.logger = logger;
+      // Instance attributes
+      _this.datatable = null;
+      _this.callbacks = {};
       // Extract some options
       _this.columns = _this.dt_options['columns'] || [];
       _this.buttons = _this.dt_options['buttons'] || [];
@@ -425,16 +428,6 @@ DatatableBase = function () {
   //###################
   DatatableBase.instance = null;
   DatatableBase.dtf_options = null;
-
-  //######################
-  // Instance attributes #
-  //######################
-  DatatableBase.prototype.datatable = null;
-  DatatableBase.prototype.columns = [];
-  DatatableBase.prototype.buttons = [];
-  DatatableBase.prototype.filters = [];
-  DatatableBase.prototype.filters_applied = [];
-  DatatableBase.prototype.callbacks = {};
   return DatatableBase;
 }.call(void 0);
 var _default = exports["default"] = DatatableBase;
