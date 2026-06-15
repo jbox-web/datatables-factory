@@ -25,11 +25,10 @@ class SelectFilter extends SelectBase
   ###################
 
   _select_options: ->
-    options = "<option value=\"\">#{@filter_default_label}</option>"
+    parts = ["<option value=\"\">#{@filter_default_label}</option>"]
     if @dropdown_data?
-      for data in @dropdown_data
-        options += "<option value=\"#{data.value}\" >#{data.label}</option>"
-    options
+      parts.push "<option value=\"#{data.value}\">#{data.label}</option>" for data in @dropdown_data
+    parts.join('')
 
 
   _empty_value: (value) ->

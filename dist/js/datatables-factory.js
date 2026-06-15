@@ -1784,16 +1784,16 @@ SelectFilter = /*#__PURE__*/function (_SelectBase) {
   }, {
     key: "_select_options",
     value: function _select_options() {
-      var data, i, len, options, ref;
-      options = "<option value=\"\">".concat(this.filter_default_label, "</option>");
+      var data, i, len, parts, ref;
+      parts = ["<option value=\"\">".concat(this.filter_default_label, "</option>")];
       if (this.dropdown_data != null) {
         ref = this.dropdown_data;
         for (i = 0, len = ref.length; i < len; i++) {
           data = ref[i];
-          options += "<option value=\"".concat(data.value, "\" >").concat(data.label, "</option>");
+          parts.push("<option value=\"".concat(data.value, "\">").concat(data.label, "</option>"));
         }
       }
-      return options;
+      return parts.join('');
     }
   }, {
     key: "_empty_value",
@@ -1899,16 +1899,17 @@ SelectMultiFilter = /*#__PURE__*/function (_SelectBase) {
   }, {
     key: "_select_options",
     value: function _select_options() {
-      var data, i, len, options, ref;
-      options = '';
-      if (this.dropdown_data != null) {
-        ref = this.dropdown_data;
-        for (i = 0, len = ref.length; i < len; i++) {
-          data = ref[i];
-          options += "<option value=\"".concat(data.value, "\" >").concat(data.label, "</option>");
-        }
+      var data, i, len, parts, ref;
+      if (this.dropdown_data == null) {
+        return '';
       }
-      return options;
+      parts = [];
+      ref = this.dropdown_data;
+      for (i = 0, len = ref.length; i < len; i++) {
+        data = ref[i];
+        parts.push("<option value=\"".concat(data.value, "\">").concat(data.label, "</option>"));
+      }
+      return parts.join('');
     }
   }, {
     key: "_empty_value",

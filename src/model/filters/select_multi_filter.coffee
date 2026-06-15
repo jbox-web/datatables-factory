@@ -27,11 +27,10 @@ class SelectMultiFilter extends SelectBase
   ###################
 
   _select_options: ->
-    options = ''
-    if @dropdown_data?
-      for data in @dropdown_data
-        options += "<option value=\"#{data.value}\" >#{data.label}</option>"
-    options
+    return '' if !@dropdown_data?
+    parts = []
+    parts.push "<option value=\"#{data.value}\">#{data.label}</option>" for data in @dropdown_data
+    parts.join('')
 
 
   _empty_value: (value) ->
