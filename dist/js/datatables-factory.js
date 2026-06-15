@@ -3342,7 +3342,6 @@ var _datatable_base = _interopRequireDefault(__webpack_require__(/*! ./model/dat
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 })();
 
-__webpack_exports__ = __webpack_exports__.DatatableBase;
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;

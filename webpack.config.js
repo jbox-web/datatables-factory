@@ -10,7 +10,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist/js'),
     filename: 'datatables-factory.js',
     library: 'DatatableBase',
-    libraryExport: 'DatatableBase',
     libraryTarget: 'umd',
     globalObject: 'this',
   },
