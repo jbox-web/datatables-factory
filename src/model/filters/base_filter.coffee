@@ -2,7 +2,6 @@ import Extendable from '../../extendable.coffee'
 import WithLogger from '../../modules/with_logger.coffee'
 
 class BaseFilter extends Extendable
-  @extend  WithLogger.class_methods
   @include WithLogger.instance_methods
 
 

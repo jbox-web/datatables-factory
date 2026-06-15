@@ -1,8 +1,5 @@
 WithLogger = {}
 
-WithLogger.class_methods = {}
-
-
 WithLogger.instance_methods =
 
   ###########################

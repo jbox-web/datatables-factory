@@ -407,7 +407,6 @@ DatatableBase = function () {
   ;
   DatatableBase.extend(_loader["default"].class_methods);
   DatatableBase.include(_loader["default"].instance_methods);
-  DatatableBase.extend(_with_logger["default"].class_methods);
   DatatableBase.include(_with_logger["default"].instance_methods);
   DatatableBase.extend(_with_filters["default"].class_methods);
   DatatableBase.include(_with_filters["default"].instance_methods);
@@ -747,7 +746,6 @@ DatatableFilter = function () {
     }]);
   }(_extendable["default"]);
   ;
-  DatatableFilter.extend(_with_logger["default"].class_methods);
   DatatableFilter.include(_with_logger["default"].instance_methods);
   return DatatableFilter;
 }.call(void 0);
@@ -989,7 +987,6 @@ BaseFilter = function () {
     }]);
   }(_extendable["default"]);
   ;
-  BaseFilter.extend(_with_logger["default"].class_methods);
   BaseFilter.include(_with_logger["default"].instance_methods);
   return BaseFilter;
 }.call(void 0);
@@ -3156,7 +3153,6 @@ Object.defineProperty(exports, "__esModule", ({
 exports["default"] = void 0;
 var WithLogger;
 WithLogger = {};
-WithLogger.class_methods = {};
 WithLogger.instance_methods = {
   //##########################
   // Public Instance methods #

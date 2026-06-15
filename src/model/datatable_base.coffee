@@ -14,7 +14,6 @@ class DatatableBase extends Extendable
   @extend  Loader.class_methods
   @include Loader.instance_methods
 
-  @extend  WithLogger.class_methods
   @include WithLogger.instance_methods
 
   @extend  WithFilters.class_methods

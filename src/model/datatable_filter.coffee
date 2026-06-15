@@ -9,7 +9,6 @@ import SelectFilter      from './filters/select_filter.coffee'
 import SelectMultiFilter from './filters/select_multi_filter.coffee'
 
 class DatatableFilter extends Extendable
-  @extend  WithLogger.class_methods
   @include WithLogger.instance_methods
 
 
