@@ -3102,7 +3102,7 @@ WithDebug.instance_methods = {
   // Private Instance methods #
   //###########################
   _param: function _param(name) {
-    return (location.search.split(name + '=')[1] || '').split('&')[0];
+    return new URLSearchParams(location.search).get(name);
   }
 };
 var _default = exports["default"] = WithDebug;

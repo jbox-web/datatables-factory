@@ -37,7 +37,7 @@ WithDebug.instance_methods =
   ############################
 
   _param: (name) ->
-    (location.search.split(name + '=')[1] || '').split('&')[0]
+    new URLSearchParams(location.search).get(name)
 
 
 export default WithDebug
