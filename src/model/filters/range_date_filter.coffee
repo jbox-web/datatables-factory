@@ -28,6 +28,11 @@ class RangeDateFilter extends RangeBase
     )
 
 
+  destroy: ->
+    @_el(@from_id).datepicker('destroy')
+    @_el(@to_id).datepicker('destroy')
+
+
   ###################
   # PRIVATE METHODS #
   ###################

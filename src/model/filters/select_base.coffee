@@ -70,6 +70,11 @@ class SelectBase extends BaseFilter
     @_reset_state(@column_id)
 
 
+  destroy: ->
+    @select_plugin?.destroy()
+    @select_plugin = null
+
+
   reload: (event) ->
     super(event)
 

@@ -32,6 +32,13 @@ class DatatableFilter extends Extendable
     @_bind_datatable()
 
 
+  destroy: ->
+    $(@datatable.dt_id).off('stateSaveParams.dt').off('xhr.dt')
+    for _column_id, filter of @loaded_filters
+      filter.destroy?()
+    @loaded_filters = {}
+
+
   find_by_column_id: (column_id) ->
     @loaded_filters[column_id]
 

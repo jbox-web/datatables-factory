@@ -349,6 +349,13 @@ DatatableBase = function () {
     }, {
       key: "destroy",
       value: function destroy() {
+        var ref;
+        // Clean up module listeners before DataTables tears down
+        this._with_check_boxes_destroy();
+        this._with_context_menu_destroy();
+        if ((ref = this.datatable_filter) != null) {
+          ref.destroy();
+        }
         this.datatable.destroy();
         return this.datatable = null;
       }
@@ -492,6 +499,20 @@ DatatableFilter = function () {
       value: function load() {
         this._load_filters();
         return this._bind_datatable();
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        var _column_id, filter, ref;
+        $(this.datatable.dt_id).off('stateSaveParams.dt').off('xhr.dt');
+        ref = this.loaded_filters;
+        for (_column_id in ref) {
+          filter = ref[_column_id];
+          if (typeof filter.destroy === "function") {
+            filter.destroy();
+          }
+        }
+        return this.loaded_filters = {};
       }
     }, {
       key: "find_by_column_id",
@@ -1270,6 +1291,12 @@ RangeDateFilter = function () {
         }));
       }
     }, {
+      key: "destroy",
+      value: function destroy() {
+        this._el(this.from_id).datepicker('destroy');
+        return this._el(this.to_id).datepicker('destroy');
+      }
+    }, {
       key: "_date_select",
       value: function _date_select(_date, _event) {
         var current_value, from, search_value, to;
@@ -1540,6 +1567,15 @@ SelectBase = function () {
         this._set_search_value(this.column_id, '');
         // save current value
         return this._reset_state(this.column_id);
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        var ref;
+        if ((ref = this.select_plugin) != null) {
+          ref.destroy();
+        }
+        return this.select_plugin = null;
       }
     }, {
       key: "reload",
@@ -2628,6 +2664,7 @@ WithCheckBoxes.instance_methods = {
         return this._restrict_touch_selection_to_check_boxes();
       case 'after_init':
         this.info('Add check_boxes callbacks to : datatable');
+        this._check_boxes_thead = $('thead', this.datatable.table().container());
         // Update state of "Select all" control
         this.datatable.on('draw.dt', this._check_boxes_callback_on_draw());
         // Update global count
@@ -2635,9 +2672,9 @@ WithCheckBoxes.instance_methods = {
         // Handle row selection event
         this.datatable.on('select.dt deselect.dt', this._check_boxes_callback_on_select());
         // Handle click on "Select all" control
-        $('thead', this.datatable.table().container()).on('click', 'input[type="checkbox"]', this._check_boxes_callback_checkbox_on_click());
+        this._check_boxes_thead.on('click', 'input[type="checkbox"]', this._check_boxes_callback_checkbox_on_click());
         // Handle click on heading containing "Select all" control
-        return $('thead', this.datatable.table().container()).on('click', 'th:first-child', this._check_boxes_callback_th_on_click());
+        return this._check_boxes_thead.on('click', 'th:first-child', this._check_boxes_callback_th_on_click());
     }
   },
   //##########################
@@ -2800,6 +2837,19 @@ WithCheckBoxes.instance_methods = {
     select['selector'] = 'td.check_box';
     return this.dt_options['select'] = select;
   },
+  _with_check_boxes_destroy: function _with_check_boxes_destroy() {
+    var ref;
+    if (!this._check_boxes_enabled()) {
+      return;
+    }
+    this.datatable.off('draw.dt');
+    this.datatable.off('xhr.dt');
+    this.datatable.off('select.dt deselect.dt');
+    if ((ref = this._check_boxes_thead) != null) {
+      ref.off('click');
+    }
+    return this._check_boxes_thead = null;
+  },
   _add_row_if_checked: function _add_row_if_checked(tr) {
     var checkbox;
     checkbox = $($(tr).find('input[type="checkbox"]')[0]);
@@ -2855,7 +2905,7 @@ WithContextMenu.instance_methods = {
   // LOADER #
   //#########
   with_context_menu_set_callbacks: function with_context_menu_set_callbacks(callback_type) {
-    var tbody, url;
+    var url;
     if (!this._context_menu_enabled()) {
       return false;
     }
@@ -2865,13 +2915,13 @@ WithContextMenu.instance_methods = {
         return this.callbacks['createdRow'].push(this._context_menu_callback_on_created_row());
       case 'after_init':
         this.info('Add context_menu callbacks to : datatable');
-        tbody = $('tbody', this.datatable.table().container());
+        this._context_menu_tbody = $('tbody', this.datatable.table().container());
         // Capture URL once at init time — prevents DOM manipulation attacks
-        url = tbody.data('url');
+        url = this._context_menu_tbody.data('url');
         // Handle right click on datatable
-        tbody.on('contextmenu', this._context_menu_callback_on_contextmenu(url));
+        this._context_menu_tbody.on('contextmenu', this._context_menu_callback_on_contextmenu(url));
         // Handle long-press on touch devices (parity with right click)
-        return this._context_menu_bind_long_press(tbody, url);
+        return this._context_menu_bind_long_press(this._context_menu_tbody, url);
     }
   },
   //############
@@ -2899,6 +2949,16 @@ WithContextMenu.instance_methods = {
       _this2._handle_row_selection(tr);
       return _context_menu["default"].show(event, url);
     };
+  },
+  _with_context_menu_destroy: function _with_context_menu_destroy() {
+    var ref;
+    if (!this._context_menu_enabled()) {
+      return;
+    }
+    if ((ref = this._context_menu_tbody) != null) {
+      ref.off('contextmenu touchstart touchmove touchend touchcancel');
+    }
+    return this._context_menu_tbody = null;
   },
   //###########################
   // Private Instance methods #

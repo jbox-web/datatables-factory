@@ -86,6 +86,10 @@ class DatatableBase extends Extendable
 
 
   destroy: ->
+    # Clean up module listeners before DataTables tears down
+    @_with_check_boxes_destroy()
+    @_with_context_menu_destroy()
+    @datatable_filter?.destroy()
     @datatable.destroy()
     @datatable = null
 

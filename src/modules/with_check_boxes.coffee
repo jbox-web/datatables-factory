@@ -34,6 +34,8 @@ WithCheckBoxes.instance_methods =
       when 'after_init'
         @info('Add check_boxes callbacks to : datatable')
 
+        @_check_boxes_thead = $('thead', @datatable.table().container())
+
         # Update state of "Select all" control
         @datatable.on 'draw.dt', @_check_boxes_callback_on_draw()
 
@@ -44,10 +46,10 @@ WithCheckBoxes.instance_methods =
         @datatable.on 'select.dt deselect.dt', @_check_boxes_callback_on_select()
 
         # Handle click on "Select all" control
-        $('thead', @datatable.table().container()).on 'click', 'input[type="checkbox"]', @_check_boxes_callback_checkbox_on_click()
+        @_check_boxes_thead.on 'click', 'input[type="checkbox"]', @_check_boxes_callback_checkbox_on_click()
 
         # Handle click on heading containing "Select all" control
-        $('thead', @datatable.table().container()).on 'click', 'th:first-child', @_check_boxes_callback_th_on_click()
+        @_check_boxes_thead.on 'click', 'th:first-child', @_check_boxes_callback_th_on_click()
 
 
   ###########################
@@ -196,6 +198,15 @@ WithCheckBoxes.instance_methods =
 
     select['selector'] = 'td.check_box'
     @dt_options['select'] = select
+
+
+  _with_check_boxes_destroy: ->
+    return if !@_check_boxes_enabled()
+    @datatable.off('draw.dt')
+    @datatable.off('xhr.dt')
+    @datatable.off('select.dt deselect.dt')
+    @_check_boxes_thead?.off('click')
+    @_check_boxes_thead = null
 
 
   _add_row_if_checked: (tr) ->

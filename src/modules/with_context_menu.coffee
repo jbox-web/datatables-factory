@@ -37,16 +37,16 @@ WithContextMenu.instance_methods =
       when 'after_init'
         @info('Add context_menu callbacks to : datatable')
 
-        tbody = $('tbody', @datatable.table().container())
+        @_context_menu_tbody = $('tbody', @datatable.table().container())
 
         # Capture URL once at init time — prevents DOM manipulation attacks
-        url = tbody.data('url')
+        url = @_context_menu_tbody.data('url')
 
         # Handle right click on datatable
-        tbody.on 'contextmenu', @_context_menu_callback_on_contextmenu(url)
+        @_context_menu_tbody.on 'contextmenu', @_context_menu_callback_on_contextmenu(url)
 
         # Handle long-press on touch devices (parity with right click)
-        @_context_menu_bind_long_press(tbody, url)
+        @_context_menu_bind_long_press(@_context_menu_tbody, url)
 
 
   #############
@@ -69,6 +69,12 @@ WithContextMenu.instance_methods =
       event.preventDefault()
       @_handle_row_selection(tr)
       ContextMenu.show(event, url)
+
+
+  _with_context_menu_destroy: ->
+    return if !@_context_menu_enabled()
+    @_context_menu_tbody?.off('contextmenu touchstart touchmove touchend touchcancel')
+    @_context_menu_tbody = null
 
 
   ############################
