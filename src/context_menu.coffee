@@ -29,13 +29,15 @@ class ContextMenu
       url: $(event.target).parents('tbody').first().data('url')
       data: $(event.target).parents('form').first().serialize()
       success: (result, _textStatus, _jqXHR) ->
+        # $.parseHTML with null context prevents script execution (XSS mitigation)
+        nodes = $.parseHTML(result, null) or []
         data =
-          if $(result).children('li').length >= 1
-            result
+          if $(nodes).children('li').length >= 1
+            nodes
           else
             $('#context-menu-empty').children().clone()
 
-        $('#context-menu').html(data)
+        $('#context-menu').empty().append(data)
 
         menu_width = $('#context-menu').width()
         menu_height = $('#context-menu').height()

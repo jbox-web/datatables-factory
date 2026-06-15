@@ -69,9 +69,11 @@ ContextMenu = /*#__PURE__*/function () {
         url: $(event.target).parents('tbody').first().data('url'),
         data: $(event.target).parents('form').first().serialize(),
         success: function success(result, _textStatus, _jqXHR) {
-          var data, ws;
-          data = $(result).children('li').length >= 1 ? result : $('#context-menu-empty').children().clone();
-          $('#context-menu').html(data);
+          var data, nodes, ws;
+          // $.parseHTML with null context prevents script execution (XSS mitigation)
+          nodes = $.parseHTML(result, null) || [];
+          data = $(nodes).children('li').length >= 1 ? nodes : $('#context-menu-empty').children().clone();
+          $('#context-menu').empty().append(data);
           menu_width = $('#context-menu').width();
           menu_height = $('#context-menu').height();
           max_width = mouse_x + 2 * menu_width;
