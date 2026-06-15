@@ -33,6 +33,7 @@ class DatatableFilter extends Extendable
 
 
   destroy: ->
+    clearTimeout(@_save_state_timer) if @_save_state_timer?
     $(@datatable.dt_id).off('stateSaveParams.dt').off('xhr.dt')
     for _column_id, filter of @loaded_filters
       filter.destroy?()
@@ -201,7 +202,13 @@ class DatatableFilter extends Extendable
 
 
   _save_state: ->
-    @instance.state.save()
+    # Debounce to batch rapid filter changes (e.g. keystrokes, apply_default_filters)
+    # into a single localStorage write instead of one per event.
+    clearTimeout(@_save_state_timer) if @_save_state_timer?
+    @_save_state_timer = setTimeout =>
+      @_save_state_timer = null
+      @instance.state.save()
+    , 100
 
 
 export default DatatableFilter

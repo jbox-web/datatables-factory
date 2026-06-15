@@ -504,6 +504,9 @@ DatatableFilter = function () {
       key: "destroy",
       value: function destroy() {
         var _column_id, filter, ref;
+        if (this._save_state_timer != null) {
+          clearTimeout(this._save_state_timer);
+        }
         $(this.datatable.dt_id).off('stateSaveParams.dt').off('xhr.dt');
         ref = this.loaded_filters;
         for (_column_id in ref) {
@@ -719,7 +722,16 @@ DatatableFilter = function () {
     }, {
       key: "_save_state",
       value: function _save_state() {
-        return this.instance.state.save();
+        var _this3 = this;
+        if (this._save_state_timer != null) {
+          // Debounce to batch rapid filter changes (e.g. keystrokes, apply_default_filters)
+          // into a single localStorage write instead of one per event.
+          clearTimeout(this._save_state_timer);
+        }
+        return this._save_state_timer = setTimeout(function () {
+          _this3._save_state_timer = null;
+          return _this3.instance.state.save();
+        }, 100);
       }
     }]);
   }(_extendable["default"]);
