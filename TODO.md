@@ -32,9 +32,6 @@
 - [ ] **`create_html` dupliqué dans chaque filtre** (`TextFilter`, `SelectBase`, `RangeBase`)
   La structure wrapper + input + reset button est identique dans les trois classes. La remonter dans `BaseFilter.create_html` avec `_html_input_field` comme hook à surcharger.
 
-- [ ] **`while` avec index explicite dans les `_find_*`** (`datatable_base.coffee`, `with_buttons.coffee`, `with_filters.coffee`)
-  `_find_column`, `_find_button`, `_find_filter` utilisent des boucles `while i < len`. Remplacer par `Array.prototype.find`.
-
 - [ ] **Attributs de tableau déclarés au niveau classe dans `DatatableBase`** (`src/model/datatable_base.coffee` lignes ~48-52)
   `columns: []`, `buttons: []`, etc. déclarés comme propriétés de classe sont des références partagées entre toutes les instances. Le constructeur les réassigne immédiatement donc ça ne mord pas en pratique, mais c'est trompeur. Les supprimer ou les déplacer dans le constructeur.
 

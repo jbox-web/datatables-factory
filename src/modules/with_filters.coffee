@@ -20,13 +20,8 @@ WithFilters.instance_methods =
   ############################
 
   _find_filter: (filters, column_id) ->
-    i = 0
-    len = filters.length
-    while i < len
-      if filters[i].column_id == column_id
-        return [i, filters[i]]
-      i++
-    null
+    i = filters.findIndex (f) -> f.column_id == column_id
+    if i >= 0 then [i, filters[i]] else null
 
 
 export default WithFilters

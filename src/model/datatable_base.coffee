@@ -140,13 +140,8 @@ class DatatableBase extends Extendable
   ############################
 
   _find_column: (columns, column_name) ->
-    i = 0
-    len = columns.length
-    while i < len
-      if columns[i].data == column_name
-        return [i, columns[i]]
-      i++
-    null
+    i = columns.findIndex (c) -> c.data == column_name
+    if i >= 0 then [i, columns[i]] else null
 
 
 export default DatatableBase

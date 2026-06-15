@@ -393,16 +393,15 @@ DatatableBase = function () {
     }, {
       key: "_find_column",
       value: function _find_column(columns, column_name) {
-        var i, len;
-        i = 0;
-        len = columns.length;
-        while (i < len) {
-          if (columns[i].data === column_name) {
-            return [i, columns[i]];
-          }
-          i++;
+        var i;
+        i = columns.findIndex(function (c) {
+          return c.data === column_name;
+        });
+        if (i >= 0) {
+          return [i, columns[i]];
+        } else {
+          return null;
         }
-        return null;
       }
     }]);
   }(_extendable["default"]);
@@ -2563,16 +2562,15 @@ WithButtons.instance_methods = {
     return this.buttons.length > 0;
   },
   _find_button: function _find_button(buttons, button_name) {
-    var i, len;
-    i = 0;
-    len = buttons.length;
-    while (i < len) {
-      if (buttons[i].button_name === button_name) {
-        return [i, buttons[i]];
-      }
-      i++;
+    var i;
+    i = buttons.findIndex(function (b) {
+      return b.button_name === button_name;
+    });
+    if (i >= 0) {
+      return [i, buttons[i]];
+    } else {
+      return null;
     }
-    return null;
   },
   _load_button: function _load_button(button_name, callback) {
     var button;
@@ -2599,27 +2597,27 @@ WithButtons.instance_methods = {
     on_success = callbacks.success != null ? callbacks.success : [];
     return {
       beforeSend: function beforeSend(xhr, settings) {
-        var c, j, len1, results;
+        var c, j, len, results;
         results = [];
-        for (j = 0, len1 = on_send.length; j < len1; j++) {
+        for (j = 0, len = on_send.length; j < len; j++) {
           c = on_send[j];
           results.push(c(dt_class, xhr, settings));
         }
         return results;
       },
       error: function error(xhr, status, _error) {
-        var c, j, len1, results;
+        var c, j, len, results;
         results = [];
-        for (j = 0, len1 = on_error.length; j < len1; j++) {
+        for (j = 0, len = on_error.length; j < len; j++) {
           c = on_error[j];
           results.push(c(dt_class, xhr, status, _error));
         }
         return results;
       },
       success: function success(data, status, xhr) {
-        var c, j, len1, results;
+        var c, j, len, results;
         results = [];
-        for (j = 0, len1 = on_success.length; j < len1; j++) {
+        for (j = 0, len = on_success.length; j < len; j++) {
           c = on_success[j];
           results.push(c(dt_class, data, status, xhr));
         }
@@ -3134,16 +3132,15 @@ WithFilters.instance_methods = {
   // Private Instance methods #
   //###########################
   _find_filter: function _find_filter(filters, column_id) {
-    var i, len;
-    i = 0;
-    len = filters.length;
-    while (i < len) {
-      if (filters[i].column_id === column_id) {
-        return [i, filters[i]];
-      }
-      i++;
+    var i;
+    i = filters.findIndex(function (f) {
+      return f.column_id === column_id;
+    });
+    if (i >= 0) {
+      return [i, filters[i]];
+    } else {
+      return null;
     }
-    return null;
   }
 };
 var _default = exports["default"] = WithFilters;

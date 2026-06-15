@@ -92,13 +92,8 @@ WithButtons.instance_methods =
 
 
   _find_button: (buttons, button_name) ->
-    i = 0
-    len = buttons.length
-    while i < len
-      if buttons[i].button_name == button_name
-        return [i, buttons[i]]
-      i++
-    null
+    i = buttons.findIndex (b) -> b.button_name == button_name
+    if i >= 0 then [i, buttons[i]] else null
 
 
   _load_button: (button_name, callback) ->
