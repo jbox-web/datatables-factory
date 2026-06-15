@@ -178,9 +178,10 @@ class SelectBase extends BaseFilter
           select2
             .on('click', callback)
             .on('mousedown', callback)
-      else
-        # fallback on the native select element
+      when 'native'
+        # plain HTML <select>, no plugin — used for compound input-group filters
         @_el(@select_id).on('change', @onchange_callback)
+      else
         @logger.error("Unknown select type: #{@filter_plugin}")
 
 

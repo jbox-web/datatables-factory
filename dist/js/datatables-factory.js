@@ -1707,9 +1707,10 @@ SelectBase = function () {
               return select2.on('click', callback).on('mousedown', callback);
             }
             break;
+          case 'native':
+            // plain HTML <select>, no plugin — used for compound input-group filters
+            return this._el(this.select_id).on('change', this.onchange_callback);
           default:
-            // fallback on the native select element
-            this._el(this.select_id).on('change', this.onchange_callback);
             return this.logger.error("Unknown select type: ".concat(this.filter_plugin));
         }
       }
