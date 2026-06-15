@@ -46,9 +46,6 @@
 
 ## Qualité / nettoyage
 
-- [ ] **`_param` parser d'URL fait maison** (`src/modules/with_debug.coffee` ligne ~40)
-  `location.search.split(name + '=')[1]` est fragile (valeurs encodées, paramètres multiples). Remplacer par `new URLSearchParams(location.search).get(name)`.
-
 - [ ] **Fallbacks IE8 dans `ContextMenu.window_size`** (`src/context_menu.coffee`)
   Les branches `document.documentElement` et `document.body` pour `clientWidth/clientHeight` sont mortes. `window.innerWidth` / `window.innerHeight` suffisent.
 
@@ -72,13 +69,3 @@
 
 - [ ] **Mix CommonJS / ESM** (`src/modules/loader.coffee`, `src/model/datatable_filter.coffee`)
   `dig = require('object-dig')` et `merge = require('deepmerge')` mélangés avec des `import`. Migrer vers `import dig from 'object-dig'` et `import merge from 'deepmerge'`.
-
----
-
-## Dette technique (plus long terme)
-
-- [ ] **Migration CoffeeScript → JS/TS**
-  CoffeeScript est un écosystème mort (dernier commit majeur 2022, tooling en déclin). La migration vers TypeScript apporterait la détection statique des erreurs — notamment le bug `@range_type` ci-dessus aurait été capturé à la compilation.
-
-- [ ] **Dépendance jQuery**
-  `$('#id')` est répété dans chaque filtre. Une abstraction `find(id)` réduirait le bruit et faciliterait un découplage éventuel.
