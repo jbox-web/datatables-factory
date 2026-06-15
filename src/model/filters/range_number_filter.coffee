@@ -2,11 +2,10 @@ import RangeBase from './range_base.coffee'
 
 class RangeNumberFilter extends RangeBase
 
+  range_type: 'number'
+
   constructor: (@datatable_filter, @logger, @options) ->
     super arguments...
-
-    # customize class
-    @range_type = 'number'
 
 
   ###################

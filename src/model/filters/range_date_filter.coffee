@@ -3,11 +3,10 @@ import RangeBase from './range_base.coffee'
 
 class RangeDateFilter extends RangeBase
 
+  range_type: 'date'
+
   constructor: (@datatable_filter, @logger, @options) ->
     super arguments...
-
-    # customize class
-    @range_type = 'date'
 
     # fetch datepicker data
     @filter_plugin         = @options.filter_plugin

@@ -1268,115 +1268,118 @@ var RangeDateFilter,
       throw new Error('Bound instance method accessed before binding');
     }
   };
-RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
-  function RangeDateFilter(datatable_filter, logger, options) {
-    var _this;
-    _classCallCheck(this, RangeDateFilter);
-    _this = _callSuper(this, RangeDateFilter, arguments);
-    //##################
-    // PRIVATE METHODS #
-    //##################
-    _this._date_select = _this._date_select.bind(_this);
-    _this.datatable_filter = datatable_filter;
-    _this.logger = logger;
-    _this.options = options;
-    // customize class
-    _this.range_type = 'date';
-    // fetch datepicker data
-    _this.filter_plugin = _this.options.filter_plugin;
-    _this.filter_plugin_options = _utils["default"].merge_hash({
-      onSelect: _this._date_select
-    }, _this.options.filter_plugin_options);
-    return _this;
-  }
-  _inherits(RangeDateFilter, _RangeBase);
-  return _createClass(RangeDateFilter, [{
-    key: "bind_inputs",
-    value: function bind_inputs() {
-      var _this2 = this;
-      _superPropGet(RangeDateFilter, "bind_inputs", this, 3)([]);
-      // load datepicker with callbacks
-      this._el(this.from_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
-        onClose: function onClose(selected_date) {
-          _this2._el(_this2.to_id).datepicker('option', 'minDate', selected_date);
-        }
-      }));
-      return this._el(this.to_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
-        onClose: function onClose(selected_date) {
-          _this2._el(_this2.from_id).datepicker('option', 'maxDate', selected_date);
-        }
-      }));
+RangeDateFilter = function () {
+  var RangeDateFilter = /*#__PURE__*/function (_RangeBase) {
+    function RangeDateFilter(datatable_filter, logger, options) {
+      var _this;
+      _classCallCheck(this, RangeDateFilter);
+      _this = _callSuper(this, RangeDateFilter, arguments);
+      //##################
+      // PRIVATE METHODS #
+      //##################
+      _this._date_select = _this._date_select.bind(_this);
+      _this.datatable_filter = datatable_filter;
+      _this.logger = logger;
+      _this.options = options;
+      // fetch datepicker data
+      _this.filter_plugin = _this.options.filter_plugin;
+      _this.filter_plugin_options = _utils["default"].merge_hash({
+        onSelect: _this._date_select
+      }, _this.options.filter_plugin_options);
+      return _this;
     }
-  }, {
-    key: "_date_select",
-    value: function _date_select(_date, _event) {
-      var current_value, from, search_value, to;
-      boundMethodCheck(this, RangeDateFilter);
-      this.logger.info("".concat(this.name(), " : _date_select"));
-      current_value = this.current_value();
-      from = current_value.from;
-      to = current_value.to;
-      search_value = "".concat(from).concat(this.range_delimiter).concat(to);
-      // run filter (triggers a datatable reload)
-      this._run_filter(this.column_id, search_value);
-      // save current value
-      return this._save_state(this.column_id, {
-        from: from,
-        to: to
-      });
-    }
-  }, {
-    key: "_range_change",
-    value: function _range_change(event) {
-      var current_value, date_from, date_to, from, search_value, to;
-      _superPropGet(RangeDateFilter, "_range_change", this, 3)([event]);
-      if (this._skip_key_codes().includes(event.keyCode)) {
-        return;
+    _inherits(RangeDateFilter, _RangeBase);
+    return _createClass(RangeDateFilter, [{
+      key: "bind_inputs",
+      value: function bind_inputs() {
+        var _this2 = this;
+        _superPropGet(RangeDateFilter, "bind_inputs", this, 3)([]);
+        // load datepicker with callbacks
+        this._el(this.from_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
+          onClose: function onClose(selected_date) {
+            _this2._el(_this2.to_id).datepicker('option', 'minDate', selected_date);
+          }
+        }));
+        return this._el(this.to_id).datepicker(_utils["default"].merge_hash(this.filter_plugin_options, {
+          onClose: function onClose(selected_date) {
+            _this2._el(_this2.from_id).datepicker('option', 'maxDate', selected_date);
+          }
+        }));
       }
-      current_value = this.current_value();
-      date_from = this._date_or_empty_string(current_value.from);
-      date_to = this._date_or_empty_string(current_value.to);
-      if (date_from instanceof Date) {
-        this._el(this.from_id).addClass('inuse');
+    }, {
+      key: "_date_select",
+      value: function _date_select(_date, _event) {
+        var current_value, from, search_value, to;
+        boundMethodCheck(this, RangeDateFilter);
+        this.logger.info("".concat(this.name(), " : _date_select"));
+        current_value = this.current_value();
         from = current_value.from;
-      } else {
-        this._el(this.from_id).removeClass('inuse');
-        from = '';
-      }
-      if (date_to instanceof Date) {
-        this._el(this.to_id).addClass('inuse');
         to = current_value.to;
-      } else {
-        this._el(this.to_id).removeClass('inuse');
-        to = '';
+        search_value = "".concat(from).concat(this.range_delimiter).concat(to);
+        // run filter (triggers a datatable reload)
+        this._run_filter(this.column_id, search_value);
+        // save current value
+        return this._save_state(this.column_id, {
+          from: from,
+          to: to
+        });
       }
-      search_value = "".concat(from).concat(this.range_delimiter).concat(to);
-      // run filter (triggers a datatable reload)
-      this._run_filter(this.column_id, search_value);
-      // save current value
-      return this._save_state(this.column_id, {
-        from: from,
-        to: to
-      });
-    }
-  }, {
-    key: "_date_or_empty_string",
-    value: function _date_or_empty_string(value) {
-      var date_format, e;
-      if (value === '') {
-        return '';
+    }, {
+      key: "_range_change",
+      value: function _range_change(event) {
+        var current_value, date_from, date_to, from, search_value, to;
+        _superPropGet(RangeDateFilter, "_range_change", this, 3)([event]);
+        if (this._skip_key_codes().includes(event.keyCode)) {
+          return;
+        }
+        current_value = this.current_value();
+        date_from = this._date_or_empty_string(current_value.from);
+        date_to = this._date_or_empty_string(current_value.to);
+        if (date_from instanceof Date) {
+          this._el(this.from_id).addClass('inuse');
+          from = current_value.from;
+        } else {
+          this._el(this.from_id).removeClass('inuse');
+          from = '';
+        }
+        if (date_to instanceof Date) {
+          this._el(this.to_id).addClass('inuse');
+          to = current_value.to;
+        } else {
+          this._el(this.to_id).removeClass('inuse');
+          to = '';
+        }
+        search_value = "".concat(from).concat(this.range_delimiter).concat(to);
+        // run filter (triggers a datatable reload)
+        this._run_filter(this.column_id, search_value);
+        // save current value
+        return this._save_state(this.column_id, {
+          from: from,
+          to: to
+        });
       }
-      date_format = this.options.filter_plugin_options.dateFormat;
-      try {
-        return $.datepicker.parseDate(date_format, value);
-      } catch (error) {
-        e = error;
-        this.logger.error("error while parsing date : ".concat(e));
-        return '';
+    }, {
+      key: "_date_or_empty_string",
+      value: function _date_or_empty_string(value) {
+        var date_format, e;
+        if (value === '') {
+          return '';
+        }
+        date_format = this.options.filter_plugin_options.dateFormat;
+        try {
+          return $.datepicker.parseDate(date_format, value);
+        } catch (error) {
+          e = error;
+          this.logger.error("error while parsing date : ".concat(e));
+          return '';
+        }
       }
-    }
-  }]);
-}(_range_base["default"]);
+    }]);
+  }(_range_base["default"]);
+  ;
+  RangeDateFilter.prototype.range_type = 'date';
+  return RangeDateFilter;
+}.call(void 0);
 var _default = exports["default"] = RangeDateFilter;
 
 /***/ },
@@ -1412,64 +1415,67 @@ function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? O
 function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
 function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 var RangeNumberFilter;
-RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
-  function RangeNumberFilter(datatable_filter, logger, options) {
-    var _this;
-    _classCallCheck(this, RangeNumberFilter);
-    _this = _callSuper(this, RangeNumberFilter, arguments);
-    _this.datatable_filter = datatable_filter;
-    _this.logger = logger;
-    _this.options = options;
-    // customize class
-    _this.range_type = 'number';
-    return _this;
-  }
+RangeNumberFilter = function () {
+  var RangeNumberFilter = /*#__PURE__*/function (_RangeBase) {
+    function RangeNumberFilter(datatable_filter, logger, options) {
+      var _this;
+      _classCallCheck(this, RangeNumberFilter);
+      _this = _callSuper(this, RangeNumberFilter, arguments);
+      _this.datatable_filter = datatable_filter;
+      _this.logger = logger;
+      _this.options = options;
+      return _this;
+    }
 
-  //##################
-  // PRIVATE METHODS #
-  //##################
-  _inherits(RangeNumberFilter, _RangeBase);
-  return _createClass(RangeNumberFilter, [{
-    key: "_range_change",
-    value: function _range_change(event) {
-      var current_value, max, min, search_value;
-      _superPropGet(RangeNumberFilter, "_range_change", this, 3)([event]);
-      if (this._skip_key_codes().includes(event.keyCode)) {
-        return;
+    //##################
+    // PRIVATE METHODS #
+    //##################
+    _inherits(RangeNumberFilter, _RangeBase);
+    return _createClass(RangeNumberFilter, [{
+      key: "_range_change",
+      value: function _range_change(event) {
+        var current_value, max, min, search_value;
+        _superPropGet(RangeNumberFilter, "_range_change", this, 3)([event]);
+        if (this._skip_key_codes().includes(event.keyCode)) {
+          return;
+        }
+        current_value = this.current_value();
+        min = this._int_or_empty_string(current_value.from);
+        max = this._int_or_empty_string(current_value.to);
+        if (min !== '') {
+          this._el(this.from_id).addClass('inuse');
+        } else {
+          this._el(this.from_id).removeClass('inuse');
+        }
+        if (max !== '') {
+          this._el(this.to_id).addClass('inuse');
+        } else {
+          this._el(this.to_id).removeClass('inuse');
+        }
+        search_value = "".concat(min).concat(this.range_delimiter).concat(max);
+        // run filter (triggers a datatable reload)
+        this._run_filter(this.column_id, search_value);
+        // save current value
+        return this._save_state(this.column_id, {
+          from: min,
+          to: max
+        });
       }
-      current_value = this.current_value();
-      min = this._int_or_empty_string(current_value.from);
-      max = this._int_or_empty_string(current_value.to);
-      if (min !== '') {
-        this._el(this.from_id).addClass('inuse');
-      } else {
-        this._el(this.from_id).removeClass('inuse');
+    }, {
+      key: "_int_or_empty_string",
+      value: function _int_or_empty_string(value) {
+        value = value !== '' ? +value : value;
+        if (isNaN(value)) {
+          value = '';
+        }
+        return value;
       }
-      if (max !== '') {
-        this._el(this.to_id).addClass('inuse');
-      } else {
-        this._el(this.to_id).removeClass('inuse');
-      }
-      search_value = "".concat(min).concat(this.range_delimiter).concat(max);
-      // run filter (triggers a datatable reload)
-      this._run_filter(this.column_id, search_value);
-      // save current value
-      return this._save_state(this.column_id, {
-        from: min,
-        to: max
-      });
-    }
-  }, {
-    key: "_int_or_empty_string",
-    value: function _int_or_empty_string(value) {
-      value = value !== '' ? +value : value;
-      if (isNaN(value)) {
-        value = '';
-      }
-      return value;
-    }
-  }]);
-}(_range_base["default"]);
+    }]);
+  }(_range_base["default"]);
+  ;
+  RangeNumberFilter.prototype.range_type = 'number';
+  return RangeNumberFilter;
+}.call(void 0);
 var _default = exports["default"] = RangeNumberFilter;
 
 /***/ },

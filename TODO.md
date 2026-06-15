@@ -2,9 +2,6 @@
 
 ## Bugs
 
-- [ ] **`RangeNumberFilter` : `@range_type` settée après `super()`** (`src/model/filters/range_number_filter.coffee`)
-  `@range_type = 'number'` est assignée *après* `super arguments...`, mais `RangeBase.constructor` construit les IDs (`@from_id`, `@to_id`, `@reset_id`) en utilisant `@range_type` — qui vaut `undefined` à ce moment-là. Les IDs contiennent `"undefined"` dans le DOM. Setter `@range_type` avant l'appel à `super`.
-
 - [ ] **`_check_boxes_callback_on_select` décoche trop de lignes** (`src/modules/with_check_boxes.coffee` ligne ~151)
   Sur un événement `deselect`, le code décoche toutes les `tr:not(.selected)`, y compris les lignes non concernées par l'événement. Avec une sélection partielle, des lignes qui devaient rester cochées peuvent être décochées.
 
