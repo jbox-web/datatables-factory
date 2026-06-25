@@ -73,6 +73,13 @@
 
     <!-- datatables-factory (servi par l'engine via asset pipeline) -->
     <%= javascript_include_tag 'datatables-factory', defer: false %>
+    <script>
+      // Le bundle UMD expose l'objet d'exports nommés { DatatableBase }
+      // (équivalent de `import { DatatableBase } from '@jbox-web/datatables-factory'`,
+      // tel que consommé par concerto). On en extrait la classe pour l'exposer
+      // en global, attendu par les scripts de démo ci-dessous.
+      window.DatatableBase = window.DatatableBase.DatatableBase
+    </script>
 
     <%= yield :javascript %>
   </body>

@@ -11,7 +11,7 @@ Capybara.register_driver(:cuprite) do |app|
     timeout:                   15,
     process_timeout:           30,
     pending_connection_errors: false,
-    js_errors:                 false
+    js_errors:                 true
   )
 end
 
