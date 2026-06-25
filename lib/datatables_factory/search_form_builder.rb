@@ -62,8 +62,9 @@ module DatatablesFactory
         else
           # dropdownParent: body — sinon le dropdown est clippé par l'overflow des en-têtes DataTables
           defaults = { filter_plugin: 'tom-select', filter_plugin_options: { dropdownParent: 'body' } }
-          # controlInput: nil disables the search box (single selects pick from a short list)
-          defaults[:filter_plugin_options][:controlInput] = nil if opts[:filter_type] == 'select'
+          # controlInput readonly : désactive la saisie (selects simples = liste courte) tout en
+          # gardant l'input dans le DOM — sinon TomSelect ne rend pas le placeholder (input détaché)
+          defaults[:filter_plugin_options][:controlInput] = '<input type="text" readonly>' if opts[:filter_type] == 'select'
         end
         defaults
       end
