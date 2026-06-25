@@ -63,8 +63,12 @@ module DatatablesFactory
           # dropdownParent: body — sinon le dropdown est clippé par l'overflow des en-têtes DataTables
           defaults = { filter_plugin: 'tom-select', filter_plugin_options: { dropdownParent: 'body' } }
           # controlInput readonly : désactive la saisie (selects simples = liste courte) tout en
-          # gardant l'input dans le DOM — sinon TomSelect ne rend pas le placeholder (input détaché)
-          defaults[:filter_plugin_options][:controlInput] = '<input type="text" readonly>' if opts[:filter_type] == 'select'
+          # gardant l'input dans le DOM — sinon TomSelect ne rend pas le placeholder (input détaché).
+          # data-bwignore/autocomplete : empêche l'autofill des gestionnaires de mots de passe (Bitwarden…)
+          if opts[:filter_type] == 'select'
+            defaults[:filter_plugin_options][:controlInput] =
+              '<input type="text" readonly autocomplete="off" data-bwignore="1" data-lpignore="true" data-1p-ignore>'
+          end
         end
         defaults
       end

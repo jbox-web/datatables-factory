@@ -132,6 +132,7 @@ class RangeBase extends BaseFilter
       placeholder: @from_placeholder
 
     $('<input/>', options)
+      .attr(@_autofill_off())
       .on('keydown', callback)
 
 
@@ -145,7 +146,18 @@ class RangeBase extends BaseFilter
       placeholder: @to_placeholder
 
     $('<input/>', options)
+      .attr(@_autofill_off())
       .on('keydown', callback)
+
+
+  # via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
+  # interprété comme un appel à la méthode jQuery-UI .autocomplete() (qui lève).
+  # empêche les gestionnaires de mots de passe (Bitwarden, 1Password, LastPass…) d'injecter leur autofill
+  _autofill_off: ->
+    autocomplete:     'off'
+    'data-bwignore':  '1'
+    'data-lpignore':  'true'
+    'data-1p-ignore': ''
 
 
   _html_range_separator: ->

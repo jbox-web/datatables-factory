@@ -1157,7 +1157,7 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-start"),
         placeholder: this.from_placeholder
       };
-      return $('<input/>', options).on('keydown', callback);
+      return $('<input/>', options).attr(this._autofill_off()).on('keydown', callback);
     }
   }, {
     key: "_html_range_end",
@@ -1172,7 +1172,21 @@ RangeBase = /*#__PURE__*/function (_BaseFilter) {
         "class": "yadcf-filter-range yadcf-filter-range-".concat(this.range_type, " yadcf-filter-range-end"),
         placeholder: this.to_placeholder
       };
-      return $('<input/>', options).on('keydown', callback);
+      return $('<input/>', options).attr(this._autofill_off()).on('keydown', callback);
+    }
+
+    // via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
+    // interprété comme un appel à la méthode jQuery-UI .autocomplete() (qui lève).
+    // empêche les gestionnaires de mots de passe (Bitwarden, 1Password, LastPass…) d'injecter leur autofill
+  }, {
+    key: "_autofill_off",
+    value: function _autofill_off() {
+      return {
+        autocomplete: 'off',
+        'data-bwignore': '1',
+        'data-lpignore': 'true',
+        'data-1p-ignore': ''
+      };
     }
   }, {
     key: "_html_range_separator",
@@ -2100,7 +2114,15 @@ TextFilter = /*#__PURE__*/function (_BaseFilter) {
         "class": "yadcf-filter ".concat(this.filter_css_class),
         placeholder: this.filter_default_label
       };
-      return $('<input/>', options).on('keydown', callback1).on('mousedown', callback2);
+      // via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
+      // interprété comme un appel à la méthode jQuery-UI .autocomplete() (qui lève).
+      // empêche les gestionnaires de mots de passe (Bitwarden, 1Password, LastPass…) d'injecter leur autofill
+      return $('<input/>', options).attr({
+        autocomplete: 'off',
+        'data-bwignore': '1',
+        'data-lpignore': 'true',
+        'data-1p-ignore': ''
+      }).on('keydown', callback1).on('mousedown', callback2);
     }
   }, {
     key: "_empty_value",

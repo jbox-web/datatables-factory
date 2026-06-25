@@ -96,6 +96,15 @@ class TextFilter extends BaseFilter
       placeholder: @filter_default_label
 
     $('<input/>', options)
+      # via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
+      # interprété comme un appel à la méthode jQuery-UI .autocomplete() (qui lève).
+      # empêche les gestionnaires de mots de passe (Bitwarden, 1Password, LastPass…) d'injecter leur autofill
+      .attr(
+        autocomplete:     'off'
+        'data-bwignore':  '1'
+        'data-lpignore':  'true'
+        'data-1p-ignore': ''
+      )
       .on('keydown', callback1)
       .on('mousedown', callback2)
 
