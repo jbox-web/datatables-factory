@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Checkboxes datatable', type: :system, js: true do
+RSpec.describe 'Checkboxes datatable', :js do
   before do
-    3.times { |i| User.create!(first_name: "User#{i}", last_name: "Last#{i}", email: "user#{i}@chk.com", role: :user, age: 20 + i) }
+    3.times do |i|
+      User.create!(first_name: "User#{i}", last_name: "Last#{i}", email: "user#{i}@chk.com", role: :user, age: 20 + i)
+    end
   end
 
   it 'shows the checkbox column header' do

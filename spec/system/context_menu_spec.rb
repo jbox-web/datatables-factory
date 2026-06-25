@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Context menu datatable', type: :system, js: true do
+RSpec.describe 'Context menu datatable', :js do
   before do
     User.create!(first_name: 'Alice', last_name: 'Smith', email: 'alice@ctx.com', role: :admin, age: 30)
   end

@@ -5,13 +5,13 @@ require 'capybara/cuprite'
 Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
-    window_size: [1440, 900],
-    headless: true,
-    browser_options: { 'no-sandbox': nil },
-    timeout: 15,
-    process_timeout: 30,
+    window_size:               [1440, 900],
+    headless:                  true,
+    browser_options:           { 'no-sandbox': nil },
+    timeout:                   15,
+    process_timeout:           30,
     pending_connection_errors: false,
-    js_errors: false,
+    js_errors:                 false
   )
 end
 

@@ -11,9 +11,19 @@ AllCops:
   Exclude:
     - bin/*
     - lib/datatables-factory.rb
+    - spec/dummy/**/*
 
 Gemspec/RequireMFA:
   Enabled: false
+
+########
+# RSPEC #
+########
+
+# System/feature specs naturally assert on several aspects of a rendered page.
+RSpec/MultipleExpectations:
+  Exclude:
+    - spec/system/**/*
 
 #########
 # STYLE #

@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Buttons datatable', type: :system, js: true do
+RSpec.describe 'Buttons datatable', :js do
   before do
-    3.times { |i| User.create!(first_name: "User#{i}", last_name: "Last#{i}", email: "user#{i}@btn.com", role: :user, age: 20 + i) }
+    3.times do |i|
+      User.create!(first_name: "User#{i}", last_name: "Last#{i}", email: "user#{i}@btn.com", role: :user, age: 20 + i)
+    end
   end
 
   it 'renders the table' do

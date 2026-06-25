@@ -2,11 +2,14 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Filters datatable', type: :system, js: true do
+RSpec.describe 'Filters datatable', :js do
   before do
-    User.create!(first_name: 'Alice', last_name: 'Smith', email: 'alice@filters.com', role: :admin,     age: 30, created_at: 1.month.ago)
-    User.create!(first_name: 'Bob',   last_name: 'Jones', email: 'bob@filters.com',   role: :user,      age: 25, created_at: 6.months.ago)
-    User.create!(first_name: 'Carol', last_name: 'Lee',   email: 'carol@filters.com', role: :moderator, age: 40, created_at: 2.months.ago)
+    User.create!(first_name: 'Alice', last_name: 'Smith', email: 'alice@filters.com', role: :admin,     age: 30,
+                 created_at: 1.month.ago)
+    User.create!(first_name: 'Bob',   last_name: 'Jones', email: 'bob@filters.com',   role: :user,      age: 25,
+                 created_at: 6.months.ago)
+    User.create!(first_name: 'Carol', last_name: 'Lee',   email: 'carol@filters.com', role: :moderator, age: 40,
+                 created_at: 2.months.ago)
   end
 
   it 'shows the table with rows' do

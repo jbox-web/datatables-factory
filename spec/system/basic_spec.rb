@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Basic datatable', type: :system, js: true do
+RSpec.describe 'Basic datatable', :js do
   before do
     User.create!(first_name: 'Alice', last_name: 'Smith',  email: 'alice@example.com', role: :admin,     age: 30)
     User.create!(first_name: 'Bob',   last_name: 'Jones',  email: 'bob@example.com',   role: :user,      age: 25)
