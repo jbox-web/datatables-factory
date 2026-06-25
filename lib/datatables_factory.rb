@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+# require external dependencies
 require 'zeitwerk'
-loader = Zeitwerk::Loader.for_gem
-ignored = "#{__dir__}/datatables-factory.rb"
-loader.ignore(ignored)
-loader.setup
+
+# load zeitwerk
+Zeitwerk::Loader.for_gem.tap do |loader|
+  loader.ignore("#{__dir__}/datatables-factory.rb")
+  loader.setup
+end
 
 module DatatablesFactory
-  require 'datatables_factory/engine' if defined?(Rails)
+  require_relative 'datatables_factory/engine' if defined?(Rails)
 end
