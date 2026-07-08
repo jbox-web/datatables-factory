@@ -184,8 +184,8 @@ Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable consol
 ## Development
 
 ```bash
-# Ruby (always use the binstubs)
-bin/bundle install
+# Ruby (prefer the binstubs in bin/)
+bundle install
 bin/rspec           # system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile)
 bin/rubocop
 
