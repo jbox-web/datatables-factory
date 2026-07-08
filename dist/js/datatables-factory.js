@@ -2217,7 +2217,7 @@ Loader.class_methods = {
     };
     return $.ajax({
       url: url,
-      type: 'POST',
+      type: dtf_options['http_method'] || 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
       statusCode: {

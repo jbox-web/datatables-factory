@@ -159,6 +159,24 @@ bootstrap_datatables_for(:invoices, js_namespace: 'MyApp')
 
 Looks for `window.MyApp.InvoicesDatatable`.
 
+## HTTP method
+
+The table load request is sent as `POST` with a JSON body by default. The method
+is configurable through `dtf_options['http_method']`:
+
+```ruby
+datatables_for(:users, opts: { dtf_options: { http_method: 'QUERY' } }) do |dt|
+  # ...
+end
+```
+
+The default remains `POST`, so leaving the option unset preserves the current
+behavior. Setting it to `QUERY` (the safe, cacheable method with a body defined
+by [RFC 10008](https://www.rfc-editor.org/rfc/rfc10008.html)) is an opt-in that
+assumes your server and any intermediate proxies accept the method — the body
+shape is unchanged. This option only affects the table load request, not toolbar
+button or context-menu actions.
+
 ## Debugging
 
 Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable console logging. The `dtf_options` hash is forwarded to the JS side and controls verbosity.
@@ -166,10 +184,10 @@ Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable consol
 ## Development
 
 ```bash
-# Ruby
-bundle install
-bundle exec rspec
-bundle exec rubocop
+# Ruby (always use the binstubs)
+bin/bundle install
+bin/rspec           # system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile)
+bin/rubocop
 
 # JavaScript
 yarn install

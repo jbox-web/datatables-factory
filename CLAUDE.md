@@ -18,11 +18,11 @@ yarn install          # install JS dependencies
 yarn webpack          # build dist/js/datatables-factory.js
 ```
 
-### Ruby
+### Ruby (always use the binstubs in `bin/`)
 ```bash
-bundle install        # install gem dependencies
-bundle exec rspec     # run Ruby tests
-bundle exec rubocop   # lint Ruby
+bin/bundle install    # install gem dependencies
+bin/rspec             # run specs — system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile); `bundle exec rspec` fails without sprockets-rails
+bin/rubocop           # lint Ruby
 bin/guard             # watch and re-run specs on file changes
 ```
 

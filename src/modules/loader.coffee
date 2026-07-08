@@ -21,7 +21,7 @@ Loader.class_methods =
 
     $.ajax
       url: url
-      type: 'POST'
+      type: dtf_options['http_method'] or 'POST'
       data: JSON.stringify(data)
       contentType: 'application/json'
       statusCode:
