@@ -29,7 +29,7 @@ Use `bootstrap_datatables_for` (includes Bootstrap 5 classes) or `datatables_for
 
 ```erb
 <% dt = bootstrap_datatables_for(:users, source: users_path, stateSave: true) do |dt| %>
-  <% dt.head_for :check_box %>
+  <% dt.head_for_check_box %>
   <% dt.head_for :name,       label: 'Name',   sortable: true %>
   <% dt.head_for :email,      label: 'Email',  sortable: true %>
   <% dt.head_for :created_at, label: 'Created', sortable: true %>
@@ -119,7 +119,7 @@ By default selects use **tom-select**. Pass `filter_plugin: 'select2'` to use Se
 
 ### Checkboxes
 
-Add `dt.head_for :check_box` as the first column. The module automatically:
+Add `dt.head_for_check_box` as the first column. The module automatically:
 - renders a "select all" checkbox in the header
 - sends `selected` / `not_selected` row ids with every AJAX request
 - handles touch devices (selection restricted to the checkbox column)
@@ -129,10 +129,12 @@ Add `dt.head_for :check_box` as the first column. The module automatically:
 Add `class: 'context-menu'` to the table body:
 
 ```erb
-<% dt.body class: 'context-menu' %>
+<% dt.body class: 'context-menu', data: { url: context_menu_path } %>
 ```
 
-Right-click (or long-press on touch) on any row opens `#context-menu`. The module handles row selection and touch long-press (500 ms, cancels on scroll).
+Right-click (or long-press on touch) on any row opens `#context-menu`. The URL that
+handles the menu actions is read from the body's `data-url` attribute. The module
+handles row selection and touch long-press (500 ms, cancels on scroll).
 
 ### Buttons
 
