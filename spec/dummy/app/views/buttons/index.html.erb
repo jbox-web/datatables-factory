@@ -33,14 +33,3 @@
   </div>
 </div>
 
-<% content_for :javascript do %>
-<script>
-  window.Datatables = window.Datatables || {}
-  class ButtonsDatatable extends DatatableBase {}
-  window.Datatables.ButtonsDatatable = ButtonsDatatable
-
-  $(function() {
-    DatatableBase.load_datatables()
-  })
-</script>
-<% end %>

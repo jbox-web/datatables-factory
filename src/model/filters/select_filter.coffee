@@ -24,11 +24,14 @@ class SelectFilter extends SelectBase
   # PRIVATE METHODS #
   ###################
 
+  # Built through the DOM API, never by string interpolation: dropdown_data
+  # comes from the server and may contain HTML metacharacters, which would
+  # otherwise inject attributes or elements when appended by jQuery.
   _select_options: ->
-    parts = ["<option value=\"\">#{@filter_default_label}</option>"]
+    options = [new Option(@filter_default_label, '')]
     if @dropdown_data?
-      parts.push "<option value=\"#{data.value}\">#{data.label}</option>" for data in @dropdown_data
-    parts.join('')
+      options.push(new Option(data.label, data.value)) for data in @dropdown_data
+    options
 
 
   _empty_value: (value) ->

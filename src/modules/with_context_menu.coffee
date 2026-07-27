@@ -43,7 +43,7 @@ WithContextMenu.instance_methods =
         url = @_context_menu_tbody.data('url')
 
         # Handle right click on datatable
-        @_context_menu_tbody.on 'contextmenu', @_context_menu_callback_on_contextmenu(url)
+        @_context_menu_tbody.on 'contextmenu.dtfContextMenu', @_context_menu_callback_on_contextmenu(url)
 
         # Handle long-press on touch devices (parity with right click)
         @_context_menu_bind_long_press(@_context_menu_tbody, url)
@@ -73,7 +73,7 @@ WithContextMenu.instance_methods =
 
   _with_context_menu_destroy: ->
     return if !@_context_menu_enabled()
-    @_context_menu_tbody?.off('contextmenu touchstart touchmove touchend touchcancel')
+    @_context_menu_tbody?.off('.dtfContextMenu')
     @_context_menu_tbody = null
 
 
@@ -91,7 +91,7 @@ WithContextMenu.instance_methods =
     fired = false
     start = null
 
-    tbody.on 'touchstart', (event) =>
+    tbody.on 'touchstart.dtfContextMenu', (event) =>
       fired = false
       touch = event.originalEvent.touches[0]
       return if !touch?
@@ -110,19 +110,19 @@ WithContextMenu.instance_methods =
         ContextMenu.show(start, url)
       , 500)
 
-    tbody.on 'touchmove', (event) ->
+    tbody.on 'touchmove.dtfContextMenu', (event) ->
       return if !timer?
       touch = event.originalEvent.touches[0]
       if Math.abs(touch.pageX - start.pageX) > 10 || Math.abs(touch.pageY - start.pageY) > 10
         clearTimeout(timer)
         timer = null
 
-    tbody.on 'touchend touchcancel', (event) ->
+    tbody.on 'touchend.dtfContextMenu touchcancel.dtfContextMenu', (event) ->
       clearTimeout(timer) if timer?
       timer = null
       event.preventDefault() if fired
 
-    tbody.on 'contextmenu', ->
+    tbody.on 'contextmenu.dtfContextMenu', ->
       clearTimeout(timer) if timer?
       timer = null
 

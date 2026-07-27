@@ -4,9 +4,10 @@ module DatatablesFactory
   class DataColumn
 
     def initialize(view, name, opts = {})
-      @view = view
-      @name = name
-      @opts = opts
+      @view      = view
+      @name      = name
+      @opts      = opts
+      @css_class = nil
     end
 
 
@@ -54,11 +55,16 @@ module DatatablesFactory
     end
 
 
+    # Builds the column CSS classes without mutating the :class option given by
+    # the caller (a shared/frozen Array would otherwise accumulate across calls).
+    # Accepts both a String and an Array for :class.
     def css_class
-      css = @opts.fetch(:class, [])
-      css << @name
-      css << 'colvis' if colvis?
-      css.join(' ')
+      @css_class ||= begin
+        css = Array(@opts.fetch(:class, [])).map(&:to_s)
+        css += [@name.to_s]
+        css << 'colvis' if colvis?
+        css.join(' ')
+      end
     end
 
 

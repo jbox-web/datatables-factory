@@ -80,7 +80,7 @@ module DatatablesFactory
         label = opts.delete(:filter_default_label) { @template.label_filter_by(name) }
 
         # Treat search field options
-        column_id = @datatable.column_names.index(name)
+        column_id = column_id_for(name)
         opts = opts.deep_merge(filter_container_id: container_id, filter_default_label: label, column_id: column_id)
 
         # Treat container options
@@ -94,6 +94,18 @@ module DatatablesFactory
 
       def id_for_container(name)
         "#{@datatable.dt_id}_#{name}_filter".dasherize
+      end
+
+
+      # A filter whose name matches no declared column would silently ship
+      # column_id: null to the JS side: the filter renders, filters nothing and
+      # reports no error. Fail loudly at render time instead.
+      def column_id_for(name)
+        column_id = @datatable.column_names.index(name)
+        return column_id if column_id
+
+        raise ArgumentError,
+              "unknown column '#{name}' for filter — declared columns are: #{@datatable.column_names.join(', ')}"
       end
 
   end

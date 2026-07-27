@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_000055) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_15_000055) do
   create_table "users", force: :cascade do |t|
     t.integer "age"
     t.datetime "created_at", null: false

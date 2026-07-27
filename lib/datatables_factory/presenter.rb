@@ -5,24 +5,31 @@ module DatatablesFactory
 
     attr_reader :dt_id, :dtf_options, :column_names
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def initialize(view, id, opts: {}, html_opts: {})
       super(view)
-      @view            = view
-      @opts            = opts
-      @dtf_options     = opts.delete(:dtf_options) { {} }
-      @namespace       = opts.delete(:namespace) { [] }
-      @js_namespace    = opts.delete(:js_namespace) { nil }
-      @dt_id           = id
-      @columns         = []
-      @column_names    = []
-      @buttons         = []
-      @filters         = []
-      @filters_applied = []
-      @body_opts       = {}
-      @html_opts       = html_opts
+      # Work on a copy: the caller's hash may be a reusable constant, and the
+      # deletes below would strip its keys for every later render.
+      opts = opts.dup
+
+      @view              = view
+      @dtf_options       = opts.delete(:dtf_options) { {} }
+      @namespace         = opts.delete(:namespace) { [] }
+      @js_namespace      = opts.delete(:js_namespace) { nil }
+      @opts              = opts
+      @dt_id             = id
+      @columns           = []
+      @column_names      = []
+      @buttons           = []
+      @filters           = []
+      @filters_applied   = []
+      @body_opts         = {}
+      @html_opts         = html_opts
+      @datatable_js_class = nil
+      @datatable_id      = nil
+      @final_namespace   = nil
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
 
     def head_for_check_box
@@ -105,8 +112,10 @@ module DatatablesFactory
       end
 
 
+      # Builds a new array rather than prepending in place: @namespace may be a
+      # constant shared across renders, which would accumulate :datatables.
       def final_namespace
-        @final_namespace ||= @namespace.prepend(:datatables).map { |x| x.to_s.camelize }
+        @final_namespace ||= [:datatables, *@namespace].map { |x| x.to_s.camelize }
       end
 
 
@@ -130,14 +139,18 @@ module DatatablesFactory
       end
 
 
+      # :language stays overridable through opts, but the keys built by the DSL
+      # (head_for / button / search_field) are merged last so a stray option
+      # cannot silently wipe the declared columns, buttons or filters.
       def datatable_options
-        {
-          language:        datatables_translations,
-          columns:         @columns.map(&:to_hash),
-          buttons:         @buttons,
-          filters:         @filters,
-          filters_applied: @filters_applied,
-        }.merge(@opts)
+        { language: datatables_translations }
+          .merge(@opts)
+          .merge(
+            columns:         @columns.map(&:to_hash),
+            buttons:         @buttons,
+            filters:         @filters,
+            filters_applied: @filters_applied
+          )
       end
 
 

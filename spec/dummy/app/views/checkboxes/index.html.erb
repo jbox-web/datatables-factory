@@ -38,35 +38,3 @@
   </div>
 </div>
 
-<% content_for :javascript do %>
-<script>
-  window.Datatables = window.Datatables || {}
-  class CheckboxesDatatable extends DatatableBase {
-    before_init() {
-      super.before_init()
-      // DT 2.x échappe le HTML — on injecte la checkbox côté client dans createdRow
-      this.callbacks['createdRow'].push(function(row) {
-        $(row).find('td.check_box').html('<input type="checkbox" class="form-check-input">')
-      })
-    }
-  }
-  window.Datatables.CheckboxesDatatable = CheckboxesDatatable
-
-  $(function() {
-    DatatableBase.load_datatables()
-
-    $('#show-selection').on('click', function() {
-      var instance = window.Datatables.CheckboxesDatatable.instance
-      if (!instance) return
-      var selected = instance.get_selected_checkbox_ids()
-      var $alert = $('#selection-alert')
-      if (selected.length === 0) {
-        $alert.text('No rows selected.')
-      } else {
-        $alert.text('Selected IDs: ' + selected.join(', '))
-      }
-      $alert.removeClass('d-none')
-    })
-  })
-</script>
-<% end %>

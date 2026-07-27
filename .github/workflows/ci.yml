@@ -33,8 +33,59 @@ jobs:
       - name: Run Webpack with linters
         run: mise dev:build
 
+      # dist/ is committed and shipped to gem and npm consumers: a source change
+      # without a rebuild would otherwise ship stale JS with a green CI.
+      - name: Check the committed bundle is up to date
+        run: mise dev:check-dist
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      - name: Install NodeJS dependencies
+        run: mise dev:deps
+
+      - name: Run JavaScript unit tests
+        run: mise dev:test-js
+
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+
+      - name: Install Ruby gems
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      - name: Lint Ruby
+        run: mise dev:lint
+
   rspec:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The dummy app vendors one DataTables bundle per supported major
+        # version; the whole suite runs against each of them.
+        datatables: ['2', '3']
+        # One entry per appraisal in Appraisals, so CI exercises every supported
+        # Rails major rather than only whatever bundler resolves to today.
+        rails: [rails_7.2, rails_8.0, rails_8.1]
+    name: rspec (DataTables ${{ matrix.datatables }}, ${{ matrix.rails }})
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -52,8 +103,9 @@ jobs:
       - name: Build JS bundle
         run: mise dev:build
 
-      # The system specs run against spec/dummy, which has its own bundle
-      # (bin/rspec sets BUNDLE_GEMFILE=spec/dummy/Gemfile).
+      # The specs run against spec/dummy, which has its own bundle. bin/rspec
+      # defaults BUNDLE_GEMFILE to it and honours an explicit one, which is how
+      # the appraisal gemfiles take over below.
       - name: Install Ruby gems (dummy app)
         env:
           BUNDLE_GEMFILE: spec/dummy/Gemfile
@@ -61,13 +113,29 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
 
+      # Writes gemfiles/<appraisal>.gemfile from spec/dummy/Gemfile. These are
+      # not committed: they carry an absolute path to the checkout.
+      - name: Generate the appraisal gemfiles
+        env:
+          BUNDLE_GEMFILE: spec/dummy/Gemfile
+        run: bundle exec appraisal generate
+
+      # Only the bundle for this matrix entry, not all three.
+      - name: Install the Rails bundle under test
+        env:
+          BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
+        run: bundle install --jobs 4 --retry 3
+
       - name: Prepare test database
         working-directory: spec/dummy
         env:
-          BUNDLE_GEMFILE: Gemfile
+          BUNDLE_GEMFILE: ../../gemfiles/${{ matrix.rails }}.gemfile
           RAILS_ENV: test
         run: bundle exec rails db:test:prepare
 
       # Cuprite drives headless Chrome (preinstalled on ubuntu-latest runners).
       - name: Run system specs
+        env:
+          BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
+          DT_VERSION: ${{ matrix.datatables }}
         run: bin/rspec

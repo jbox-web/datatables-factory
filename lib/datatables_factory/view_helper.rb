@@ -45,8 +45,11 @@ module DatatablesFactory
     end
 
 
+    # Per-column labels live in the host application. Fall back to the humanized
+    # column name rather than rendering an I18n "translation missing" marker
+    # into the filter placeholder.
     def label_filter_by(label, prefix: true)
-      label  = t("datatables.filter.#{label}")
+      label  = t("datatables.filter.#{label}", default: label.to_s.humanize)
       label  = label.downcase if prefix
       prefix = prefix ? "#{t('text.filter_by')} " : ''
       "#{prefix}#{label}"

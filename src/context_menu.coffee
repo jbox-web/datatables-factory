@@ -25,54 +25,69 @@ class ContextMenu
     $('#context-menu').css('top', (render_y + 'px'))
     $('#context-menu').html('')
 
+    position = ->
+      menu_width = $('#context-menu').width()
+      menu_height = $('#context-menu').height()
+      max_width = mouse_x + 2 * menu_width
+      max_height = mouse_y_c + menu_height
+
+      ws = ContextMenu.window_size()
+      window_width = ws.width
+      window_height = ws.height
+
+      # display the menu above and/or to the left of the click if needed
+      if max_width > window_width
+        render_x -= menu_width
+        $('#context-menu').addClass('reverse-x')
+      else
+        $('#context-menu').removeClass('reverse-x')
+
+      if max_height > window_height
+        render_y -= menu_height
+        $('#context-menu').addClass('reverse-y')
+        # adding class for submenu
+        if mouse_y_c < menu_height
+          $('#context-menu .folder').addClass('down')
+      else
+        # adding class for submenu
+        if window_height - mouse_y_c < menu_height
+          $('#context-menu .folder').addClass('up')
+        $('#context-menu').removeClass('reverse-y')
+
+      render_x = 1 if render_x <= 0
+      render_y = 1 if render_y <= 0
+
+      $('#context-menu').css('left', (render_x + 'px'))
+      $('#context-menu').css('top', (render_y + 'px'))
+      $('#context-menu').show()
+
+    render = (data) ->
+      $('#context-menu').empty().append(data)
+      position()
+
+    fallback = ->
+      $('#context-menu-empty').children().clone()
+
     $.ajax
       url: url
       data: $(event.target).parents('form').first().serialize()
+
       success: (result, _textStatus, _jqXHR) ->
-        # $.parseHTML with null context prevents script execution (XSS mitigation)
+        # keepScripts defaults to false, so $.parseHTML drops <script> tags.
+        # It does NOT neutralise inline event-handler attributes: the menu markup
+        # must still be escaped server-side.
         nodes = $.parseHTML(result, null) or []
-        data =
-          if $(nodes).children('li').length >= 1
-            nodes
-          else
-            $('#context-menu-empty').children().clone()
+        items = $(nodes)
+        # Accept both a wrapping <ul> and bare <li> nodes as a non-empty menu.
+        has_items = (items.filter('li').length + items.find('li').length) >= 1
 
-        $('#context-menu').empty().append(data)
+        render(if has_items then nodes else fallback())
 
-        menu_width = $('#context-menu').width()
-        menu_height = $('#context-menu').height()
-        max_width = mouse_x + 2 * menu_width
-        max_height = mouse_y_c + menu_height
-
-        ws = ContextMenu.window_size()
-        window_width = ws.width
-        window_height = ws.height
-
-        # display the menu above and/or to the left of the click if needed
-        if max_width > window_width
-          render_x -= menu_width
-          $('#context-menu').addClass('reverse-x')
-        else
-          $('#context-menu').removeClass('reverse-x')
-
-        if max_height > window_height
-          render_y -= menu_height
-          $('#context-menu').addClass('reverse-y')
-          # adding class for submenu
-          if mouse_y_c < menu_height
-            $('#context-menu .folder').addClass('down')
-        else
-          # adding class for submenu
-          if window_height - mouse_y_c < menu_height
-            $('#context-menu .folder').addClass('up')
-          $('#context-menu').removeClass('reverse-y')
-
-        render_x = 1 if render_x <= 0
-        render_y = 1 if render_y <= 0
-
-        $('#context-menu').css('left', (render_x + 'px'))
-        $('#context-menu').css('top', (render_y + 'px'))
-        $('#context-menu').show()
+      # Without this the menu stays empty and hidden: the right click looks dead.
+      error: (xhr, status, error) ->
+        return if status == 'abort'
+        console.error("DatatableFactory : context menu request failed (#{xhr.status} #{status}) #{error}")
+        render(fallback())
 
 
 export default ContextMenu

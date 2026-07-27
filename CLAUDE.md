@@ -22,6 +22,7 @@ yarn webpack          # build dist/js/datatables-factory.js
 ```bash
 bundle install        # install gem dependencies
 bin/rspec             # run specs — system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile); `bundle exec rspec` fails without sprockets-rails
+DT_VERSION=3 bin/rspec # run the same specs against DataTables 3 (default: 2)
 bin/rubocop           # lint Ruby
 bin/guard             # watch and re-run specs on file changes
 ```
@@ -57,6 +58,18 @@ bin/guard             # watch and re-run specs on file changes
 **`ViewHelper`** provides the `datatable_for` method included into Rails views.
 
 **`SearchFormBuilder`** extends `SimpleForm::FormBuilder` to build filter forms with yadcf-compatible HTML.
+
+### DataTables version coverage
+
+The library supports DataTables 2 and 3. The dummy app vendors one bundle per major
+version in `spec/dummy/public/{javascripts,stylesheets}/datatables{2,3}.bundle.min.*`
+(combined builds from datatables.net: DT + Bootstrap 5 + Buttons + colVis + Select).
+`ApplicationHelper#datatables_version` picks one from `DT_VERSION`, and the CI runs
+the system specs once per version.
+
+DataTables 3 renamed its internal settings properties (hungarian notation dropped),
+so any code touching `api.context[0]` internals must handle both spellings — see
+`DatatableFilter#_set_search_value` (`aoPreSearchCols` in DT2, `searches` in DT3).
 
 ### Data flow between Ruby and JS
 

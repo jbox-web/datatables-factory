@@ -90,7 +90,9 @@ class RangeDateFilter extends RangeBase
   _date_or_empty_string: (value) ->
     return '' if value == ''
 
-    date_format = @options.filter_plugin_options.dateFormat
+    # filter_plugin_options is optional: a range_date filter declared without it
+    # would otherwise throw on every keystroke.
+    date_format = @options.filter_plugin_options?.dateFormat or 'dd/mm/yy'
 
     try
       $.datepicker.parseDate(date_format, value)

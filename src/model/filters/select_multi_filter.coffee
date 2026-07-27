@@ -26,11 +26,10 @@ class SelectMultiFilter extends SelectBase
   # PRIVATE METHODS #
   ###################
 
+  # See SelectFilter#_select_options: DOM API, never string interpolation.
   _select_options: ->
-    return '' if !@dropdown_data?
-    parts = []
-    parts.push "<option value=\"#{data.value}\">#{data.label}</option>" for data in @dropdown_data
-    parts.join('')
+    return [] if !@dropdown_data?
+    (new Option(data.label, data.value) for data in @dropdown_data)
 
 
   _empty_value: (value) ->

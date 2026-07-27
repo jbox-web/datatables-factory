@@ -93,10 +93,13 @@ class DatatableFilter extends Extendable
   # PRIVATE METHODS #
   ###################
 
+  # An unbuildable filter (unknown type) is left out of loaded_filters entirely:
+  # indexing a null there would make every later traversal (_dt_on_draw,
+  # reset_filters, destroy) throw and take the valid filters down with it.
   _load_filters: ->
     for filter in @filters
-      column_id = filter.column_id
-      @loaded_filters[column_id] = @_load_filter(filter)
+      loaded = @_load_filter(filter)
+      @loaded_filters[filter.column_id] = loaded if loaded?
 
 
   _load_filter: (filter) ->
@@ -195,10 +198,13 @@ class DatatableFilter extends Extendable
 
 
   _set_search_value: (column_id, value) ->
-    # Uses the internal aoPreSearchCols API to set the column search value without
-    # triggering a draw (columns().search() schedules a redraw in DT 2.x which
+    # Uses the internal per-column search store to set the column search value without
+    # triggering a draw (columns().search() schedules a redraw in DT 2.x and 3.x which
     # breaks default filter pre-population and stateSave restore).
-    @instance.context[0].aoPreSearchCols[column_id]['search'] = value
+    # DT 3 dropped the hungarian notation internals: aoPreSearchCols became searches.
+    settings = @instance.context[0]
+    store    = settings.searches or settings.aoPreSearchCols
+    store[column_id]['search'] = value
 
 
   _save_state: ->

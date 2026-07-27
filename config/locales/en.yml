@@ -1,0 +1,40 @@
+# Default translations shipped by the engine so the library works out of the
+# box. Host applications override any of these by defining the same key in
+# their own config/locales — application load paths win over engine ones.
+en:
+  datatables:
+    processing:     "Processing..."
+    search:         "Search:"
+    lengthMenu:     "Show _MENU_ entries"
+    info:           "Showing _START_ to _END_ of _TOTAL_ entries"
+    infoEmpty:      "Showing 0 to 0 of 0 entries"
+    infoFiltered:   "(filtered from _MAX_ total entries)"
+    infoPostFix:    ""
+    loadingRecords: "Loading..."
+    zeroRecords:    "No matching records found"
+    emptyTable:     "No data available in table"
+    paginate:
+      first:    "First"
+      previous: "Previous"
+      next:     "Next"
+      last:     "Last"
+    aria:
+      sortAscending:  ": activate to sort column ascending"
+      sortDescending: ": activate to sort column descending"
+    select:
+      rows: "%d row(s) selected"
+    buttons:
+      pageLength:
+        _:    "Show %d entries"
+        "-1": "Show all"
+      colvisRestore: "Restore visibility"
+    filter:
+      # Per-column labels belong to the host application. When a column has no
+      # entry here, label_filter_by falls back to the humanized column name.
+      date_start: "From"
+      date_end:   "To"
+  button:
+    check_all:   "Check all"
+    uncheck_all: "Uncheck all"
+  text:
+    filter_by: "Filter by"

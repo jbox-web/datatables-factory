@@ -2,20 +2,29 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '>= 7.0'
+# Alternate Rails versions come from Appraisals / gemfiles, not from here.
+gem 'rails', '>= 7.2'
 gem 'sqlite3', '>= 2.1'
 gem 'puma'
 gem 'sprockets-rails'
 gem 'sassc-rails'
 
-gem 'datatables-factory', path: '../..'
+# Absolute on purpose: Appraisal rewrites *relative* paths by prefixing '../'
+# (Appraisal::Utils.prefix_path), which is wrong here because gemfiles/ sits at
+# the repo root while this Gemfile is two levels down. Absolute paths pass
+# through untouched.
+gem 'datatables-factory', path: File.expand_path('../..', __dir__)
 gem 'ajax-datatables-rails'
 gem 'simple_form'
 gem 'faker'
 
 group :test do
+  # Appraisal generates the gemfiles/ variants from THIS Gemfile, since this is
+  # the bundle the specs run against.
+  gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git'
   gem 'rspec-rails'
   gem 'capybara'
   gem 'cuprite'
   gem 'database_cleaner-active_record'
+  gem 'simplecov', require: false
 end

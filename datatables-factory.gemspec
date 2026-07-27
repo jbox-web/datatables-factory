@@ -14,8 +14,11 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.0.0'
 
-  s.files = `git ls-files`.split("\n")
+  # Ship only what the library needs at runtime: `git ls-files` also dragged in
+  # the dummy app's vendored jQuery/Bootstrap/DataTables assets (~900 KB).
+  s.files = Dir['lib/**/*.rb', 'config/locales/*.yml', 'dist/js/*.js'] +
+            %w[LICENSE README.md]
 
-  s.add_dependency 'rails', '>= 7.0'
+  s.add_dependency 'rails', '>= 7.2'
   s.add_dependency 'zeitwerk'
 end

@@ -19,16 +19,37 @@ Loader.class_methods =
       alert msg
       window.location.href = login_url
 
+    # Without a handler, a 500 or a dropped connection leaves DataTables stuck
+    # on "Processing…" forever, with nothing reported to the user or the console.
+    on_error = dtf_options['on_error'] or (xhr, status, error) ->
+      console.error("DatatableFactory : table load failed (#{xhr.status} #{status}) #{error}")
+
     $.ajax
       url: url
       type: dtf_options['http_method'] or 'POST'
       data: JSON.stringify(data)
       contentType: 'application/json'
+      headers: Loader.class_methods.csrf_headers()
       statusCode:
         422: on_422
 
       success: (data, _textStatus, _jqXHR) ->
         callback(data)
+
+      error: (xhr, status, error) ->
+        # 422 is already routed to on_422; an abort is not a failure.
+        return if xhr.status == 422 or status == 'abort'
+        on_error(xhr, status, error)
+
+
+  # The table load is a POST, so Rails rejects it without the token. The
+  # resulting 422 is indistinguishable from an expired session, which sends the
+  # reader down the wrong path entirely — so send the token up front.
+  # Applications that already inject it globally (e.g. through an
+  # $.ajaxPrefilter) simply overwrite this header, harmlessly.
+  csrf_headers: ->
+    token = $('meta[name="csrf-token"]').attr('content')
+    if token? then { 'X-CSRF-Token': token } else {}
 
 
   load_datatables: ->
@@ -105,8 +126,12 @@ Loader.instance_methods =
   init_datatable: ->
     @info('Create Datatable')
 
-    # create filters just after dt initialization
-    $(@dt_id).on 'preInit.dt', (event, settings) =>
+    # create filters just after dt initialization.
+    # The handler is namespaced and cleared first: when a table is reloaded in
+    # place the node is reused, so the previous instance would still be
+    # subscribed and would re-assign its own @datatable on the next init —
+    # resurrecting the very instance that was just destroyed.
+    $(@dt_id).off('preInit.dt.dtf').on 'preInit.dt.dtf', (event, settings) =>
       @info('preInit.dt callback was called, set filters if exist')
 
       @datatable = new $.fn.dataTable.Api(settings)
@@ -162,6 +187,9 @@ Loader.instance_methods =
   _prepend_filter_icons: (form) ->
     for filter in @filters
       continue if !filter.icon?
+      # Icon names are interpolated into a class attribute: restrict them to the
+      # FontAwesome charset so no markup can be injected.
+      continue if !/^[a-z0-9-]+$/.test(filter.icon)
 
       group = $(form).find("##{filter.filter_container_id} .input-group").first()
       continue if group.length == 0 || group.children('.dtf-filter-icon').length > 0
@@ -215,8 +243,12 @@ Loader.instance_methods =
       klass = Loader.class_methods.constantize(dt_class)
       klass.instance.datatable.ajax.reload()
 
-    @callbacks['buttons']['select_all']      = { success: [callback] }
-    @callbacks['buttons']['reset_selection'] = { success: [callback] }
+    # Merge, never assign: before_init runs first, so a consumer may already
+    # have registered beforeSend/error/success callbacks here.
+    for button_name in ['select_all', 'reset_selection']
+      entry = @callbacks['buttons'][button_name] or {}
+      entry['success'] = (entry['success'] or []).concat([callback])
+      @callbacks['buttons'][button_name] = entry
 
 
   _select: (obj, predicate) ->

@@ -52,8 +52,12 @@ Use `bootstrap_datatables_for` (includes Bootstrap 5 classes) or `datatables_for
 | `searchable` | `true` | Includes column in global search |
 | `visible` | `true` | Column visibility |
 | `colvis` | `true` | Appears in column visibility toggle |
-| `class` | `[]` | Extra CSS classes |
+| `class` | `[]` | Extra CSS classes — a String or an Array |
 | `width` | `''` | Column width |
+
+The filter names passed to the form builder must match a declared column; a
+filter naming an unknown column raises `ArgumentError` at render time rather
+than silently rendering a filter that filters nothing.
 
 ### 2. JavaScript side — define a datatable class
 
@@ -91,7 +95,7 @@ Declare filters in the view with `search_form`. Filter type is set by the form b
 | `f.select :col` | Single select | tom-select by default |
 | `f.multi_select :col` | Multi select | tom-select with tag removal |
 | `f.range :col` | Number range | Min/max inputs |
-| `f.range_date :col` | Date range | Requires jQuery UI or flatpickr |
+| `f.range_date :col` | Date range | Requires jQuery UI (`$.datepicker`) |
 
 ### Pre-populating a filter
 
@@ -179,19 +183,53 @@ assumes your server and any intermediate proxies accept the method — the body
 shape is unchanged. This option only affects the table load request, not toolbar
 button or context-menu actions.
 
+## Translations
+
+The engine ships English defaults for every DataTables language string, the
+select-all button titles and the `Filter by` prefix. Override any of them by
+defining the same key in your own `config/locales` — application load paths win
+over engine ones.
+
+Per-column filter labels are yours to provide:
+
+```yaml
+en:
+  datatables:
+    filter:
+      first_name: "first name"
+```
+
+When a column has no entry, the label falls back to the humanized column name
+(`shipping_address` → `Filter by shipping address`).
+
+## CSRF
+
+The table load request is a `POST` and carries the `X-CSRF-Token` header read
+from `<meta name="csrf-token">`, so it works with the standard Rails
+`protect_from_forgery`. Make sure `csrf_meta_tags` is present in your layout.
+
 ## Debugging
 
-Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable console logging. The `dtf_options` hash is forwarded to the JS side and controls verbosity.
+Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable console logging. Only the literal `true` enables a flag. The `dtf_options` hash is forwarded to the JS side and controls verbosity.
 
 ## Development
 
 ```bash
 # Ruby (prefer the binstubs in bin/)
 bundle install
-bin/rspec           # system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile)
+bin/rspec           # specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile)
 bin/rubocop
+
+# Test against every supported Rails version (see Appraisals)
+BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal install
+BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rspec           # all of them
+BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rails_8.0 rspec # just one
 
 # JavaScript
 yarn install
-yarn webpack        # outputs dist/js/datatables-factory.js
+yarn webpack        # outputs dist/js/datatables-factory.js (minified)
+yarn jest           # JS unit tests
 ```
+
+`dist/js/datatables-factory.js` is committed and shipped to gem and npm
+consumers: rebuild it whenever `src/` changes — CI rejects a stale bundle.

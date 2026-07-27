@@ -11,6 +11,9 @@ class SelectBase extends BaseFilter
     @filter_plugin         = @options.filter_plugin
     @filter_plugin_options = @options.filter_plugin_options
 
+    # tracks the last rendered dropdown_data, see #reload
+    @_dropdown_signature = null
+
     # build ids
     @wrapper_id = "yadcf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
     @select_id  = "yadcf-filter-#{@datatable_filter.dt_id}-#{@column_id}"
@@ -75,14 +78,21 @@ class SelectBase extends BaseFilter
     @select_plugin = null
 
 
+  # Every xhr.dt triggers a reload. Rebuilding an unchanged dropdown throws away
+  # and re-creates every option (and makes the plugin re-sync) on each redraw,
+  # sort or keystroke in another filter — so only rebuild when the data differs.
   reload: (event) ->
     super(event)
 
-    @_el(@select_id).empty().append(@_select_options())
+    signature = JSON.stringify(@dropdown_data)
 
-    # re-read options and selection from the underlying <select>
-    @select_plugin?.clearOptions()
-    @select_plugin?.sync()
+    if signature != @_dropdown_signature
+      @_dropdown_signature = signature
+      @_el(@select_id).empty().append(@_select_options())
+
+      # re-read options and selection from the underlying <select>
+      @select_plugin?.clearOptions()
+      @select_plugin?.sync()
 
     @restore_state()
 

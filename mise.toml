@@ -11,8 +11,35 @@ yarn = "1.22.22"
 
 [tasks."dev:deps"]
 description = "Install dependencies"
-run = "yarn install"
+# --frozen-lockfile: CI must build from yarn.lock, never resolve around it
+run = "yarn install --frozen-lockfile"
 
 [tasks."dev:build"]
 description = "Build JS"
 run = "yarn webpack"
+
+[tasks."dev:test-js"]
+description = "Run the JavaScript unit tests"
+run = "yarn jest"
+
+[tasks."dev:lint"]
+description = "Lint Ruby"
+run = "bin/rubocop"
+
+[tasks."dev:spec"]
+description = "Run the Ruby specs"
+run = "bin/rspec"
+
+[tasks."dev:appraisals"]
+description = "Install the per-Rails appraisal bundles (gemfiles/, not committed)"
+env = { BUNDLE_GEMFILE = "spec/dummy/Gemfile" }
+run = "bundle exec appraisal install"
+
+[tasks."dev:spec-all"]
+description = "Run the Ruby specs against every supported Rails version"
+env = { BUNDLE_GEMFILE = "spec/dummy/Gemfile" }
+run = "bundle exec appraisal rspec"
+
+[tasks."dev:check-dist"]
+description = "Fail if the committed bundle is out of date with src/"
+run = "git diff --exit-code -- dist/"

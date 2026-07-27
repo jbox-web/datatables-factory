@@ -30,15 +30,3 @@
   </div>
 </div>
 
-<% content_for :javascript do %>
-<script>
-  window.Datatables = window.Datatables || {}
-  window.Datatables.Acme = window.Datatables.Acme || {}
-  class NamespacedDatatable extends DatatableBase {}
-  window.Datatables.Acme.NamespacedDatatable = NamespacedDatatable
-
-  $(function() {
-    DatatableBase.load_datatables()
-  })
-</script>
-<% end %>

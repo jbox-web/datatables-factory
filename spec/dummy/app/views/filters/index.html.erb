@@ -66,14 +66,3 @@
   </div>
 </div>
 
-<% content_for :javascript do %>
-<script>
-  window.Datatables = window.Datatables || {}
-  class FiltersDatatable extends DatatableBase {}
-  window.Datatables.FiltersDatatable = FiltersDatatable
-
-  $(function() {
-    DatatableBase.load_datatables()
-  })
-</script>
-<% end %>

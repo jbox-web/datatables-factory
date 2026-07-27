@@ -8,11 +8,29 @@
 
     <!-- CSS servis depuis public/ -->
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
-    <link rel="stylesheet" href="/stylesheets/datatables.bundle.min.css">
+    <link rel="stylesheet" href="<%= datatables_bundle_css_path %>">
     <link rel="stylesheet" href="/stylesheets/tom-select.bootstrap5.min.css">
     <link rel="stylesheet" href="/stylesheets/jquery-ui.css">
     <!-- Font Awesome (icons, CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Scripts dans le <head>, comme les packs de l'application hôte : Turbo
+         fusionne le head et ne réévalue pas ces balises, donc la bibliothèque
+         et les classes de démo ne sont chargées qu'une fois. Les mettre dans le
+         <body> les ferait rejouer à chaque navigation, ce qui recréerait les
+         classes JS et masquerait le cycle destroy/recréation des tables. -->
+    <script src="/javascripts/turbo.min.js"></script>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="<%= datatables_bundle_js_path %>"></script>
+    <script src="/javascripts/tom-select.min.js"></script>
+    <script src="/javascripts/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- datatables-factory (servi par l'engine via asset pipeline) -->
+    <%= javascript_include_tag 'datatables-factory', defer: false %>
+
+    <!-- Équivalent du pack applicatif : classes de démo + init sur turbo:load -->
+    <script src="/javascripts/dummy_datatables.js"></script>
 
     <style>
       body { background-color: #f8f9fa; }
@@ -47,7 +65,7 @@
       }
     </style>
   </head>
-  <body>
+  <body data-dt-version="<%= datatables_version %>">
     <%= render 'shared/navbar' %>
 
     <div class="container-fluid">
@@ -61,25 +79,6 @@
         </main>
       </div>
     </div>
-
-    <!-- jQuery + DataTables bundle + tom-select (servis depuis public/) -->
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/javascripts/datatables.bundle.min.js"></script>
-    <script src="/javascripts/tom-select.min.js"></script>
-    <!-- jQuery UI (servi localement) -->
-    <script src="/javascripts/jquery-ui.min.js"></script>
-    <!-- Bootstrap 5 JS (CDN, non-critique pour les tests) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- datatables-factory (servi par l'engine via asset pipeline) -->
-    <%= javascript_include_tag 'datatables-factory', defer: false %>
-    <script>
-      // Le bundle UMD expose l'objet d'exports nommés { DatatableBase }
-      // (équivalent de `import { DatatableBase } from '@jbox-web/datatables-factory'`,
-      // tel que consommé par concerto). On en extrait la classe pour l'exposer
-      // en global, attendu par les scripts de démo ci-dessous.
-      window.DatatableBase = window.DatatableBase.DatatableBase
-    </script>
 
     <%= yield :javascript %>
   </body>

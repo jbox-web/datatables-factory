@@ -36,20 +36,23 @@ WithCheckBoxes.instance_methods =
 
         @_check_boxes_thead = $('thead', @datatable.table().container())
 
+        # All handlers are namespaced so teardown removes only ours and leaves
+        # any handler registered by the host application untouched.
+
         # Update state of "Select all" control
-        @datatable.on 'draw.dt', @_check_boxes_callback_on_draw()
+        @datatable.on 'draw.dt.dtfCheckBoxes', @_check_boxes_callback_on_draw()
 
         # Update global count
-        @datatable.on 'xhr.dt', @_check_boxes_callback_on_xhr()
+        @datatable.on 'xhr.dt.dtfCheckBoxes', @_check_boxes_callback_on_xhr()
 
         # Handle row selection event
-        @datatable.on 'select.dt deselect.dt', @_check_boxes_callback_on_select()
+        @datatable.on 'select.dt.dtfCheckBoxes deselect.dt.dtfCheckBoxes', @_check_boxes_callback_on_select()
 
         # Handle click on "Select all" control
-        @_check_boxes_thead.on 'click', 'input[type="checkbox"]', @_check_boxes_callback_checkbox_on_click()
+        @_check_boxes_thead.on 'click.dtfCheckBoxes', 'input[type="checkbox"]', @_check_boxes_callback_checkbox_on_click()
 
         # Handle click on heading containing "Select all" control
-        @_check_boxes_thead.on 'click', 'th:first-child', @_check_boxes_callback_th_on_click()
+        @_check_boxes_thead.on 'click.dtfCheckBoxes', 'th:first-child', @_check_boxes_callback_th_on_click()
 
 
   ###########################
@@ -202,10 +205,10 @@ WithCheckBoxes.instance_methods =
 
   _with_check_boxes_destroy: ->
     return if !@_check_boxes_enabled()
-    @datatable.off('draw.dt')
-    @datatable.off('xhr.dt')
-    @datatable.off('select.dt deselect.dt')
-    @_check_boxes_thead?.off('click')
+    @datatable.off('draw.dt.dtfCheckBoxes')
+    @datatable.off('xhr.dt.dtfCheckBoxes')
+    @datatable.off('select.dt.dtfCheckBoxes deselect.dt.dtfCheckBoxes')
+    @_check_boxes_thead?.off('click.dtfCheckBoxes')
     @_check_boxes_thead = null
 
 
@@ -215,11 +218,13 @@ WithCheckBoxes.instance_methods =
       @select_row(tr)
 
 
+  # .text(), never .html(): the count comes from the server response and the
+  # label from configuration — neither is meant to be markup.
   _update_select_all_global_count: (count) ->
     label = @dtf_options?['selected_count_label'] || 'Total selected: '
     $("#{@dt_id}_wrapper .selected-count")
-      .html(label)
-      .append $('<span>').attr('id', 'selected-count-number').html(count)
+      .text(label)
+      .append $('<span>').attr('id', 'selected-count-number').text(count)
 
 
 export default WithCheckBoxes

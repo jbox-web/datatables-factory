@@ -24,4 +24,30 @@ RSpec.describe 'Filters datatable', :js do
     # The JS filter system creates inputs inside the container divs
     expect(page).to have_css('[id$="-filter"]', wait: 3)
   end
+
+  it 'filters rows through a column filter' do
+    visit '/filters'
+    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+
+    find('#filters-first-name-filter input.yadcf-filter').set('Alice')
+
+    expect(page).to have_css('tbody tr', count: 1, wait: 5)
+    expect(page).to have_text('Alice')
+  end
+
+  # The reset button goes through DatatableFilter#_set_search_value, which pokes
+  # the DataTables internal per-column search store. That store was renamed in
+  # DataTables 3 (aoPreSearchCols -> searches), so this is the regression guard.
+  it 'clears the column filters with the reset button' do
+    visit '/filters'
+    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+
+    find('#filters-first-name-filter input.yadcf-filter').set('Alice')
+    expect(page).to have_css('tbody tr', count: 1, wait: 5)
+
+    find('button[title="Reset all filters"]').click
+
+    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+    expect(find('#filters-first-name-filter input.yadcf-filter').value).to eq('')
+  end
 end

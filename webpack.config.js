@@ -4,7 +4,9 @@ const eslint  = require('eslint-webpack-plugin')
 
 module.exports = {
   entry: './src/index.coffee',
-  mode: 'development',
+  // The bundle in dist/ is what ships to gem and npm consumers: build it
+  // minified. Override with NODE_ENV=development for a readable build.
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   devtool: false,
   output: {
     path: path.resolve(__dirname, 'dist/js'),

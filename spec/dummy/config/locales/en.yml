@@ -1,30 +1,8 @@
+# Only the keys the engine cannot provide: per-column filter labels are
+# application data. Everything else (DataTables language, the select-all button
+# titles, "Filter by") comes from the engine's own config/locales/en.yml.
 en:
   datatables:
-    processing:     "Processing..."
-    search:         "Search:"
-    lengthMenu:     "Show _MENU_ entries"
-    info:           "Showing _START_ to _END_ of _TOTAL_ entries"
-    infoEmpty:      "Showing 0 to 0 of 0 entries"
-    infoFiltered:   "(filtered from _MAX_ total entries)"
-    infoPostFix:    ""
-    loadingRecords: "Loading..."
-    zeroRecords:    "No matching records found"
-    emptyTable:     "No data available in table"
-    paginate:
-      first:    "First"
-      previous: "Previous"
-      next:     "Next"
-      last:     "Last"
-    aria:
-      sortAscending:  ": activate to sort column ascending"
-      sortDescending: ": activate to sort column descending"
-    select:
-      rows: "%d row(s) selected"
-    buttons:
-      pageLength:
-        _:    "Show %d entries"
-        "-1": "Show all"
-      colvisRestore: "Restore visibility"
     filter:
       first_name: "first name"
       last_name:  "last name"
@@ -32,7 +10,3 @@ en:
       role:       "role"
       age:        "age"
       created_at: "created at"
-      date_start: "From"
-      date_end:   "To"
-  text:
-    filter_by: "Filter by"
