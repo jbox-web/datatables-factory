@@ -103,6 +103,22 @@ Declare filters in the view with `search_form`. Filter type is set by the form b
 <% dt.search_field(column_id: 2, filter_type: 'select', populate_with: 'admin') %>
 ```
 
+### Pre-applying filters from the URL
+
+A link may carry the filters to apply, under the `dt_filters` key, keyed by column name:
+
+```
+/users?dt_filters[role]=admin
+/users?dt_filters[role][]=admin&dt_filters[role][]=moderator   # multi_select
+/users?dt_filters[age][from]=20&dt_filters[age][to]=40         # range
+/users?dt_filters[age]=20-yadcf_delim-40                       # range, delimited form
+```
+
+The table is filtered on its first draw (no extra request) and every widget shows
+its value. The URL wins over both the state saved by DataTables `stateSave` and
+the defaults declared with `populate_with`. A column that does not exist, or that
+carries no filter, is ignored.
+
 ### Icon on a filter
 
 ```erb

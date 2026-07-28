@@ -43,6 +43,13 @@ BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rspec   # every supporte
 
 **Filter system:** `DatatableFilter` (`src/model/datatable_filter.coffee`) manages filter instances. Filter types live in `src/model/filters/`: `text`, `range_date`, `range_number`, `select`, `multi_select`. Filters persist state via DataTables' `stateSave` API under the key `dt_filters_state`.
 
+`DatatableFilter#load` seeds that state from the query string (`?dt_filters[column]=value`)
+*before* building the filters, which is the single branching point the feature needs: every
+filter type then picks the value up through its own `restore_state()`, and the value is
+already in the per-column search store when the first draw builds its request — no extra
+redraw. The URL deliberately wins over both the saved state and the `populate_with` defaults
+(`_apply_filters` skips the columns seeded from the URL).
+
 **Loading flow:**
 1. `Loader.load_datatables()` scans DOM for `[data-toggle=datatable]`
 2. Resolves JS class via `window` path lookup (`Loader.constantize`)
