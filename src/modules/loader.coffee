@@ -139,6 +139,14 @@ Loader.instance_methods =
 
     $(@dt_id).DataTable(@dt_options)
 
+    # After DataTable(), not before: the call above fires preInit, and the
+    # DatatableFilter built there clears every xhr.dt handler on the node
+    # (_bind_datatable) — a handler bound earlier would be dropped on the spot.
+    # Bound outside init_filters on purpose too: a table without any declared
+    # filter can land on an out-of-range page just as well.
+    $(@dt_id).off('xhr.dt.dtf-paging').on 'xhr.dt.dtf-paging', (_event, settings, json) =>
+      @_reset_stale_page(settings, json)
+
     @info('Datatable created')
 
 
@@ -175,6 +183,7 @@ Loader.instance_methods =
     @_loader_load_created_row_callbacks()
     @_loader_load_draw_callbacks()
     @_loader_load_buttons_callbacks()
+    @_loader_load_state_params()
 
 
   ############################
@@ -234,6 +243,56 @@ Loader.instance_methods =
           c(settings)
 
     @dt_options = Utils.merge_hash(@dt_options, local_opts)
+
+
+  # The saved state restores the page the table was last left on. Filters coming
+  # from the URL make that page meaningless: a filtered set is shorter, so the
+  # page usually falls past the last row and the first draw asks the server for
+  # an offset it cannot serve — the link lands on an empty table announcing
+  # "showing 11 to 2 of 2".
+  #
+  # It has to be dropped from the state itself: DataTables applies the state
+  # after preInit, so moving the offset from DatatableFilter (built there) is
+  # undone right after. stateLoadParams is the documented hook, and it only
+  # exists as an init option — hence here, before the table is created.
+  _loader_load_state_params: ->
+    return if !DatatableFilter.carries_url_filters()
+
+    @info('Build datatable options : drop the saved page (URL carries filters)')
+
+    previous = @dt_options['stateLoadParams']
+
+    local_opts =
+      stateLoadParams: (settings, data) ->
+        previous?(settings, data)
+        data.start = 0
+
+    @dt_options = Utils.merge_hash(@dt_options, local_opts)
+
+
+  # Last line of defence against a page that no longer exists. The saved state
+  # restores the page the table was last left on, and nothing guarantees it
+  # still holds rows: records may have been deleted, a scope narrowed, or a
+  # `populate_with` default applied on load (_apply_filters only redraws on a
+  # click). Server-side, the offset then goes out as-is and the table renders
+  # empty while announcing "showing 11 to 3 of 3" — results exist, none are
+  # shown, and nothing in the page gets the user out of it.
+  #
+  # Only reachable when the offset is genuinely past the last row, so the extra
+  # request is paid in the broken case alone. Going back to the first page
+  # rather than the last valid one matches what DataTables does when a search
+  # shrinks the set. No recursion: the new request carries start = 0.
+  _reset_stale_page: (settings, json) ->
+    return if !json?
+
+    filtered = json['recordsFiltered']
+    return if !filtered? or filtered <= 0
+
+    api = new $.fn.dataTable.Api(settings)
+    return if api.page.info().start < filtered
+
+    @info("Saved page is past the last row (#{filtered} records), back to the first one")
+    api.page(0).draw('page')
 
 
   _loader_load_buttons_callbacks: ->

@@ -101,4 +101,25 @@ RSpec.describe 'Filters pre-applied from the URL', :js do
     expect(page).to have_css("#{table}_wrapper", wait: 5)
     wait_for_rows(table, count: 3)
   end
+
+  # The saved state restores the page the user left the table on. A filtered set
+  # is shorter, so that page is usually out of range: the request goes out with
+  # its offset, the server has nothing that far, and the link lands on an empty
+  # table announcing "showing 11 to 2 of 2".
+  it 'starts back at the first page' do
+    12.times do |i|
+      User.create!(first_name: "Filler#{i}", last_name: "Zz#{i}", email: "filler#{i}@filters.com", role: :user, age: 20)
+    end
+
+    visit '/filters'
+    wait_for_rows(table, count: 10)
+
+    page.execute_script("window.jQuery('#{table}').DataTable().page(1).draw('page')")
+    wait_for_rows(table, count: 5)
+
+    visit '/filters?dt_filters[role]=admin'
+
+    wait_for_rows(table, count: 1)
+    expect(page).to have_text('Alice')
+  end
 end

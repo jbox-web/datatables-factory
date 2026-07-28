@@ -50,6 +50,20 @@ already in the per-column search store when the first draw builds its request �
 redraw. The URL deliberately wins over both the saved state and the `populate_with` defaults
 (`_apply_filters` skips the columns seeded from the URL).
 
+The saved *page* has to be dropped too, and cannot be handled there: DataTables applies the
+state after `preInit`, so an offset moved from `DatatableFilter` is overwritten right after
+(measured: `page(0)` lands, then `start` is back to its saved value at the first draw). It
+goes through the `stateLoadParams` option instead, set by `Loader#_loader_load_state_params`
+before the table is created — `DatatableFilter.carries_url_filters()` answers whether the
+query string justifies it.
+
+A URL filter is only one way to invalidate the saved page: deleted rows, a narrowed scope or
+a `populate_with` default do it too. `Loader#_reset_stale_page` is the catch-all — on every
+server-side response, an offset past `recordsFiltered` sends the table back to its first
+page. It is bound **after** `$(dt_id).DataTable(...)`, never before: that call fires
+`preInit`, and the `DatatableFilter` built there clears every `xhr.dt` handler on the node
+(`_bind_datatable`), so an earlier binding is dropped on the spot.
+
 **Loading flow:**
 1. `Loader.load_datatables()` scans DOM for `[data-toggle=datatable]`
 2. Resolves JS class via `window` path lookup (`Loader.constantize`)

@@ -18,6 +18,21 @@ class DatatableFilter extends Extendable
   RANGE_DELIMITER: '-yadcf_delim-'
 
 
+  # Asked by the Loader before any table exists, to decide whether the saved
+  # page still means anything (see Loader#_loader_load_state_params). Kept here
+  # so the query string format stays described in a single place.
+  @carries_url_filters: (search = window.location.search) ->
+    return false if !search? or search == ''
+
+    prefix = "#{DatatableFilter::URL_FILTERS_KEY}["
+    found  = false
+
+    new URLSearchParams(search).forEach (_value, key) ->
+      found = true if key.indexOf(prefix) == 0
+
+    found
+
+
   constructor: (@datatable, @filters, @filters_applied, @logger) ->
     # Call Extendable parent
     super()

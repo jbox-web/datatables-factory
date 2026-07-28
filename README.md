@@ -119,6 +119,18 @@ its value. The URL wins over both the state saved by DataTables `stateSave` and
 the defaults declared with `populate_with`. A column that does not exist, or that
 carries no filter, is ignored.
 
+The saved page is dropped as well: a filtered set is shorter, so the page the
+user was last on usually falls past the last row, and the link would land on an
+empty table.
+
+### Saved page past the last row
+
+The same hazard exists without any URL filter: rows deleted between two visits,
+a narrowed scope or a `populate_with` default can all leave the restored page
+past the end of the set. Whenever a server-side response reports fewer records
+than the current offset, the table falls back to its first page. Nothing to
+configure, and the extra request only happens in that case.
+
 ### Icon on a filter
 
 ```erb
