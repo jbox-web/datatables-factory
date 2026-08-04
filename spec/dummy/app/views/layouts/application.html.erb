@@ -20,7 +20,7 @@
          <body> les ferait rejouer à chaque navigation, ce qui recréerait les
          classes JS et masquerait le cycle destroy/recréation des tables. -->
     <script src="/javascripts/turbo.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
+    <script src="<%= jquery_js_path %>"></script>
     <script src="<%= datatables_bundle_js_path %>"></script>
     <script src="/javascripts/tom-select.min.js"></script>
     <script src="/javascripts/jquery-ui.min.js"></script>
@@ -65,7 +65,7 @@
       }
     </style>
   </head>
-  <body data-dt-version="<%= datatables_version %>">
+  <body data-dt-version="<%= datatables_version %>" data-jquery-version="<%= jquery_version %>">
     <%= render 'shared/navbar' %>
 
     <div class="container-fluid">

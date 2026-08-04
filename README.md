@@ -248,6 +248,11 @@ bundle install
 bin/rspec           # specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile)
 bin/rubocop
 
+# The system specs run against one vendored DataTables and jQuery bundle at a
+# time; CI crosses every combination. Defaults: DataTables 2, jQuery 3.
+DT_VERSION=3 bin/rspec
+JQ_VERSION=4 bin/rspec
+
 # Test against every supported Rails version (see Appraisals)
 BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal install
 BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rspec           # all of them
@@ -256,7 +261,7 @@ BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rails_8.0 rspec # just o
 # JavaScript
 yarn install
 yarn webpack        # outputs dist/js/datatables-factory.js (minified)
-yarn jest           # JS unit tests
+yarn jest           # JS unit tests, with coverage written to coverage/js/
 ```
 
 `dist/js/datatables-factory.js` is committed and shipped to gem and npm

@@ -75,7 +75,9 @@ class TextFilter extends BaseFilter
 
 
   current_value: ->
-    $.trim @_el(@input_id).val()
+    # Not $.trim: jQuery 4 dropped it. String(x ? '') keeps its contract —
+    # coerce to a string, and map null/undefined (no element) to ''.
+    String(@_el(@input_id).val() ? '').trim()
 
 
   ###################

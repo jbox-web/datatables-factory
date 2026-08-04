@@ -16,7 +16,7 @@ It integrates with `ajax-datatables-rails` and the `yadcf` filter plugin.
 ```bash
 yarn install          # install JS dependencies
 yarn webpack          # build dist/js/datatables-factory.js (minified; NODE_ENV=development for a readable build)
-yarn jest             # JS unit tests (jsdom, real jQuery, stubbed TomSelect)
+yarn jest             # JS unit tests (jsdom, real jQuery, stubbed TomSelect); coverage is always on, written to coverage/js/
 ```
 
 ### Ruby (prefer the binstubs in `bin/`)
@@ -24,6 +24,7 @@ yarn jest             # JS unit tests (jsdom, real jQuery, stubbed TomSelect)
 bundle install        # install gem dependencies
 bin/rspec             # run specs — system specs run against spec/dummy (binstub sets BUNDLE_GEMFILE=spec/dummy/Gemfile); `bundle exec rspec` fails without sprockets-rails
 DT_VERSION=3 bin/rspec # run the same specs against DataTables 3 (default: 2)
+JQ_VERSION=4 bin/rspec # run the same specs against jQuery 4 (default: 3)
 bin/rubocop           # lint Ruby
 bin/guard             # watch and re-run specs on file changes
 BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rspec   # every supported Rails version
@@ -82,7 +83,7 @@ page. It is bound **after** `$(dt_id).DataTable(...)`, never before: that call f
 
 **`SearchFormBuilder`** extends `ActionView::Helpers::FormBuilder` to build filter forms with yadcf-compatible HTML. Its methods never call `super`: they emit the container `<div>` and register the filter on the presenter. A filter naming a column never declared with `head_for` raises `ArgumentError` at render time.
 
-### DataTables version coverage
+### DataTables and jQuery version coverage
 
 The library supports DataTables 2 and 3. The dummy app vendors one bundle per major
 version in `spec/dummy/public/{javascripts,stylesheets}/datatables{2,3}.bundle.min.*`
@@ -93,6 +94,36 @@ the system specs once per version.
 DataTables 3 renamed its internal settings properties (hungarian notation dropped),
 so any code touching `api.context[0]` internals must handle both spellings — see
 `DatatableFilter#_set_search_value` (`aoPreSearchCols` in DT2, `searches` in DT3).
+
+jQuery follows the same pattern: `spec/dummy/public/javascripts/jquery{3,4}.min.js`,
+selected by `ApplicationHelper#jquery_version` from `JQ_VERSION`, CI matrix crossing
+both with the DataTables versions. jQuery 4 removed `$.trim`, `$.isArray`,
+`$.isFunction`, `$.isNumeric`, `$.parseJSON`, `$.now` and `$.type` — none of them may
+come back into `src/`. `spec/system/jquery_version_spec.rb` is the guard: it asserts
+the requested major is the one running *and* that those APIs are absent under 4, so a
+green run cannot be jQuery 3 in disguise. jest already runs against jQuery 4 only
+(`yarn.lock` resolves the `>=3.6.0` dev dependency to 4.x), which is the other half of
+the coverage.
+
+### JS unit specs
+
+`spec/js` runs under jsdom with real jQuery; the peers the host application
+provides are stubbed (`TomSelect` in `support/setup.js`, jQuery UI's datepicker in
+`support/filter_helpers.js`, select2 per spec). Two support modules carry the
+scaffolding: `filter_helpers.js` for the filters (a recorder standing in for the
+owning `DatatableFilter`, the container they render into), `table_helpers.js` for
+anything reached through a loaded table (`DataTableApiStub`, `loadTable`, which
+runs the real `Loader` so every mixin is wired as in production).
+
+Two traps this suite has already hit, both measured:
+
+- `coffee_transformer.js` must key its cache on `options.instrument`. Without it
+  Jest serves the uninstrumented build back to the coverage run and the report
+  comes out `0/0` — green, and measuring nothing.
+- jQuery routes clicks on a checkbox through the native control first
+  (`leverageNative`), so by the time a handler runs `event.target.checked` already
+  holds the *toggled* value. A spec that ticks the box then triggers a click
+  exercises the untick path.
 
 ### System specs
 

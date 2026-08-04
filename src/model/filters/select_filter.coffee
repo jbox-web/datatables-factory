@@ -7,7 +7,9 @@ class SelectFilter extends SelectBase
   ##################
 
   current_value: ->
-    $.trim @_el(@select_id).find('option:selected').val()
+    # Not $.trim: jQuery 4 dropped it. String(x ? '') keeps its contract —
+    # coerce to a string, and map null/undefined (no element) to ''.
+    String(@_el(@select_id).find('option:selected').val() ? '').trim()
 
 
   set: (value) ->

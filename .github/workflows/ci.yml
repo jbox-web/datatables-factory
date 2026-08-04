@@ -82,10 +82,13 @@ jobs:
         # The dummy app vendors one DataTables bundle per supported major
         # version; the whole suite runs against each of them.
         datatables: ['2', '3']
+        # Same idea for jQuery: 4 dropped APIs the library used to call, so both
+        # majors have to be exercised, not only the one a host app ships today.
+        jquery: ['3', '4']
         # One entry per appraisal in Appraisals, so CI exercises every supported
         # Rails major rather than only whatever bundler resolves to today.
         rails: [rails_7.2, rails_8.0, rails_8.1]
-    name: rspec (DataTables ${{ matrix.datatables }}, ${{ matrix.rails }})
+    name: rspec (DataTables ${{ matrix.datatables }}, jQuery ${{ matrix.jquery }}, ${{ matrix.rails }})
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -138,4 +141,5 @@ jobs:
         env:
           BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
           DT_VERSION: ${{ matrix.datatables }}
+          JQ_VERSION: ${{ matrix.jquery }}
         run: bin/rspec
