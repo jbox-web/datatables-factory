@@ -2,8 +2,30 @@
 // the result through babel-jest so the ESM import/export CoffeeScript 2 emits
 // verbatim get turned into CommonJS for the test runner.
 const crypto = require('crypto')
+const fs = require('fs')
 const coffee = require('coffeescript')
 const babelJest = require('babel-jest').default
+
+// Jest's transform cache outlives this file, and only getCacheKey decides what
+// it may hand back. Keyed on the .coffee source alone, a key stays valid across
+// a change of the transformer, so entries written by an earlier build are
+// served to a later one: the day the babel step below was added, the runner
+// still got the coffee-only output of the previous build and 18 of 19 suites
+// died on `Unexpected token 'export'` with nothing wrong in the repository.
+// Folding the transformer's own bytes and the versions of the compilers it
+// drives into every key makes such an entry unreachable instead.
+const IDENTITY = crypto
+  .createHash('sha1')
+  .update(fs.readFileSync(__filename))
+  .update('\0')
+  .update(require('coffeescript/package.json').version)
+  .update('\0')
+  .update(require('@babel/core/package.json').version)
+  .update('\0')
+  .update(require('@babel/preset-env/package.json').version)
+  .update('\0')
+  .update(require('babel-jest/package.json').version)
+  .digest('hex')
 
 // Built per file rather than once: inputSourceMap is a Babel option, so the
 // CoffeeScript map can only be chained in at transformer creation. Coverage
@@ -39,6 +61,8 @@ module.exports = {
       .update(src)
       .update('\0')
       .update(String(Boolean(options && options.instrument)))
+      .update('\0')
+      .update(IDENTITY)
       .digest('hex')
   },
 }
