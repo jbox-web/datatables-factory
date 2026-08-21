@@ -7,7 +7,9 @@ import {
   renderContainer,
   resetDom,
   stubDatepicker,
+  stubFlatpickr,
   unstubDatepicker,
+  unstubFlatpickr,
 } from '../support/filter_helpers'
 
 const RANGE_LABELS = ['From', 'To']
@@ -401,6 +403,89 @@ describe('range filters', () => {
       filter._date_select('01/01/2024', {})
 
       expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+    })
+  })
+
+  // The filter receives `filter_plugin` from the server but used to ignore it and
+  // always call jQuery UI. Hosts that ship flatpickr — and no jQuery UI datepicker
+  // — need the same filter to drive theirs.
+  describe('RangeDateFilter with the flatpickr plugin', () => {
+    const FLATPICKR = {
+      filter_plugin: 'flatpickr',
+      filter_plugin_options: { dateFormat: 'd/m/Y' },
+    }
+
+    let pickers
+
+    beforeEach(() => {
+      pickers = stubFlatpickr()
+    })
+
+    afterEach(() => {
+      unstubFlatpickr()
+    })
+
+    it('attaches flatpickr to both inputs and leaves jQuery UI alone', () => {
+      const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+      filter.create_html()
+      const datepickerCalls = stubDatepicker()
+
+      filter.bind_inputs()
+
+      expect(pickers.length).toBe(2)
+      expect(datepickerCalls.length).toBe(0)
+    })
+
+    it('carries the declared date format over to flatpickr', () => {
+      const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+      filter.create_html()
+
+      filter.bind_inputs()
+
+      expect(pickers[0].options.dateFormat).toBe('d/m/Y')
+    })
+
+    it('runs the filter when a date is picked', () => {
+      const { filter, owner } = build(RangeDateFilter, { options: FLATPICKR })
+      filter.create_html()
+      filter.bind_inputs()
+      $(`#${filter.from_id}`).val('01/01/2024')
+
+      pickers[0].options.onChange([], '01/01/2024', pickers[0])
+
+      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+    })
+
+    it('keeps both ends consistent by moving the opposite bound', () => {
+      const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+      filter.create_html()
+      filter.bind_inputs()
+
+      pickers[0].options.onChange([], '01/01/2024', pickers[0])
+      pickers[1].options.onChange([], '31/12/2024', pickers[1])
+
+      expect(pickers[1].settings).toContainEqual({ key: 'minDate', value: '01/01/2024' })
+      expect(pickers[0].settings).toContainEqual({ key: 'maxDate', value: '31/12/2024' })
+    })
+
+    it('destroys both instances on teardown', () => {
+      const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+      filter.create_html()
+      filter.bind_inputs()
+
+      filter.destroy()
+
+      expect(pickers.map((picker) => picker.destroyed)).toEqual([true, true])
+    })
+
+    // The parser used to be $.datepicker.parseDate, which a flatpickr-only host
+    // does not ship: every keystroke threw and no date ever counted as "in use".
+    it('parses dates without jQuery UI', () => {
+      const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+      unstubDatepicker()
+
+      expect(filter._date_or_empty_string('01/01/2024')).toBeInstanceOf(Date)
+      expect(filter._date_or_empty_string('not a date')).toBe('')
     })
   })
 })

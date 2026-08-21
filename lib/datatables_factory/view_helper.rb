@@ -36,11 +36,25 @@ module DatatablesFactory
     end
 
 
-    def datatable_options_for_range_date
+    # Date pickers the host application already ships. Both formats render the
+    # same string (21/08/2026), but each library spells it its own way — jQuery
+    # UI reads `yy` as the four-digit year where flatpickr reads `Y`. Handing one
+    # the other's spelling silently changes what lands in the saved filter state.
+    RANGE_DATE_PLUGINS = {
+      'jquery-ui' => { changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' },
+      'flatpickr' => { dateFormat: 'd/m/Y' },
+    }.freeze
+
+    def datatable_options_for_range_date(plugin: 'jquery-ui')
+      options = RANGE_DATE_PLUGINS.fetch(plugin) { raise ArgumentError, "Unknown date picker: #{plugin}" }
+
       {
         filter_default_label:  [label_filter_by('date_start', prefix: false), label_filter_by('date_end', prefix: false)],
-        filter_plugin:         'jquery-ui',
-        filter_plugin_options: { changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' },
+        filter_plugin:         plugin,
+        # dup, because freeze only covers the outer hash: handing the inner one
+        # out shares it with every later call, and callers do adjust it — the
+        # views merge onto the result, which copies the top level only.
+        filter_plugin_options: options.dup,
       }
     end
 

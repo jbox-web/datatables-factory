@@ -93,7 +93,7 @@ RSpec.describe DatatablesFactory::Presenter do
       dt = presenter
       dt.body class: 'table-striped'
 
-      expect(options_for(dt)[:dtf_options]).not_to include(context_menu: true)
+      expect(options_for(dt)[:dtf_options]).to_not include(context_menu: true)
     end
   end
 
@@ -109,7 +109,7 @@ RSpec.describe DatatablesFactory::Presenter do
       dt = presenter
       dt.search_field(column_id: 2, filter_type: 'select', populate_with: 'admin')
 
-      expect(options_for(dt)[:dt_options][:filters].last).not_to have_key(:populate_with)
+      expect(options_for(dt)[:dt_options][:filters].last).to_not have_key(:populate_with)
     end
   end
 

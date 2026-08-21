@@ -92,3 +92,43 @@ export function unstubDatepicker() {
   delete $.fn.datepicker
   delete $.datepicker
 }
+
+// flatpickr is a peer too, reached as a global exactly like TomSelect. The stub
+// records every call and hands back an instance exposing the two methods the
+// filter uses — set() for the cross bounds, destroy() for teardown — so a spec
+// can assert on what the filter asked for without pulling the real library in.
+export function stubFlatpickr() {
+  const calls = []
+
+  global.flatpickr = function flatpickr(element, options) {
+    const instance = {
+      element,
+      options,
+      settings: [],
+      destroyed: false,
+      set(key, value) {
+        this.settings.push({ key, value })
+      },
+      destroy() {
+        this.destroyed = true
+      },
+    }
+    calls.push(instance)
+    return instance
+  }
+
+  // Same pass/throw contract as $.datepicker.parseDate: the filter branches on
+  // a Date meaning "in use" and a throw meaning "not a date".
+  global.flatpickr.parseDate = function parseDate(value, format) {
+    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value)
+    if (!match) throw new Error(`Invalid date: ${value} (${format})`)
+
+    return new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]))
+  }
+
+  return calls
+}
+
+export function unstubFlatpickr() {
+  delete global.flatpickr
+}

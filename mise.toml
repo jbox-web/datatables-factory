@@ -1,13 +1,10 @@
 [settings]
 experimental = true
 
-[settings.ruby]
-compile = false
-
 [tools]
-ruby = "3.4.9"
-nodejs = "24.14.0"
-yarn = "1.22.22"
+ruby   = "3.4.10"
+nodejs = "24.19.0"
+yarn   = "1.22.22"
 
 [tasks."dev:deps"]
 description = "Install dependencies"

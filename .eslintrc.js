@@ -10,6 +10,7 @@ module.exports = {
   "globals": {
     "$": true,
     "TomSelect": true,
+    "flatpickr": true,
   },
   "overrides": [
     {

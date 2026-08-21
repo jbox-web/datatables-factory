@@ -33,7 +33,7 @@ RSpec.describe 'jQuery version selection', :js do
     if expected == '4'
       expect(removed).to be_empty
     else
-      expect(removed).not_to be_empty
+      expect(removed).to_not be_empty
     end
   end
 end

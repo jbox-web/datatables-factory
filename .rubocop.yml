@@ -35,6 +35,9 @@ RSpec/ExampleLength:
     - spec/system/**/*
     - spec/lib/**/*
 
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
 #########
 # STYLE #
 #########
