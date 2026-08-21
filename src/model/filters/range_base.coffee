@@ -10,14 +10,14 @@ class RangeBase extends BaseFilter
     @to_placeholder   = @filter_default_label[1]
 
     # fetch optional data
-    @range_delimiter  = @options.filter_range_delimiter or '-yadcf_delim-'
+    @range_delimiter  = @options.filter_range_delimiter or '-dtf_delim-'
 
     # build ids
-    @wrapper_outer_id = "yadcf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
-    @wrapper_inner_id = "yadcf-filter-wrapper-inner-#{@datatable_filter.dt_id}-#{@column_id}"
-    @from_id          = "yadcf-filter-#{@datatable_filter.dt_id}-from-#{@range_type}-#{@column_id}"
-    @to_id            = "yadcf-filter-#{@datatable_filter.dt_id}-to-#{@range_type}-#{@column_id}"
-    @reset_id         = "yadcf-filter-#{@datatable_filter.dt_id}-reset-#{@range_type}-#{@column_id}"
+    @wrapper_outer_id = "dtf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
+    @wrapper_inner_id = "dtf-filter-wrapper-inner-#{@datatable_filter.dt_id}-#{@column_id}"
+    @from_id          = "dtf-filter-#{@datatable_filter.dt_id}-from-#{@range_type}-#{@column_id}"
+    @to_id            = "dtf-filter-#{@datatable_filter.dt_id}-to-#{@range_type}-#{@column_id}"
+    @reset_id         = "dtf-filter-#{@datatable_filter.dt_id}-reset-#{@range_type}-#{@column_id}"
 
 
   ##################
@@ -31,16 +31,16 @@ class RangeBase extends BaseFilter
     @_container().append @_html_wrapper_outer()
 
     # add inner wrapper
-    @_container_find('div.yadcf-filter-wrapper').append @_html_wrapper_inner()
+    @_container_find('div.dtf-filter-wrapper').append @_html_wrapper_inner()
 
     # add input fields
-    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_start()
-    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_separator()
-    @_container_find('div.yadcf-filter-wrapper-inner').append @_html_range_end()
+    @_container_find('div.dtf-filter-wrapper-inner').append @_html_range_start()
+    @_container_find('div.dtf-filter-wrapper-inner').append @_html_range_separator()
+    @_container_find('div.dtf-filter-wrapper-inner').append @_html_range_end()
 
     # add reset button
     if @filter_reset_button
-      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
+      @_container_find('div.dtf-filter-wrapper').append @_html_reset_button()
 
 
   bind_inputs: ->
@@ -107,7 +107,7 @@ class RangeBase extends BaseFilter
 
     options =
       id:    @wrapper_outer_id
-      class: 'yadcf-filter-wrapper'
+      class: 'dtf-filter-wrapper'
 
     $('<div/>', options)
       .on('click', callback)
@@ -117,7 +117,7 @@ class RangeBase extends BaseFilter
   _html_wrapper_inner: ->
     options =
       id:    @wrapper_inner_id
-      class: 'yadcf-filter-wrapper-inner'
+      class: 'dtf-filter-wrapper-inner'
 
     $('<div/>', options)
 
@@ -128,7 +128,7 @@ class RangeBase extends BaseFilter
 
     options =
       id:          @from_id
-      class:       "yadcf-filter-range yadcf-filter-range-#{@range_type} yadcf-filter-range-start"
+      class:       "dtf-filter-range dtf-filter-range-#{@range_type} dtf-filter-range-start"
       placeholder: @from_placeholder
 
     $('<input/>', options)
@@ -142,7 +142,7 @@ class RangeBase extends BaseFilter
 
     options =
       id:          @to_id
-      class:       "yadcf-filter-range yadcf-filter-range-#{@range_type} yadcf-filter-range-end"
+      class:       "dtf-filter-range dtf-filter-range-#{@range_type} dtf-filter-range-end"
       placeholder: @to_placeholder
 
     $('<input/>', options)
@@ -162,7 +162,7 @@ class RangeBase extends BaseFilter
 
   _html_range_separator: ->
     options =
-      class: "yadcf-filter-range-#{@range_type}-seperator"
+      class: "dtf-filter-range-#{@range_type}-separator"
 
     $('<span/>', options)
 

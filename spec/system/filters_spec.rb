@@ -29,7 +29,7 @@ RSpec.describe 'Filters datatable', :js do
     visit '/filters'
     expect(page).to have_css('tbody tr', count: 3, wait: 5)
 
-    find('#filters-first-name-filter input.yadcf-filter').set('Alice')
+    find('#filters-first-name-filter input.dtf-filter').set('Alice')
 
     expect(page).to have_css('tbody tr', count: 1, wait: 5)
     expect(page).to have_text('Alice')
@@ -42,12 +42,12 @@ RSpec.describe 'Filters datatable', :js do
     visit '/filters'
     expect(page).to have_css('tbody tr', count: 3, wait: 5)
 
-    find('#filters-first-name-filter input.yadcf-filter').set('Alice')
+    find('#filters-first-name-filter input.dtf-filter').set('Alice')
     expect(page).to have_css('tbody tr', count: 1, wait: 5)
 
     find('button[title="Reset all filters"]').click
 
     expect(page).to have_css('tbody tr', count: 3, wait: 5)
-    expect(find('#filters-first-name-filter input.yadcf-filter').value).to eq('')
+    expect(find('#filters-first-name-filter input.dtf-filter').value).to eq('')
   end
 end

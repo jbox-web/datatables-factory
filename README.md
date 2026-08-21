@@ -111,7 +111,7 @@ A link may carry the filters to apply, under the `dt_filters` key, keyed by colu
 /users?dt_filters[role]=admin
 /users?dt_filters[role][]=admin&dt_filters[role][]=moderator   # multi_select
 /users?dt_filters[age][from]=20&dt_filters[age][to]=40         # range
-/users?dt_filters[age]=20-yadcf_delim-40                       # range, delimited form
+/users?dt_filters[age]=20-dtf_delim-40                         # range, delimited form
 ```
 
 The table is filtered on its first draw (no extra request) and every widget shows

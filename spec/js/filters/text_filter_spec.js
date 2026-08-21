@@ -36,7 +36,7 @@ describe('TextFilter', () => {
       const { filter } = build({ options: { filter_css_class: 'form-control' } })
       filter.create_html()
 
-      expect($(`#${filter.input_id}`).attr('class')).toBe('yadcf-filter form-control')
+      expect($(`#${filter.input_id}`).attr('class')).toBe('dtf-filter form-control')
     })
 
     it('marks the input as off-limits for password-manager autofill', () => {

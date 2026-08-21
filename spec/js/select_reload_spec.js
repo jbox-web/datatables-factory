@@ -8,7 +8,7 @@ const datatableFilter = {
   has_state_for: () => null,
 }
 
-const SELECT_ID = 'yadcf-filter-users-datatable-3'
+const SELECT_ID = 'dtf-filter-users-datatable-3'
 
 function build() {
   document.body.innerHTML = `<div id="users-role-filter"><select id="${SELECT_ID}"></select></div>`

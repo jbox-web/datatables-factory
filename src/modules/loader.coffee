@@ -162,15 +162,15 @@ Loader.instance_methods =
     form = $(@dt_id + '_wrapper').parent()
 
     if form?
-      $(form).find('.yadcf-filter-wrapper').each ->
+      $(form).find('.dtf-filter-wrapper').each ->
         $(this).children().wrapAll('<div class="col-md-12"></div>').wrapAll('<div class="input-group"></div>')
         $(this).children().wrapAll('<div class="mb-3 row"></div>')
 
       # Bootstrap 5 : le bouton reset est enfant direct de .input-group (plus de wrapper .input-group-btn)
       # La classe du bouton est configurable via dtf_options (filter_reset_button_class)
       reset_class = @dtf_options?['filter_reset_button_class'] || 'btn btn-secondary'
-      $(form).find('.yadcf-filter-reset-button').addClass(reset_class)
-      $(form).find('.yadcf-filter').addClass('form-control')
+      $(form).find('.dtf-filter-reset-button').addClass(reset_class)
+      $(form).find('.dtf-filter').addClass('form-control')
 
       # Optional icon declared on the Rails side (f.text_field :name, icon: 'magnifying-glass')
       @_prepend_filter_icons(form)

@@ -48,7 +48,7 @@ describe('range filters', () => {
       expect($(`#${filter.from_id}`).length).toBe(1)
       expect($(`#${filter.to_id}`).length).toBe(1)
       expect($(`#${filter.reset_id}`).length).toBe(1)
-      expect($('.yadcf-filter-range-number-seperator').length).toBe(1)
+      expect($('.dtf-filter-range-number-separator').length).toBe(1)
     })
 
     it('uses the two labels as the placeholders, in order', () => {
@@ -80,8 +80,8 @@ describe('range filters', () => {
       expect($(`#${filter.reset_id}`).length).toBe(0)
     })
 
-    it('defaults the range delimiter to yadcf’s and honours an override', () => {
-      expect(build(RangeNumberFilter).filter.range_delimiter).toBe('-yadcf_delim-')
+    it('defaults the range delimiter and honours an override', () => {
+      expect(build(RangeNumberFilter).filter.range_delimiter).toBe('-dtf_delim-')
 
       const { filter } = build(RangeNumberFilter, {
         options: { filter_range_delimiter: '..' },
@@ -151,7 +151,7 @@ describe('range filters', () => {
 
       filter._range_clear({})
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '-yadcf_delim-' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '-dtf_delim-' }])
       expect(owner.saved).toEqual([{ column_id: 3, data: { from: '', to: '' } }])
     })
 
@@ -165,11 +165,11 @@ describe('range filters', () => {
 
           $(`#${filter.from_id}`).val('10').trigger($.Event('keyup', { keyCode: 48 }))
           jest.runAllTimers()
-          expect(owner.filters).toEqual([{ column_id: 3, value: '10-yadcf_delim-' }])
+          expect(owner.filters).toEqual([{ column_id: 3, value: '10-dtf_delim-' }])
 
           $(`#${filter.to_id}`).val('20').trigger($.Event('keyup', { keyCode: 48 }))
           jest.runAllTimers()
-          expect(owner.filters[1]).toEqual({ column_id: 3, value: '10-yadcf_delim-20' })
+          expect(owner.filters[1]).toEqual({ column_id: 3, value: '10-dtf_delim-20' })
         } finally {
           jest.useRealTimers()
         }
@@ -183,7 +183,7 @@ describe('range filters', () => {
 
         $(`#${filter.reset_id}`).trigger('click')
 
-        expect(owner.filters).toEqual([{ column_id: 3, value: '-yadcf_delim-' }])
+        expect(owner.filters).toEqual([{ column_id: 3, value: '-dtf_delim-' }])
       })
 
       // The filters sit in the table header: a click reaching it sorts the
@@ -240,7 +240,7 @@ describe('range filters', () => {
 
       filter._range_change(keyEvent())
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '10-yadcf_delim-20' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '10-dtf_delim-20' }])
       expect(owner.saved).toEqual([{ column_id: 3, data: { from: 10, to: 20 } }])
     })
 
@@ -268,7 +268,7 @@ describe('range filters', () => {
 
       filter._range_change(keyEvent())
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '-yadcf_delim-20' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '-dtf_delim-20' }])
     })
 
     it.each([37, 38, 39, 40])('ignores arrow key %i', (keyCode) => {
@@ -312,7 +312,7 @@ describe('range filters', () => {
       filter._range_change(keyEvent())
 
       expect(owner.filters).toEqual([
-        { column_id: 3, value: '01/01/2024-yadcf_delim-31/12/2024' },
+        { column_id: 3, value: '01/01/2024-dtf_delim-31/12/2024' },
       ])
       expect(owner.saved).toEqual([
         { column_id: 3, data: { from: '01/01/2024', to: '31/12/2024' } },
@@ -329,7 +329,7 @@ describe('range filters', () => {
 
       filter._range_change(keyEvent())
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '-yadcf_delim-31/12/2024' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '-dtf_delim-31/12/2024' }])
       expect($(`#${filter.from_id}`).hasClass('inuse')).toBe(false)
       expect($(`#${filter.to_id}`).hasClass('inuse')).toBe(true)
     })
@@ -384,7 +384,7 @@ describe('range filters', () => {
 
       filter._range_change(keyEvent())
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-dtf_delim-' }])
     })
 
     it('honours a configured date format', () => {
@@ -402,7 +402,7 @@ describe('range filters', () => {
 
       filter._date_select('01/01/2024', {})
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-dtf_delim-' }])
     })
   })
 
@@ -453,7 +453,7 @@ describe('range filters', () => {
 
       pickers[0].options.onChange([], '01/01/2024', pickers[0])
 
-      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-dtf_delim-' }])
     })
 
     it('keeps both ends consistent by moving the opposite bound', () => {
@@ -501,7 +501,7 @@ describe('range filters', () => {
 
         filter._range_change(keyEvent())
 
-        expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+        expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-dtf_delim-' }])
       })
 
       it('does not throw on destroy either', () => {

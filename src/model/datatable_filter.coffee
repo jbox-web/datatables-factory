@@ -14,8 +14,8 @@ class DatatableFilter extends Extendable
   URL_FILTERS_KEY: 'dt_filters'
 
   # Both bounds of a range travel to the server in a single search value, joined
-  # by this delimiter (the yadcf convention the Ruby side splits on).
-  RANGE_DELIMITER: '-yadcf_delim-'
+  # by this delimiter (the convention the Ruby side splits on).
+  RANGE_DELIMITER: '-dtf_delim-'
 
 
   # Asked by the Loader before any table exists, to decide whether the saved
@@ -218,7 +218,7 @@ class DatatableFilter extends Extendable
 
 
   # A range accepts both spellings: the delimited value the server itself uses
-  # (?dt_filters[age]=20-yadcf_delim-40) and explicit bounds
+  # (?dt_filters[age]=20-dtf_delim-40) and explicit bounds
   # (?dt_filters[age][from]=20&dt_filters[age][to]=40).
   _url_range_bounds: (entry) ->
     parts = entry['parts']
@@ -279,7 +279,7 @@ class DatatableFilter extends Extendable
 
     $(@datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback)
 
-    # we need to make sure that the yadcf state will be saved after page reload
+    # we need to make sure that the filter state will be saved after page reload
     @_save_state()
 
 

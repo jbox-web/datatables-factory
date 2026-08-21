@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Ruby gem** (Rails engine): server-side helpers for rendering DataTables HTML with configuration embedded as `data-*` attributes
 - **JavaScript/CoffeeScript library**: client-side loader and table management, compiled via webpack to `dist/js/datatables-factory.js`
 
-It integrates with `ajax-datatables-rails` and the `yadcf` filter plugin.
+It integrates with `ajax-datatables-rails` and provides its own column filters.
 
 ## Commands
 
@@ -81,7 +81,7 @@ page. It is bound **after** `$(dt_id).DataTable(...)`, never before: that call f
 
 **`ViewHelper`** provides the `datatable_for` method included into Rails views.
 
-**`SearchFormBuilder`** extends `ActionView::Helpers::FormBuilder` to build filter forms with yadcf-compatible HTML. Its methods never call `super`: they emit the container `<div>` and register the filter on the presenter. A filter naming a column never declared with `head_for` raises `ArgumentError` at render time.
+**`SearchFormBuilder`** extends `ActionView::Helpers::FormBuilder` to build filter forms with the HTML the filters expect. Its methods never call `super`: they emit the container `<div>` and register the filter on the presenter. A filter naming a column never declared with `head_for` raises `ArgumentError` at render time.
 
 ### DataTables and jQuery version coverage
 

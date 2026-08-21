@@ -15,9 +15,9 @@ class SelectBase extends BaseFilter
     @_dropdown_signature = null
 
     # build ids
-    @wrapper_id = "yadcf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
-    @select_id  = "yadcf-filter-#{@datatable_filter.dt_id}-#{@column_id}"
-    @reset_id   = "yadcf-filter-#{@datatable_filter.dt_id}-reset-#{@column_id}"
+    @wrapper_id = "dtf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
+    @select_id  = "dtf-filter-#{@datatable_filter.dt_id}-#{@column_id}"
+    @reset_id   = "dtf-filter-#{@datatable_filter.dt_id}-reset-#{@column_id}"
 
 
   ##################
@@ -104,7 +104,7 @@ class SelectBase extends BaseFilter
   _html_input_field: ->
     options =
       id:    @select_id
-      class: "yadcf-filter #{@filter_css_class}"
+      class: "dtf-filter #{@filter_css_class}"
 
     callback1 = (event) =>
       @stop_propagation(event)

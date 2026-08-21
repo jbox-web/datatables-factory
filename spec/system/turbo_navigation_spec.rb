@@ -175,7 +175,7 @@ RSpec.describe 'Turbo navigation', :js do
       turbo_click 'Filters'
       expect(page).to have_css('#filters-datatable tbody tr', minimum: 1, wait: 5)
 
-      fill_in 'yadcf-filter-filters-datatable-0', with: 'User07'
+      fill_in 'dtf-filter-filters-datatable-0', with: 'User07'
 
       expect(page).to have_css('tbody tr', count: 1, wait: 5)
     end

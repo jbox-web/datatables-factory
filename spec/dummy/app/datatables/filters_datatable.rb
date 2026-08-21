@@ -9,8 +9,8 @@ class FiltersDatatable < AjaxDatatablesRails::ActiveRecord
       email:      { source: 'User.email',       cond: :string_eq },
       role:       { source: 'User.role',        cond: :string_eq, searchable: true },
       age:        { source: 'User.age', searchable: true, cond: lambda { |_col, term|
-        next if term.exclude?('-yadcf_delim-')
-        min, max = term.split('-yadcf_delim-')
+        next if term.exclude?('-dtf_delim-')
+        min, max = term.split('-dtf_delim-')
         col = User.arel_table[:age]
         conds = []
         conds << col.gteq(min.to_i) if min.present?
@@ -18,8 +18,8 @@ class FiltersDatatable < AjaxDatatablesRails::ActiveRecord
         conds.reduce { |a, b| a.and(b) }
       } },
       created_at: { source: 'User.created_at', searchable: true, cond: lambda { |_col, term|
-        next if term.exclude?('-yadcf_delim-')
-        from_s, to_s = term.split('-yadcf_delim-')
+        next if term.exclude?('-dtf_delim-')
+        from_s, to_s = term.split('-dtf_delim-')
         col = User.arel_table[:created_at]
         parse = ->(s) { Date.strptime(s, '%d/%m/%Y').to_time rescue nil }
         conds = []

@@ -6,9 +6,9 @@ class TextFilter extends BaseFilter
     super arguments...
 
     # build ids
-    @wrapper_id   = "yadcf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
-    @input_id     = "yadcf-filter-#{@datatable_filter.dt_id}-#{@column_id}"
-    @reset_id     = "yadcf-filter-#{@datatable_filter.dt_id}-reset-#{@column_id}"
+    @wrapper_id   = "dtf-filter-wrapper-#{@datatable_filter.dt_id}-#{@column_id}"
+    @input_id     = "dtf-filter-#{@datatable_filter.dt_id}-#{@column_id}"
+    @reset_id     = "dtf-filter-#{@datatable_filter.dt_id}-reset-#{@column_id}"
 
 
   ##################
@@ -94,7 +94,7 @@ class TextFilter extends BaseFilter
     options =
       type:        'text'
       id:          @input_id
-      class:       "yadcf-filter #{@filter_css_class}"
+      class:       "dtf-filter #{@filter_css_class}"
       placeholder: @filter_default_label
 
     $('<input/>', options)

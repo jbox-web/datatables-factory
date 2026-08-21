@@ -30,7 +30,7 @@ RSpec.describe 'Filters pre-applied from the URL', :js do
       visit '/filters?dt_filters[first_name]=Alice'
 
       wait_for_rows(table, count: 1)
-      expect(find('#filters-first-name-filter input.yadcf-filter').value).to eq('Alice')
+      expect(find('#filters-first-name-filter input.dtf-filter').value).to eq('Alice')
     end
   end
 
@@ -67,16 +67,16 @@ RSpec.describe 'Filters pre-applied from the URL', :js do
       visit '/filters?dt_filters[age][from]=26&dt_filters[age][to]=45'
 
       wait_for_rows(table, count: 2)
-      expect(find('#filters-age-filter input.yadcf-filter-range-start').value).to eq('26')
-      expect(find('#filters-age-filter input.yadcf-filter-range-end').value).to eq('45')
+      expect(find('#filters-age-filter input.dtf-filter-range-start').value).to eq('26')
+      expect(find('#filters-age-filter input.dtf-filter-range-end').value).to eq('45')
     end
 
     it 'accepts the delimited form the server itself uses' do
-      visit '/filters?dt_filters[age]=26-yadcf_delim-45'
+      visit '/filters?dt_filters[age]=26-dtf_delim-45'
 
       expect(page).to have_css("#{table}_wrapper", wait: 5)
       wait_for_rows(table, count: 2)
-      expect(find('#filters-age-filter input.yadcf-filter-range-start').value).to eq('26')
+      expect(find('#filters-age-filter input.dtf-filter-range-start').value).to eq('26')
     end
   end
 
@@ -85,13 +85,13 @@ RSpec.describe 'Filters pre-applied from the URL', :js do
   it 'wins over the state saved by DataTables' do
     visit '/filters'
     wait_for_rows(table, count: 3)
-    find('#filters-first-name-filter input.yadcf-filter').set('Bob')
+    find('#filters-first-name-filter input.dtf-filter').set('Bob')
     wait_for_rows(table, count: 1)
 
     visit '/filters?dt_filters[first_name]=Alice'
 
     wait_for_rows(table, count: 1)
-    expect(find('#filters-first-name-filter input.yadcf-filter').value).to eq('Alice')
+    expect(find('#filters-first-name-filter input.dtf-filter').value).to eq('Alice')
     expect(page).to have_text('Alice')
   end
 

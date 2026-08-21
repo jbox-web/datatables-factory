@@ -1,7 +1,7 @@
 import DatatableFilter from '../../src/model/datatable_filter.coffee'
 import WithFilters from '../../src/modules/with_filters.coffee'
 
-const RANGE_DELIMITER = '-yadcf_delim-'
+const RANGE_DELIMITER = '-dtf_delim-'
 
 const logger = { info() {}, warn() {}, error() {}, dump() {} }
 
@@ -29,10 +29,10 @@ const RANGE_FILTER = {
   filter_container_id: 'users-age-filter',
 }
 
-const TEXT_INPUT = '#yadcf-filter-users-datatable-0'
-const MULTI_SELECT = '#yadcf-filter-users-datatable-1'
-const RANGE_FROM = '#yadcf-filter-users-datatable-from-number-2'
-const RANGE_TO = '#yadcf-filter-users-datatable-to-number-2'
+const TEXT_INPUT = '#dtf-filter-users-datatable-0'
+const MULTI_SELECT = '#dtf-filter-users-datatable-1'
+const RANGE_FROM = '#dtf-filter-users-datatable-from-number-2'
+const RANGE_TO = '#dtf-filter-users-datatable-to-number-2'
 
 // Mirrors the real resolution path: find_filter_by_name comes from the shipped
 // WithFilters module, only find_column_by_name (DatatableBase) is stubbed.

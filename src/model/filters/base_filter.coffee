@@ -51,9 +51,9 @@ class BaseFilter extends Extendable
   create_html: ->
     @logger.info "#{@name()} : create_html"
     @_container().append @_html_wrapper()
-    @_container_find('div.yadcf-filter-wrapper').append @_html_input_field()
+    @_container_find('div.dtf-filter-wrapper').append @_html_input_field()
     if @filter_reset_button
-      @_container_find('div.yadcf-filter-wrapper').append @_html_reset_button()
+      @_container_find('div.dtf-filter-wrapper').append @_html_reset_button()
 
 
   bind_inputs: ->
@@ -109,7 +109,7 @@ class BaseFilter extends Extendable
   _html_wrapper: ->
     options =
       id:    @wrapper_id
-      class: 'yadcf-filter-wrapper'
+      class: 'dtf-filter-wrapper'
 
     $('<div/>', options)
 
@@ -122,7 +122,7 @@ class BaseFilter extends Extendable
       type:  'button'
       id:    @reset_id
       text:  @filter_reset_button_text
-      class: 'yadcf-filter-reset-button'
+      class: 'dtf-filter-reset-button'
 
     $('<button/>', options)
       .on('mousedown', callback)
