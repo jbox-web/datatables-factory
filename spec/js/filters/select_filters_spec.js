@@ -311,6 +311,53 @@ describe('select filters', () => {
         expect(() => filter.destroy()).not.toThrow()
       })
 
+      // Declaring a plugin the host forgot to load used to throw right there,
+      // taking the whole table's initialisation with it — for a filter whose
+      // plain <select> still works.
+      describe('when the declared plugin is not loaded', () => {
+        let saved
+
+        beforeEach(() => {
+          saved = global.TomSelect
+          delete global.TomSelect
+        })
+
+        afterEach(() => {
+          global.TomSelect = saved
+        })
+
+        it('reports it instead of throwing', () => {
+          const { filter } = build(SelectFilter, {
+            options: { filter_plugin: 'tom-select' },
+            dropdown_data: ROLES,
+          })
+          filter.logger.error = jest.fn()
+          renderSelect(filter)
+
+          expect(() => filter.bind_inputs()).not.toThrow()
+          expect(filter.logger.error).toHaveBeenCalledWith(expect.stringMatching(/tom-select/i))
+        })
+
+        it('falls back to the native select so the column stays filterable', () => {
+          jest.useFakeTimers()
+          try {
+            const { filter, owner } = build(SelectFilter, {
+              options: { filter_plugin: 'tom-select' },
+              dropdown_data: ROLES,
+            })
+            renderSelect(filter)
+            filter.bind_inputs()
+
+            $(`#${filter.select_id}`).val('admin').trigger('change')
+            jest.runAllTimers()
+
+            expect(owner.filters).toEqual([{ column_id: 3, value: 'admin' }])
+          } finally {
+            jest.useRealTimers()
+          }
+        })
+      })
+
       // The widget TomSelect renders sits next to the original select; a click
       // in it must not reach the table header and sort the column. Only click
       // is stopped: TomSelect keeps focus through a document-level mousedown

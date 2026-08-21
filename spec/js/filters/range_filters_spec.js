@@ -478,6 +478,42 @@ describe('range filters', () => {
       expect(pickers.map((picker) => picker.destroyed)).toEqual([true, true])
     })
 
+    // A host can declare the plugin and forget to load it. Throwing here takes
+    // the whole table's initialisation down, for a filter that still works as a
+    // plain text input — the keyup handler filters on its own.
+    describe('when flatpickr is not loaded', () => {
+      it('reports it instead of throwing', () => {
+        unstubFlatpickr()
+        const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+        filter.logger.error = jest.fn()
+        filter.create_html()
+
+        expect(() => filter.bind_inputs()).not.toThrow()
+        expect(filter.logger.error).toHaveBeenCalledWith(expect.stringMatching(/flatpickr/i))
+      })
+
+      it('still filters from the keyboard', () => {
+        unstubFlatpickr()
+        const { filter, owner } = build(RangeDateFilter, { options: FLATPICKR })
+        filter.create_html()
+        filter.bind_inputs()
+        $(`#${filter.from_id}`).val('01/01/2024')
+
+        filter._range_change(keyEvent())
+
+        expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-yadcf_delim-' }])
+      })
+
+      it('does not throw on destroy either', () => {
+        unstubFlatpickr()
+        const { filter } = build(RangeDateFilter, { options: FLATPICKR })
+        filter.create_html()
+        filter.bind_inputs()
+
+        expect(() => filter.destroy()).not.toThrow()
+      })
+    })
+
     // The parser used to be $.datepicker.parseDate, which a flatpickr-only host
     // does not ship: every keystroke threw and no date ever counted as "in use".
     it('parses dates without jQuery UI', () => {

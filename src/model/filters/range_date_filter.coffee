@@ -22,7 +22,13 @@ class RangeDateFilter extends RangeBase
     # a filter declared without the option at all.
     switch @filter_plugin
       when 'flatpickr'
-        @_bind_flatpickr()
+        # A host can declare the plugin and forget to load it. Throwing here
+        # takes the whole table's initialisation down, for a filter that still
+        # works as a plain text input — the keyup handler filters on its own.
+        if typeof flatpickr == 'undefined'
+          @logger.error("#{@name()} : flatpickr is not loaded, falling back to a plain input")
+        else
+          @_bind_flatpickr()
       else
         @_bind_jquery_ui()
 
@@ -138,6 +144,8 @@ class RangeDateFilter extends RangeBase
   _parse_date: (value) ->
     switch @filter_plugin
       when 'flatpickr'
+        return @_parse_date_without_plugin(value) if typeof flatpickr == 'undefined'
+
         date_format = @options.filter_plugin_options?.dateFormat or 'd/m/Y'
         # flatpickr.parseDate answers undefined on a malformed date where jQuery
         # UI throws; the caller branches on the exception, so raise it here.
@@ -145,8 +153,21 @@ class RangeDateFilter extends RangeBase
         throw new Error("Invalid date: #{value}") unless parsed instanceof Date
         parsed
       else
+        return @_parse_date_without_plugin(value) unless $.datepicker?
+
         date_format = @options.filter_plugin_options?.dateFormat or 'dd/mm/yy'
         $.datepicker.parseDate(date_format, value)
+
+
+  # Only reached when the declared plugin is missing. Refusing every date there
+  # would leave the filter unusable from the keyboard too — which is precisely
+  # what the fallback exists to preserve. Both formats the gem ships are
+  # day/month/year, so that is what this reads.
+  _parse_date_without_plugin: (value) ->
+    match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value)
+    throw new Error("Invalid date: #{value}") unless match
+
+    new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]))
 
 
 export default RangeDateFilter

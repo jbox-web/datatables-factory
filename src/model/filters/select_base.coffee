@@ -159,6 +159,13 @@ class SelectBase extends BaseFilter
   _initialize_select_plugin: ->
     @logger.info "#{@name()} : _initialize_select_plugin"
 
+    # A host can declare a plugin and forget to load it. Throwing here takes the
+    # whole table's initialisation down, for a filter whose plain <select> still
+    # works: fall back to it, and say so.
+    if @_missing_plugin()?
+      @logger.error("#{@name()} : #{@_missing_plugin()} is not loaded, falling back to the native select")
+      return @_bind_native_select()
+
     switch @filter_plugin
       when 'tom-select'
         select = document.getElementById(@select_id)
@@ -190,9 +197,22 @@ class SelectBase extends BaseFilter
             .on('mousedown', callback)
       when 'native'
         # plain HTML <select>, no plugin — used for compound input-group filters
-        @_el(@select_id).on('change', @onchange_callback)
+        @_bind_native_select()
       else
         @logger.error("Unknown select type: #{@filter_plugin}")
+
+
+  # Names the declared plugin when the host has not loaded it, nil otherwise.
+  _missing_plugin: ->
+    switch @filter_plugin
+      when 'tom-select'
+        'tom-select' if typeof TomSelect == 'undefined'
+      when 'select2'
+        'select2' unless $.fn.select2?
+
+
+  _bind_native_select: ->
+    @_el(@select_id).on('change', @onchange_callback)
 
 
   _debug_log: ->
