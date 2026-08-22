@@ -1,3 +1,4 @@
+import Utils      from '../../utils.coffee'
 import BaseFilter from './base_filter.coffee'
 
 class SelectBase extends BaseFilter
@@ -169,7 +170,7 @@ class SelectBase extends BaseFilter
     switch @filter_plugin
       when 'tom-select'
         select = document.getElementById(@select_id)
-        @select_plugin = new TomSelect(select, @filter_plugin_options or {})
+        @select_plugin = new TomSelect(select, @_tom_select_options())
 
         # tom-select emits 'change' through its own emitter, not as a DOM event
         @select_plugin.on('change', @onchange_callback)
@@ -200,6 +201,25 @@ class SelectBase extends BaseFilter
         @_bind_native_select()
       else
         @logger.error("Unknown select type: #{@filter_plugin}")
+
+
+  # TomSelect échappe le libellé de ses options. Un hôte qui compose ce libellé
+  # côté serveur (badge, pastille de couleur) le verrait donc s'afficher en
+  # balisage brut. filter_html_labels demande explicitement le rendu HTML, filtre
+  # par filtre — l'échappement reste le comportement par défaut.
+  #
+  # Le second argument des fonctions de rendu est la fonction d'échappement de
+  # TomSelect : ne pas l'appliquer est précisément l'objet de l'option. Ne la
+  # poser que sur un libellé dont la partie variable est déjà échappée à la
+  # construction, faute de quoi elle ouvre une injection HTML.
+  _tom_select_options: ->
+    options = @filter_plugin_options or {}
+    return options unless @options.filter_html_labels
+
+    Utils.merge_hash options,
+      render:
+        option: (data, _escape) -> "<div>#{data.text}</div>"
+        item:   (data, _escape) -> "<div>#{data.text}</div>"
 
 
   # Names the declared plugin when the host has not loaded it, nil otherwise.

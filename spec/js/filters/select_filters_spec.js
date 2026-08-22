@@ -275,6 +275,35 @@ describe('select filters', () => {
         expect(filter.select_plugin.handlers.change).toBe(filter.onchange_callback)
       })
 
+      // Les libellés d'option peuvent être construits côté serveur (badge décoré).
+      // TomSelect échappe par défaut : sans opt-in explicite, ce balisage s'affiche
+      // en texte brut. L'option ne doit s'activer que lorsqu'elle est demandée.
+      it('escapes option labels by default', () => {
+        const { filter } = build(SelectFilter, {
+          options: { filter_plugin: 'tom-select' },
+          dropdown_data: ROLES,
+        })
+        renderSelect(filter)
+        filter.bind_inputs()
+
+        expect(filter.select_plugin.options.render).toBeUndefined()
+      })
+
+      it('renders option labels as HTML when filter_html_labels is set', () => {
+        const { filter } = build(SelectFilter, {
+          options: { filter_plugin: 'tom-select', filter_html_labels: true },
+          dropdown_data: ROLES,
+        })
+        renderSelect(filter)
+        filter.bind_inputs()
+
+        const render = filter.select_plugin.options.render
+        const badge  = '<span class="badge">Admin</span>'
+
+        expect(render.option({ text: badge }, (s) => s)).toContain(badge)
+        expect(render.item({ text: badge }, (s) => s)).toContain(badge)
+      })
+
       it('routes value changes through the plugin so no change event fires', () => {
         const { filter } = build(SelectFilter, {
           options: { filter_plugin: 'tom-select' },

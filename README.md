@@ -198,6 +198,21 @@ By default selects use **tom-select**. Pass `filter_plugin: 'select2'` to use Se
 <%= f.select :status, filter_plugin: 'select2' %>
 ```
 
+### HTML labels in select dropdowns
+
+TomSelect escapes the option labels it renders. When the host builds those labels
+server-side — a coloured badge, a status pill — the markup shows up as raw text.
+`filter_html_labels: true` renders them as HTML instead:
+
+```erb
+<%= f.multi_select :tags, filter_html_labels: true %>
+```
+
+The escaping is deliberately skipped for that filter, so only use it when the
+variable part of the label is already escaped where it is built (Rails' `tag`
+helpers do this). Passing user input through unescaped opens an HTML injection.
+Escaping stays the default for every other filter.
+
 ## Optional features
 
 ### Checkboxes
