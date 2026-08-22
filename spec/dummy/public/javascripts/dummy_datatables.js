@@ -38,6 +38,7 @@
   window.Datatables.BasicDatatable = class extends DatatableBase {}
   window.Datatables.ButtonsDatatable = class extends DatatableBase {}
   window.Datatables.FiltersDatatable = class extends DatatableBase {}
+  window.Datatables.SlidersDatatable = class extends DatatableBase {}
   window.Datatables.Acme.NamespacedDatatable = class extends DatatableBase {}
   window.Datatables.CheckboxesDatatable = withCheckBoxColumn(DatatableBase)
   window.Datatables.ContextMenuDatatable = withCheckBoxColumn(DatatableBase)

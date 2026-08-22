@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   get 'basic',        to: 'basic#index',        as: :basic
   get 'filters',      to: 'filters#index',      as: :filters
+  get 'sliders',      to: 'sliders#index',      as: :sliders
   get 'checkboxes',   to: 'checkboxes#index',   as: :checkboxes
   get  'context_menu',      to: 'context_menu#index', as: :context_menu
   get  'context_menu/menu', to: 'context_menu#menu',  as: :context_menu_menu

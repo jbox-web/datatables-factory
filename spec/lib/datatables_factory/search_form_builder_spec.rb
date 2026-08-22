@@ -50,6 +50,16 @@ RSpec.describe DatatablesFactory::SearchFormBuilder do
       expect(declared_filters.last[:filter_type]).to eq('range_date')
     end
 
+    it 'tags a single date' do
+      builder.date(:email, filter_default_label: 'Created at')
+      expect(declared_filters.last[:filter_type]).to eq('date')
+    end
+
+    it 'tags a number range slider' do
+      builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_min: 0, filter_range_max: 120)
+      expect(declared_filters.last[:filter_type]).to eq('range_number_slider')
+    end
+
     it 'defaults a select to tom-select' do
       builder.select(:email, filter_default_label: 'Email')
 
@@ -62,6 +72,46 @@ RSpec.describe DatatablesFactory::SearchFormBuilder do
     it 'lets an explicit plugin win over the tom-select default' do
       builder.select(:email, filter_default_label: 'Email', filter_plugin: 'select2')
       expect(declared_filters.last[:filter_plugin]).to eq('select2')
+    end
+  end
+
+  # Server-side processing hands the page one draw's worth of rows, so the JS
+  # cannot derive the extent of the column the way a client-side plugin does.
+  # Without bounds noUiSlider would render an arbitrary 0-100 range and filter on
+  # values that mean nothing — silently.
+  describe 'range slider bounds' do
+    it 'carries the declared bounds through to the filter' do
+      builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_min: 0, filter_range_max: 120)
+
+      expect(declared_filters.last).to include(filter_range_min: 0, filter_range_max: 120)
+    end
+
+    it 'defaults the step to 1' do
+      builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_min: 0, filter_range_max: 120)
+
+      expect(declared_filters.last[:filter_range_step]).to eq(1)
+    end
+
+    it 'keeps a declared step' do
+      builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_min: 0, filter_range_max: 120,
+                                   filter_range_step: 5)
+
+      expect(declared_filters.last[:filter_range_step]).to eq(5)
+    end
+
+    it 'raises when the lower bound is missing' do
+      expect { builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_max: 120) }
+        .to raise_error(ArgumentError, /filter_range_min/)
+    end
+
+    it 'raises when the upper bound is missing' do
+      expect { builder.range_slider(:email, filter_default_label: %w[Min Max], filter_range_min: 0) }
+        .to raise_error(ArgumentError, /filter_range_max/)
+    end
+
+    it 'names the column in the error' do
+      expect { builder.range_slider(:email, filter_default_label: %w[Min Max]) }
+        .to raise_error(ArgumentError, /email/)
     end
   end
 

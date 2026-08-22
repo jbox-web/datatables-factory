@@ -1,0 +1,89 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-sliders me-2 text-primary"></i>Date &amp; slider
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">text · date · range_number_slider</span>
+</div>
+<p class="text-muted mb-4">
+  Les deux filtres que <code>yadcf</code> avait et qui manquaient : une date simple, et une plage numérique au curseur.
+  Le curseur pilote les deux champs de la plage, masqués tant que noUiSlider est chargé — sans lui, ils redeviennent
+  visibles et saisissables au clavier.
+</p>
+
+<style>
+  /* Le moteur ne livre aucune feuille de style : le dimensionnement des filtres
+     appartient à l'application hôte, comme les règles .dtf-filter-range du
+     layout. Sans flex-basis, le conteneur du curseur s'écrase à 0 de large dans
+     le .dtf-filter-wrapper-inner qui est en display:flex — le curseur existe,
+     ses deux poignées se superposent, et on ne voit que les infobulles. */
+  .dtf-filter-slider {
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 2.4rem 0.8rem 0.6rem;
+  }
+
+  /* Le wrapper est en overflow:hidden pour les plages saisies ; les infobulles
+     du curseur débordent par le haut et seraient rognées. */
+  #sliders-age-filter .dtf-filter-wrapper-inner { overflow: visible; }
+</style>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :sliders,
+        source: api_filters_datatable_path,
+        serverSide: true,
+        stateSave: true,
+        order: [[0, 'asc']],
+        dom: datatable_dom_with_selected_and_buttons,
+      ) do |dt|
+        dt.button action: 'reset_filters',
+                  button_name: 'reset_filters',
+                  text: '<i class="fa-solid fa-rotate-left"></i>',
+                  titleAttr: 'Reset all filters'
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :age,        label: 'Age'
+        dt.head_for :created_at, label: 'Created'
+
+        concat(dt.search_form { |f|
+          safe_join([
+            content_tag(:div, class: 'row g-3 mb-4') {
+              safe_join([
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'First name', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.text_field(:first_name, { icon: 'magnifying-glass' }, {}),
+                  ])
+                },
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'Age', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.range_slider(:age, {
+                      filter_default_label: ['Min', 'Max'],
+                      filter_range_min:     18,
+                      filter_range_max:     80,
+                    }, {}),
+                  ])
+                },
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'Created on', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.date(:created_at, {
+                      filter_default_label:  'Date',
+                      filter_plugin:         'jquery-ui',
+                      filter_plugin_options: { changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' },
+                      icon:                  'calendar-day',
+                    }, {}),
+                  ])
+                },
+              ])
+            },
+          ])
+        })
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>

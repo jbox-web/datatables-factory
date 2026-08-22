@@ -17,9 +17,12 @@ class FiltersDatatable < AjaxDatatablesRails::ActiveRecord
         conds << col.lteq(max.to_i) if max.present?
         conds.reduce { |a, b| a.and(b) }
       } },
+      # Two spellings land here: the delimited range of the range_date filter, and
+      # the bare date of the single `date` filter — which sends its raw value, so
+      # matching a day on a datetime column is the host application's job. This is
+      # what that job looks like.
       created_at: { source: 'User.created_at', searchable: true, cond: lambda { |_col, term|
-        next if term.exclude?('-dtf_delim-')
-        from_s, to_s = term.split('-dtf_delim-')
+        from_s, to_s = term.exclude?('-dtf_delim-') ? [term, term] : term.split('-dtf_delim-')
         col = User.arel_table[:created_at]
         parse = ->(s) { Date.strptime(s, '%d/%m/%Y').to_time rescue nil }
         conds = []

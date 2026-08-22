@@ -132,3 +132,66 @@ export function stubFlatpickr() {
 export function unstubFlatpickr() {
   delete global.flatpickr
 }
+
+// noUiSlider is a peer reached as a global, exactly like flatpickr. The stub
+// models the event semantics of the real library rather than guessing them:
+// checked against nouislider 15.8.1, `valueSet` (dist/nouislider.js:2071-2074)
+// fires 'update' and 'set' but never 'change', which is what lets the filter
+// sync the handles programmatically without triggering a server round-trip.
+// `drag` is the test-side handle for what a user does: move, then release.
+export function stubNoUiSlider() {
+  const sliders = []
+
+  global.noUiSlider = {
+    create(element, options) {
+      const handlers = {}
+
+      const api = {
+        element,
+        options,
+        values: options.start.slice(),
+        destroyed: false,
+
+        on(event, callback) {
+          handlers[event] = handlers[event] || []
+          handlers[event].push(callback)
+        },
+
+        emit(event) {
+          const format = options.format
+          const values = api.values.map((v) => (format ? format.to(Number(v)) : v))
+          for (const callback of handlers[event] || []) callback(values)
+        },
+
+        set(values) {
+          api.values = [].concat(values)
+          api.emit('update')
+          api.emit('set')
+        },
+
+        drag(values) {
+          api.values = [].concat(values)
+          api.emit('update')
+          api.emit('change')
+        },
+
+        destroy() {
+          api.destroyed = true
+          delete element.noUiSlider
+        },
+      }
+
+      element.noUiSlider = api
+      sliders.push(api)
+      api.emit('update')
+
+      return api
+    },
+  }
+
+  return sliders
+}
+
+export function unstubNoUiSlider() {
+  delete global.noUiSlider
+}

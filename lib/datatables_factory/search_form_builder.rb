@@ -15,6 +15,12 @@ module DatatablesFactory
     end
 
 
+    def date(name, opts = {}, container_opts = {})
+      opts = opts.deep_merge(filter_type: 'date')
+      basic_field(name, opts, container_opts)
+    end
+
+
     def range(name, opts = {}, container_opts = {})
       opts = opts.deep_merge(filter_type: 'range_number')
       basic_field(name, opts, container_opts)
@@ -23,6 +29,13 @@ module DatatablesFactory
 
     def range_date(name, opts = {}, container_opts = {})
       opts = opts.deep_merge(filter_type: 'range_date')
+      basic_field(name, opts, container_opts)
+    end
+
+
+    def range_slider(name, opts = {}, container_opts = {})
+      validate_range_bounds!(name, opts)
+      opts = { filter_range_step: 1 }.deep_merge(opts).deep_merge(filter_type: 'range_number_slider')
       basic_field(name, opts, container_opts)
     end
 
@@ -46,6 +59,19 @@ module DatatablesFactory
 
 
     private
+
+
+      # Server-side processing hands the page one draw's worth of rows, so the JS
+      # cannot derive the extent of the column the way a client-side plugin does.
+      # Left to itself noUiSlider renders an arbitrary 0-100 range, and the filter
+      # then works on bounds that mean nothing — without a word.
+      def validate_range_bounds!(name, opts)
+        missing = %i[filter_range_min filter_range_max].reject { |key| opts.key?(key) }
+        return if missing.empty?
+
+        raise ArgumentError,
+              "range slider on column '#{name}' needs #{missing.join(' and ')}"
+      end
 
 
       def select_field(name, opts = {}, container_opts = {})

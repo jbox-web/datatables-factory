@@ -1,8 +1,10 @@
 import Extendable        from '../extendable.coffee'
 import WithLogger        from '../modules/with_logger.coffee'
 import TextFilter        from './filters/text_filter.coffee'
+import DateFilter        from './filters/date_filter.coffee'
 import RangeDateFilter   from './filters/range_date_filter.coffee'
 import RangeNumberFilter from './filters/range_number_filter.coffee'
+import RangeNumberSliderFilter from './filters/range_number_slider_filter.coffee'
 import SelectFilter      from './filters/select_filter.coffee'
 import SelectMultiFilter from './filters/select_multi_filter.coffee'
 
@@ -198,7 +200,7 @@ class DatatableFilter extends Extendable
     switch filter.filter_type
       when 'multi_select'
         value: entry['values']
-      when 'range_number', 'range_date'
+      when 'range_number', 'range_number_slider', 'range_date'
         bounds = @_url_range_bounds(entry)
         from: bounds[0], to: bounds[1]
       else
@@ -210,7 +212,7 @@ class DatatableFilter extends Extendable
     switch filter.filter_type
       when 'multi_select'
         entry['values'].join('|')
-      when 'range_number', 'range_date'
+      when 'range_number', 'range_number_slider', 'range_date'
         bounds = @_url_range_bounds(entry)
         "#{bounds[0]}#{@RANGE_DELIMITER}#{bounds[1]}"
       else
@@ -245,8 +247,12 @@ class DatatableFilter extends Extendable
     switch filter.filter_type
       when 'text'
         TextFilter.build(this, @logger, filter)
+      when 'date'
+        DateFilter.build(this, @logger, filter)
       when 'range_number'
         RangeNumberFilter.build(this, @logger, filter)
+      when 'range_number_slider'
+        RangeNumberSliderFilter.build(this, @logger, filter)
       when 'range_date'
         RangeDateFilter.build(this, @logger, filter)
       when 'select'

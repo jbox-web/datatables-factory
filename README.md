@@ -95,7 +95,57 @@ Declare filters in the view with `search_form`. Filter type is set by the form b
 | `f.select :col` | Single select | tom-select by default |
 | `f.multi_select :col` | Multi select | tom-select with tag removal |
 | `f.range :col` | Number range | Min/max inputs |
-| `f.range_date :col` | Date range | Requires jQuery UI (`$.datepicker`) |
+| `f.range_slider :col` | Number range | noUiSlider over the same two inputs, hidden — bounds required |
+| `f.date :col` | Single date | Same pickers as `range_date`, one input |
+| `f.range_date :col` | Date range | jQuery UI `$.datepicker` by default, flatpickr on request |
+
+Every picker and select plugin is a peer the host application provides. A
+declared plugin that is not loaded is reported through the logger and the filter
+degrades to a plain input that still filters from the keyboard — it never takes
+the table's initialisation down.
+
+### Single date
+
+```erb
+<%= f.date :created_at, filter_plugin_options: { dateFormat: 'dd/mm/yy' } %>
+```
+
+Sends the raw value, on the same path as a text filter, so the server needs
+nothing it does not already handle for `text` — matching a day against a
+`datetime` column is the application's job. A half-typed date is never sent: the
+value only travels once it parses, and the input is only marked `inuse` then.
+
+`filter_plugin: 'flatpickr'` switches picker, exactly as for `range_date`.
+
+### Number range slider
+
+```erb
+<%= f.range_slider :age, filter_range_min: 0, filter_range_max: 120, filter_range_step: 5 %>
+```
+
+Requires [noUiSlider](https://refreshless.com/nouislider/) (optional peer
+dependency) and its stylesheet. `filter_range_min` and `filter_range_max` are
+mandatory — server-side processing hands the page one draw's worth of rows, so
+the bounds cannot be derived from the data; without them the filter would work on
+an arbitrary range without a word. `filter_range_step` defaults to `1` and also
+sets how many decimals the values carry.
+
+The slider drives the two inputs of `f.range`, which stay in the DOM and go on
+carrying the value: the wire format is the same `min-dtf_delim-max`, so a column
+already filtered by `f.range` needs no server change. Those inputs are hidden
+while the slider is up, and become visible and editable again if noUiSlider turns
+out to be missing.
+
+The library ships no stylesheet, so sizing the slider container is up to the
+application:
+
+```css
+.dtf-filter-slider { flex: 1 1 100%; min-width: 0; }
+```
+
+Filtering happens when a handle is released, never while it is being dragged, and
+never when the handles are moved from code — which is what lets a saved state or
+a URL filter reposition them without a request.
 
 ### Pre-populating a filter
 
@@ -112,6 +162,7 @@ A link may carry the filters to apply, under the `dt_filters` key, keyed by colu
 /users?dt_filters[role][]=admin&dt_filters[role][]=moderator   # multi_select
 /users?dt_filters[age][from]=20&dt_filters[age][to]=40         # range
 /users?dt_filters[age]=20-dtf_delim-40                         # range, delimited form
+/users?dt_filters[created_at]=01/01/2024                       # single date
 ```
 
 The table is filtered on its first draw (no extra request) and every widget shows

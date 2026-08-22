@@ -11,6 +11,7 @@ module.exports = {
     "$": true,
     "TomSelect": true,
     "flatpickr": true,
+    "noUiSlider": true,
   },
   "overrides": [
     {

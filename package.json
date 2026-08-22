@@ -29,10 +29,14 @@
   },
   "peerDependencies": {
     "jquery": ">=3.6.0",
-    "tom-select": ">=2.0.0"
+    "tom-select": ">=2.0.0",
+    "nouislider": ">=15.0.0"
   },
   "peerDependenciesMeta": {
     "tom-select": {
+      "optional": true
+    },
+    "nouislider": {
       "optional": true
     }
   },
@@ -62,6 +66,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "jquery": ">=3.6.0",
     "minimatch": "^9.0.4",
+    "nouislider": "^15.8.1",
     "object.values": "^1.2.0",
     "path": "^0.12.7",
     "prop-types": "^15.8.1",

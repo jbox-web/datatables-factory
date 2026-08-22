@@ -1,4 +1,6 @@
 import DatatableFilter from '../../src/model/datatable_filter.coffee'
+import DateFilter from '../../src/model/filters/date_filter.coffee'
+import RangeNumberSliderFilter from '../../src/model/filters/range_number_slider_filter.coffee'
 
 function buildLogger() {
   return { info: jest.fn(), warn: jest.fn(), error: jest.fn(), dump: jest.fn() }
@@ -39,7 +41,59 @@ const unknownFilter = {
   filter_container_id: 'users-role-filter',
 }
 
+const dateFilter = {
+  column_id: 3,
+  filter_type: 'date',
+  filter_default_label: 'Created at',
+  filter_container_id: 'users-role-filter',
+}
+
+const sliderFilter = {
+  column_id: 3,
+  filter_type: 'range_number_slider',
+  filter_default_label: ['Min', 'Max'],
+  filter_container_id: 'users-role-filter',
+  filter_range_min: 0,
+  filter_range_max: 120,
+}
+
 describe('DatatableFilter', () => {
+  // Both types reach a peer library the specs do not load; each degrades to a
+  // plain input, so building them here needs no stub.
+  describe('dispatching on filter_type', () => {
+    it('builds a DateFilter for a date filter', () => {
+      const subject = build([dateFilter])
+      expect(subject.find_by_column_id(3)).toBeInstanceOf(DateFilter)
+    })
+
+    it('builds a RangeNumberSliderFilter for a range_number_slider filter', () => {
+      const subject = build([sliderFilter])
+      expect(subject.find_by_column_id(3)).toBeInstanceOf(RangeNumberSliderFilter)
+    })
+  })
+
+  // A date carries a single value like a text filter; a slider carries the two
+  // bounds of the range it is a UI for.
+  describe('the shape a URL filter is restored into', () => {
+    const entry = { values: ['20-dtf_delim-40'], parts: {} }
+
+    it('gives a date filter the single-value shape', () => {
+      const subject = build([dateFilter])
+      expect(subject._url_filter_state(dateFilter, { values: ['01/01/2024'], parts: {} }))
+        .toEqual({ value: '01/01/2024' })
+    })
+
+    it('gives a slider filter the two bounds', () => {
+      const subject = build([sliderFilter])
+      expect(subject._url_filter_state(sliderFilter, entry)).toEqual({ from: '20', to: '40' })
+    })
+
+    it('sends a slider filter to the server in the delimited form', () => {
+      const subject = build([sliderFilter])
+      expect(subject._url_search_value(sliderFilter, entry)).toBe('20-dtf_delim-40')
+    })
+  })
+
   describe('loading filters', () => {
     it('indexes a known filter by column id', () => {
       const subject = build([textFilter])

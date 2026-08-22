@@ -25,6 +25,11 @@
     <% end %>
   </li>
   <li class="nav-item">
+    <%= link_to sliders_path, class: "nav-link #{'active' if current_page?(sliders_path)}" do %>
+      <i class="fa-solid fa-sliders fa-fw me-1"></i>Date &amp; slider
+    <% end %>
+  </li>
+  <li class="nav-item">
     <%= link_to namespaced_path, class: "nav-link #{'active' if current_page?(namespaced_path)}" do %>
       <i class="fa-solid fa-layer-group fa-fw me-1"></i>Namespaced
     <% end %>

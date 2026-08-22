@@ -42,7 +42,31 @@ BUNDLE_GEMFILE=spec/dummy/Gemfile bundle exec appraisal rspec   # every supporte
 - `WithFilters` — filter lookup by column name
 - `WithCheckBoxes`, `WithButtons`, `WithContextMenu`, `WithDebug`, `WithLogger` — feature modules in `src/modules/`
 
-**Filter system:** `DatatableFilter` (`src/model/datatable_filter.coffee`) manages filter instances. Filter types live in `src/model/filters/`: `text`, `range_date`, `range_number`, `select`, `multi_select`. Filters persist state via DataTables' `stateSave` API under the key `dt_filters_state`.
+**Filter system:** `DatatableFilter` (`src/model/datatable_filter.coffee`) manages filter instances. Filter types live in `src/model/filters/`: `text`, `date`, `range_date`, `range_number`, `range_number_slider`, `select`, `multi_select`. Filters persist state via DataTables' `stateSave` API under the key `dt_filters_state`.
+
+Two of them are the same filter wearing different clothes, and that is deliberate —
+it is what keeps the server out of it. `DateFilter` extends `TextFilter`: one input,
+one raw value on the wire, so a `date` column needs nothing the server does not
+already do for `text`; it only adds a picker and the rule that a value which does
+not parse is not a criterion (`_search_value`, the hook `TextFilter` exposes for
+exactly that). `RangeNumberSliderFilter` extends `RangeNumberFilter`: noUiSlider
+writes into the two inputs of the plain range, which stay in the DOM and go on
+carrying the value, so `current_value`, the saved state, the reset button and the
+`min-dtf_delim-max` wire format are inherited untouched. The inputs are hidden
+while the slider is up, and come back when it is not.
+
+The slider binds `change`, never `update`: `update` also fires on programmatic
+`set()` — verified in noUiSlider 15.8.1, `valueSet` (`dist/nouislider.js:2071`),
+which fires `update` and `set` but never `change` — so restoring a state or a URL
+filter repositions the handles without costing a request.
+
+Bounds (`filter_range_min` / `filter_range_max`) are mandatory and `SearchFormBuilder#range_slider`
+raises without them: server-side processing hands the page one draw's worth of
+rows, so nothing client-side can derive the column's extent the way yadcf did.
+
+Date parsing is shared by the two date filters through `src/modules/with_date_picker.coffee`.
+Both plugin branches degrade rather than throw — a declared plugin the host did
+not load costs a `logger.error` and a plain input, never the table's initialisation.
 
 `DatatableFilter#load` seeds that state from the query string (`?dt_filters[column]=value`)
 *before* building the filters, which is the single branching point the feature needs: every
@@ -108,8 +132,10 @@ the coverage.
 ### JS unit specs
 
 `spec/js` runs under jsdom with real jQuery; the peers the host application
-provides are stubbed (`TomSelect` in `support/setup.js`, jQuery UI's datepicker in
-`support/filter_helpers.js`, select2 per spec). Two support modules carry the
+provides are stubbed (`TomSelect` in `support/setup.js`, jQuery UI's datepicker,
+flatpickr and noUiSlider in `support/filter_helpers.js`, select2 per spec). The
+noUiSlider stub models the event semantics of the real library rather than
+guessing them, which is why `set` and `drag` are separate helpers there. Two support modules carry the
 scaffolding: `filter_helpers.js` for the filters (a recorder standing in for the
 owning `DatatableFilter`, the container they render into), `table_helpers.js` for
 anything reached through a loaded table (`DataTableApiStub`, `loadTable`, which
@@ -131,6 +157,14 @@ The dummy app mirrors the host application's lifecycle on purpose: Turbo, JS cla
 **once** in `spec/dummy/public/javascripts/dummy_datatables.js`, init on `turbo:load`, no teardown,
 and real `protect_from_forgery`. Defining the classes per page would hand each navigation a fresh
 class whose `instance` is undefined, and the destroy/recreate path would never be exercised.
+
+`/sliders` is where the `date` and `range_number_slider` filters live, on their own
+page rather than on `/filters`: one column carries one filter, and `age` and
+`created_at` were already taken by the typed range and the date range. That page
+is also the only place the real noUiSlider runs — everywhere else it is stubbed.
+Its handle is moved with the keyboard, not the mouse: the driver's synthetic
+pointer events do not reach noUiSlider's own drag handling, while `send_keys(:right)`
+goes through the library's `eventKeydown`, which fires `change` like a release does.
 
 Never assert on datatable rows directly — use `spec/support/datatable_helpers.rb`:
 

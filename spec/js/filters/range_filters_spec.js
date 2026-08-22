@@ -524,4 +524,41 @@ describe('range filters', () => {
       expect(filter._date_or_empty_string('not a date')).toBe('')
     })
   })
+
+  // jQuery UI is a peer exactly like flatpickr, but the default branch called
+  // .datepicker() unconditionally: a host shipping neither library lost the whole
+  // table's initialisation — columns, sorting and every other filter — to a
+  // missing dependency on a single field.
+  describe('RangeDateFilter without jQuery UI', () => {
+    it('reports the missing datepicker instead of throwing', () => {
+      const { filter } = build(RangeDateFilter)
+      filter.create_html()
+      filter.logger.error = jest.fn()
+      unstubDatepicker()
+
+      expect(() => filter.bind_inputs()).not.toThrow()
+      expect(filter.logger.error).toHaveBeenCalledWith(expect.stringMatching(/datepicker/i))
+    })
+
+    it('does not throw on destroy either', () => {
+      const { filter } = build(RangeDateFilter)
+      filter.create_html()
+      unstubDatepicker()
+      filter.bind_inputs()
+
+      expect(() => filter.destroy()).not.toThrow()
+    })
+
+    it('still filters from the keyboard', () => {
+      const { filter, owner } = build(RangeDateFilter)
+      filter.create_html()
+      unstubDatepicker()
+      filter.bind_inputs()
+      $(`#${filter.from_id}`).val('01/01/2024')
+
+      filter._range_change(keyEvent())
+
+      expect(owner.filters).toEqual([{ column_id: 3, value: '01/01/2024-dtf_delim-' }])
+    })
+  })
 })

@@ -115,6 +115,13 @@ class TextFilter extends BaseFilter
     value == ''
 
 
+  # What actually travels to the server for a given input value. A text filter
+  # searches for exactly what was typed; a subclass whose input has a grammar —
+  # a date — overrides this so a half-typed value is not sent as a criterion.
+  _search_value: (value) ->
+    value
+
+
   _text_change: (event) ->
     @logger.info "#{@name()} : _text_change"
     @logger.dump(event)
@@ -128,11 +135,13 @@ class TextFilter extends BaseFilter
     else
       @_el(@input_id).addClass('inuse')
 
+    search_value = @_search_value(current_value)
+
     # run filter (triggers a datatable reload)
-    @_run_filter(@column_id, current_value)
+    @_run_filter(@column_id, search_value)
 
     # save current value
-    @_save_state(@column_id, value: current_value)
+    @_save_state(@column_id, value: search_value)
 
 
   _text_clear: (event) ->
