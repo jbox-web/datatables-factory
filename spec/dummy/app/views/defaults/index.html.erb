@@ -1,0 +1,63 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-wand-sparkles me-2 text-primary"></i>Default filters
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">populate_with · apply_default_filters</span>
+</div>
+<p class="text-muted mb-4">
+  La table s'ouvre déjà restreinte : <code>populate_with</code> alimente
+  <code>filters_applied</code>, que le JS applique sur <code>preInit.dt</code>, avant la première
+  requête. Le bouton les réapplique après un reset.
+</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :defaults,
+        source: api_defaults_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        order: [[0, 'asc']],
+        dom: datatable_dom_with_selected_and_buttons,
+      ) do |dt|
+        dt.button action: 'reset_filters',
+                  button_name: 'reset_filters',
+                  text: '<i class="fa-solid fa-rotate-left"></i>',
+                  titleAttr: 'Reset all filters'
+        dt.button action: 'apply_default_filters',
+                  button_name: 'apply_default_filters',
+                  text: '<i class="fa-solid fa-wand-sparkles"></i>',
+                  titleAttr: 'Apply default filters'
+
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role'
+
+        concat(dt.search_form { |f|
+          content_tag(:div, class: 'row g-3 mb-4') {
+            safe_join([
+              # Scalar default, on a text filter.
+              content_tag(:div, class: 'col-md-6') {
+                safe_join([
+                  content_tag(:label, 'First name', class: 'form-label fw-semibold small text-muted mb-1'),
+                  f.text_field(:first_name, { icon: 'magnifying-glass', populate_with: 'User01' }, {}),
+                ])
+              },
+              # Array default, on a multi_select — the other shape the host
+              # application declares, and the one that reaches _cast_value.
+              content_tag(:div, class: 'col-md-6') {
+                safe_join([
+                  content_tag(:label, 'Role', class: 'form-label fw-semibold small text-muted mb-1'),
+                  f.multi_select(:role, { icon: 'user-tag', populate_with: %w[admin moderator] }, {}),
+                ])
+              },
+            ])
+          }
+        })
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>

@@ -35,6 +35,61 @@
     }
   }
 
+  // Mirrors the host application's own ApplicationDatatable: it does not extend
+  // DatatableBase directly, it interposes a base class that overrides
+  // with_buttons_set_callbacks and reaches into the library's internals
+  // (_buttons_enabled, find_button_by_name, _add_callback, callbacks['buttons']).
+  // Those are the seams the host actually depends on, so they need a consumer
+  // here or nothing tells us when one of them moves.
+  window.Datatables.ApplicationDatatable = class extends DatatableBase {
+    with_buttons_set_callbacks(callback_type) {
+      super.with_buttons_set_callbacks(callback_type)
+
+      if (!this._buttons_enabled()) return false
+
+      if (callback_type === 'before_init') {
+        this._load_custom_button('export', (_event, button) => this._run_button_action(button))
+      }
+    }
+
+    _load_custom_button(button_name, callback) {
+      var button = this.find_button_by_name(button_name)
+      if (button && button[1] && button[1].method === 'redirect') {
+        this._add_callback(button, callback)
+      }
+    }
+
+    _run_button_action(button) {
+      window.__dtf_custom_button = button.url
+    }
+
+    // Assigned, not pushed — exactly what the host does. The library must merge
+    // its own reload callback onto this rather than replace it, which is what
+    // _loader_load_buttons_callbacks' "merge, never assign" comment is about.
+    _setup_selection_callbacks(datatable) {
+      var on_send = function () { $('#' + datatable + '_processing').show() }
+      var on_done = function () { $('#' + datatable + '_processing').hide() }
+
+      this.callbacks['buttons']['select_all']['beforeSend'] = [on_send]
+      this.callbacks['buttons']['select_all']['error'] = [on_done]
+      this.callbacks['buttons']['select_all']['success'] = [on_done]
+
+      this.callbacks['buttons']['reset_selection']['beforeSend'] = [on_send]
+      this.callbacks['buttons']['reset_selection']['error'] = [on_done]
+      this.callbacks['buttons']['reset_selection']['success'] = [on_done]
+    }
+  }
+
+  window.Datatables.BulkDatatable = class extends withCheckBoxColumn(window.Datatables.ApplicationDatatable) {
+    // Before super(), like the host application does — its comment records that
+    // the ordering matters, so the dummy has to reproduce it to keep it true.
+    before_init() {
+      this._setup_selection_callbacks('bulk-datatable')
+      super.before_init()
+    }
+  }
+
+  window.Datatables.DefaultsDatatable = class extends DatatableBase {}
   window.Datatables.BasicDatatable = class extends DatatableBase {}
   window.Datatables.ButtonsDatatable = class extends DatatableBase {}
   window.Datatables.FiltersDatatable = class extends DatatableBase {}

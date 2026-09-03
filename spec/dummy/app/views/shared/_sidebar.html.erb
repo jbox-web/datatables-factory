@@ -15,6 +15,11 @@
     <% end %>
   </li>
   <li class="nav-item">
+    <%= link_to bulk_path, class: "nav-link #{'active' if current_page?(bulk_path)}" do %>
+      <i class="fa-solid fa-list-check fa-fw me-1"></i>Bulk actions
+    <% end %>
+  </li>
+  <li class="nav-item">
     <%= link_to context_menu_path, class: "nav-link #{'active' if current_page?(context_menu_path)}" do %>
       <i class="fa-solid fa-computer-mouse fa-fw me-1"></i>Context menu
     <% end %>
@@ -22,6 +27,16 @@
   <li class="nav-item">
     <%= link_to filters_path, class: "nav-link #{'active' if current_page?(filters_path)}" do %>
       <i class="fa-solid fa-filter fa-fw me-1"></i>Filters
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to multi_path, class: "nav-link #{'active' if current_page?(multi_path)}" do %>
+      <i class="fa-solid fa-table-columns fa-fw me-1"></i>Several tables
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to defaults_path, class: "nav-link #{'active' if current_page?(defaults_path)}" do %>
+      <i class="fa-solid fa-wand-sparkles fa-fw me-1"></i>Default filters
     <% end %>
   </li>
   <li class="nav-item">

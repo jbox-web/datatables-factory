@@ -1,0 +1,36 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-table-columns me-2 text-primary"></i>Several tables
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">isolation du loader</span>
+</div>
+<p class="text-muted mb-4">
+  Deux éléments portent <code>data-toggle=datatable</code>. Le premier est volontairement
+  incomplet — un <code>&lt;table&gt;</code> marqué mais sans attribut
+  <code>data-dtf-loader</code>, ce que produit un copier-coller ou un partiel rendu hors de son
+  helper. Le second est valide et doit se charger malgré lui.
+</p>
+
+<%# Deliberately hand-written, and deliberately first: render_datatable could
+    never emit this. It is the shape a stray tagged element takes in a real
+    application, and it is what makes Loader.load_datatables throw. %>
+<table id="broken-datatable" data-toggle="datatable" class="d-none"></table>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      dt = bootstrap_datatables_for(
+        :basic,
+        source: api_basic_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        order: [[0, 'asc']],
+      ) do |dt|
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+      end
+    %>
+    <%= dt.render_datatable %>
+  </div>
+</div>

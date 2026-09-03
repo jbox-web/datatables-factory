@@ -1,0 +1,95 @@
+<div class="d-flex align-items-center mb-3">
+  <h2 class="h4 mb-0 fw-semibold">
+    <i class="fa-solid fa-list-check me-2 text-primary"></i>Bulk actions
+  </h2>
+  <span class="badge bg-light text-dark border ms-3">select_all · reset_selection · POST réel</span>
+</div>
+<p class="text-muted mb-4">
+  Les deux boutons d'action de masse passent par <code>WithButtons#_call_url</code>, seul chemin
+  de la bibliothèque qui émet une requête modifiante. Le serveur est derrière
+  <code>protect_from_forgery with: :exception</code> : la requête n'aboutit que si la
+  bibliothèque envoie le jeton elle-même.
+</p>
+
+<div class="card feature-card">
+  <div class="card-body p-4">
+    <%
+      # No `dt =` here, unlike the other pages: the table is emitted from inside
+      # the form by f.render_datatable, so the presenter is never needed again.
+      bootstrap_datatables_for(
+        :bulk,
+        source: api_bulk_datatable_path,
+        serverSide: true,
+        stateSave: false,
+        select: { style: 'multi' },
+        order: [[1, 'asc']],
+        dom: datatable_dom_with_selected_and_buttons,
+        # The dtf_options the host application sets globally and the dummy never
+        # exercised: the label of the selection counter, the class the loader
+        # puts on every filter reset button, and the 422 branch of Loader.ajax.
+        dtf_options: {
+          selected_count_label:     'Total selected: ',
+          filter_reset_button_class: 'btn btn-soft-secondary',
+          session_expired_message:   'Session expired, please log in again.',
+          login_url:                 '/',
+        },
+      ) do |dt|
+        dt.button action: 'select_all',
+                  method: 'post',
+                  url: bulk_select_all_path,
+                  button_name: 'select_all',
+                  text: '<i class="fa-solid fa-check-double"></i>',
+                  titleAttr: 'Select all'
+        dt.button action: 'reset_selection',
+                  method: 'post',
+                  url: bulk_reset_selection_path,
+                  button_name: 'reset_selection',
+                  text: '<i class="fa-solid fa-eraser"></i>',
+                  titleAttr: 'Reset selection'
+
+        dt.head_for_check_box
+        dt.head_for :first_name, label: 'First name'
+        dt.head_for :last_name,  label: 'Last name'
+        dt.head_for :email,      label: 'Email'
+        dt.head_for :role,       label: 'Role'
+        dt.head_for :created_at, label: 'Created'
+
+        # The table is rendered INSIDE the search form here, which is the layout
+        # the host application uses on 19 of its screens — /filters covers the
+        # other one, where the table sits outside.
+        concat(dt.search_form { |f|
+          safe_join([
+            content_tag(:div, class: 'row g-3 mb-4') {
+              safe_join([
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'First name', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.text_field(:first_name, { icon: 'magnifying-glass', filter_delay: 500 }, {}),
+                  ])
+                },
+                # filter_html_labels: the dropdown labels are coloured badges
+                # built server-side, exactly like the host application's tags.
+                # Without the option tom-select would show their markup as text.
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'Role', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.multi_select(:role, { icon: 'user-tag', filter_delay: 300, filter_html_labels: true }, {}),
+                  ])
+                },
+                # flatpickr, not jQuery UI: this is the only date configuration
+                # the host application runs. /filters keeps the jQuery UI branch.
+                content_tag(:div, class: 'col-md-4') {
+                  safe_join([
+                    content_tag(:label, 'Created', class: 'form-label fw-semibold small text-muted mb-1'),
+                    f.range_date(:created_at, datatable_options_for_range_date(plugin: 'flatpickr').merge(icon: 'calendar-days'), {}),
+                  ])
+                },
+              ])
+            },
+            f.render_datatable,
+          ])
+        })
+      end
+    %>
+  </div>
+</div>

@@ -29,8 +29,8 @@
   },
   "peerDependencies": {
     "jquery": ">=3.6.0",
-    "tom-select": ">=2.0.0",
-    "nouislider": ">=15.0.0"
+    "nouislider": ">=15.0.0",
+    "tom-select": ">=2.0.0"
   },
   "peerDependenciesMeta": {
     "tom-select": {
@@ -61,6 +61,7 @@
     "eslint-plugin-coffee": "^0.1.15",
     "eslint-plugin-import": "2.29.1",
     "eslint-webpack-plugin": "^3.0.1",
+    "flatpickr": "^4.6.13",
     "has": "^1.0.4",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
