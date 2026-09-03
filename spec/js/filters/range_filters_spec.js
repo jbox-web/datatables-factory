@@ -232,6 +232,41 @@ describe('range filters', () => {
   })
 
   describe('RangeNumberFilter', () => {
+    // Unary plus reads a blank string as 0, so a bound left with nothing but a
+    // space went to the server as ">= 0" instead of being treated as open.
+    describe('reading a bound', () => {
+      const read = (value) => build(RangeNumberFilter).filter._int_or_empty_string(value)
+
+      it('reads a plain integer', () => {
+        expect(read('20')).toBe(20)
+      })
+
+      it('reads the decimals the slider writes back', () => {
+        expect(read('20.00')).toBe(20)
+      })
+
+      it('reads a negative bound', () => {
+        expect(read('-5')).toBe(-5)
+      })
+
+      it('trims before reading', () => {
+        expect(read(' 20 ')).toBe(20)
+      })
+
+      it('treats a blank bound as open', () => {
+        expect(read('')).toBe('')
+        expect(read('   ')).toBe('')
+      })
+
+      it('refuses an exponent, which nobody typed on purpose', () => {
+        expect(read('1e3')).toBe('')
+      })
+
+      it('refuses anything that is not a number', () => {
+        expect(read('abc')).toBe('')
+      })
+    })
+
     it('sends both bounds joined by the delimiter', () => {
       const { filter, owner } = build(RangeNumberFilter)
       filter.create_html()

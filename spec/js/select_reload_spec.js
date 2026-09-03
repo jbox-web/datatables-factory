@@ -48,6 +48,34 @@ describe('SelectBase#reload', () => {
     expect($('#marker').length).toBe(1)
   })
 
+  // Restoring the selection is what the rebuild costs, not the rebuild itself:
+  // for tom-select every setValue re-renders the item. It used to run on every
+  // draw — so on every sort, page change and keystroke in another filter —
+  // while only a rebuild can lose the selection in the first place.
+  it('does not restore the state when nothing was rebuilt', () => {
+    const filter = build()
+    filter.dropdown_data = DATA
+    filter.reload({})
+
+    const restore = jest.spyOn(filter, 'restore_state')
+    filter.dropdown_data = DATA.slice()
+    filter.reload({})
+
+    expect(restore).not.toHaveBeenCalled()
+  })
+
+  it('restores the state when the options were rebuilt', () => {
+    const filter = build()
+    filter.dropdown_data = DATA
+    filter.reload({})
+
+    const restore = jest.spyOn(filter, 'restore_state')
+    filter.dropdown_data = [{ value: 'admin', label: 'Admin' }]
+    filter.reload({})
+
+    expect(restore).toHaveBeenCalled()
+  })
+
   it('rebuilds the options when the data changes', () => {
     const filter = build()
     filter.dropdown_data = DATA

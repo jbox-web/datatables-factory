@@ -13,13 +13,20 @@ class SelectMultiFilter extends SelectBase
   set: (value) ->
     super(value)
 
-    search_value = @_cast_value(value)
+    values       = [].concat(value ? [])
+    search_value = @_cast_value(values)
+
+    # The widget too, not just the wire and the state. It used to be left on its
+    # placeholder until a later draw happened to carry dropdown data and
+    # restore_state put the value back — and never at all on a static list.
+    @_set_select_value(values)
+    @_el(@select_id).addClass('inuse') if !@_empty_value(values)
 
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, search_value)
 
     # save current value
-    @_save_state(@column_id, value: value)
+    @_save_state(@column_id, value: values)
 
 
   ###################
@@ -62,8 +69,11 @@ class SelectMultiFilter extends SelectBase
       .attr('data-placeholder', @filter_default_label)
 
 
+  # [].concat, because populate_with is written by hand in a view: a scalar
+  # declared for a multi_select used to throw on join and take every default
+  # filter after it down with it.
   _cast_value: (value) ->
-    value.join('|')
+    [].concat(value ? []).join('|')
 
 
 export default SelectMultiFilter

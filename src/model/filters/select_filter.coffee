@@ -15,6 +15,13 @@ class SelectFilter extends SelectBase
   set: (value) ->
     super(value)
 
+    # The widget too, not just the wire and the state: a default applied from
+    # populate_with filtered the table while the select still showed its
+    # placeholder, until a later draw carrying dropdown data happened to put it
+    # back through restore_state.
+    @_set_select_value(value)
+    @_el(@select_id).addClass('inuse') if !@_empty_value(value)
+
     # set search value (datatable reload will be triggered later)
     @_set_search_value(@column_id, value)
 

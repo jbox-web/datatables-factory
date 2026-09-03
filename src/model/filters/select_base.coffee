@@ -89,14 +89,19 @@ class SelectBase extends BaseFilter
 
     signature = JSON.stringify(@dropdown_data)
 
-    if signature != @_dropdown_signature
-      @_dropdown_signature = signature
-      @_el(@select_id).empty().append(@_select_options())
+    return if signature == @_dropdown_signature
 
-      # re-read options and selection from the underlying <select>
-      @select_plugin?.clearOptions()
-      @select_plugin?.sync()
+    @_dropdown_signature = signature
+    @_el(@select_id).empty().append(@_select_options())
 
+    # re-read options and selection from the underlying <select>
+    @select_plugin?.clearOptions()
+    @select_plugin?.sync()
+
+    # Inside the branch: the options are what wipes the selection, so restoring
+    # it when nothing was rebuilt only re-ran setValue — a full re-render of the
+    # item, for tom-select — on every sort, page change and keystroke in another
+    # filter.
     @restore_state()
 
 

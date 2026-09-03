@@ -54,6 +54,25 @@ describe('select filters', () => {
       expect(filter.current_value()).toBe('')
     })
 
+    it('writes a programmatic value into the widget, not only onto the wire', () => {
+      const { filter } = build(SelectFilter, { dropdown_data: ROLES })
+      const select = renderSelect(filter)
+
+      filter.set('admin')
+
+      expect(select.val()).toBe('admin')
+      expect(select.hasClass('inuse')).toBe(true)
+    })
+
+    it('leaves the widget unmarked when the value set is empty', () => {
+      const { filter } = build(SelectFilter, { dropdown_data: ROLES })
+      const select = renderSelect(filter)
+
+      filter.set('')
+
+      expect(select.hasClass('inuse')).toBe(false)
+    })
+
     it('records the search value and the state when set programmatically', () => {
       const { filter, owner } = build(SelectFilter)
 
@@ -120,6 +139,28 @@ describe('select filters', () => {
       // the element multi-select.
       expect(select.prop('multiple')).toBe(true)
       expect(select.find('option').length).toBe(2)
+    })
+
+    // populate_with is written by hand in a view, so a scalar declared for a
+    // multi_select is a matter of time. join used to throw on it and take every
+    // default filter after it down.
+    it('accepts a scalar default rather than throwing on it', () => {
+      const { filter, owner } = build(SelectMultiFilter, { dropdown_data: ROLES })
+      renderSelect(filter)
+
+      expect(() => filter.set('admin')).not.toThrow()
+      expect(owner.searches).toEqual([{ column_id: 3, value: 'admin' }])
+      expect(owner.saved).toEqual([{ column_id: 3, data: { value: ['admin'] } }])
+    })
+
+    it('writes the default into the widget, not only onto the wire', () => {
+      const { filter } = build(SelectMultiFilter, { dropdown_data: ROLES })
+      const select = renderSelect(filter)
+
+      filter.set(['admin'])
+
+      expect(select.val()).toEqual(['admin'])
+      expect(select.hasClass('inuse')).toBe(true)
     })
 
     it('renders nothing at all when no dropdown data was loaded', () => {

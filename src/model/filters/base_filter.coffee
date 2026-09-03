@@ -1,6 +1,11 @@
 import Extendable from '../../extendable.coffee'
 import WithLogger from '../../modules/with_logger.coffee'
 
+# Arrow keys: moving the caret is not a change of criterion. Frozen at module
+# level because this is read on every keystroke of every filter, and the array
+# was rebuilt each time.
+SKIP_KEY_CODES = [37, 38, 39, 40]
+
 class BaseFilter extends Extendable
   @include WithLogger.instance_methods
 
@@ -170,12 +175,7 @@ class BaseFilter extends Extendable
 
 
   _skip_key_codes: ->
-    [
-      37
-      38
-      39
-      40
-    ]
+    SKIP_KEY_CODES
 
 
   # The timer lives on the filter, not in the closure, for two reasons: destroy()
