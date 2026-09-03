@@ -79,6 +79,27 @@ module DatatableHelpers
     wait_for_datatable(wait: wait)
   end
 
+  # Same arming trick as turbo_click, for the browser's Back button. A
+  # restoration visit is the one case where Turbo puts back a snapshot of the
+  # DOM *as the page was left* — JS-generated nodes included — and then fires
+  # turbo:load on it, so anything the host re-runs there runs against markup
+  # that is not the server's.
+  def turbo_go_back(wait: Capybara.default_max_wait_time)
+    page.execute_script(<<~JS)
+      window.__dtf_turbo_loaded = false
+      document.addEventListener('turbo:load', function () {
+        window.__dtf_turbo_loaded = true
+      }, { once: true })
+    JS
+
+    page.go_back
+
+    loaded = wait_for_js('window.__dtf_turbo_loaded', wait: wait)
+    raise "turbo:load did not fire within #{wait}s after going back" unless loaded
+
+    wait_for_datatable(wait: wait)
+  end
+
   # Polls a JS expression until it is truthy. For assertions on instrumentation
   # counters (window.__foo) that are bumped asynchronously after a navigation.
   def wait_for_js(expression, wait: Capybara.default_max_wait_time)
