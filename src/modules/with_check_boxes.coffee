@@ -100,10 +100,14 @@ WithCheckBoxes.instance_methods =
       @error "update_select_all_ctrl: Datatable instance is null"
       return false
 
+    # Two passes over the body, not three: the checked ones are a subset of the
+    # ones already in hand. This runs more than once per draw — selecting rows
+    # fires the select event, whose handler refreshes the control again — so
+    # what it costs each time is worth keeping down.
     table          = @datatable.table().container()
     select_all     = $('thead input[type="checkbox"]', table).get(0)
     chkbox_all     = $('tbody input[type="checkbox"]', table)
-    chkbox_checked = $('tbody input[type="checkbox"]:checked', table)
+    chkbox_checked = chkbox_all.filter(':checked')
 
     return false if !select_all?
 
@@ -239,9 +243,15 @@ WithCheckBoxes.instance_methods =
 
 
   # One scan and one select call per draw, where this used to be a row lookup and
-  # a select event per row — and each of those events rescanned the whole
-  # container three times to refresh the "select all" control, so a page of
-  # checked rows cost quadratic work exactly when the feature was in use.
+  # a select event per row — and each of those events refreshed the "select all"
+  # control, rescanning the whole container, so a page of checked rows cost
+  # quadratic work exactly when the feature was in use.
+  #
+  # The refresh still happens twice on a draw that selects something: once from
+  # the select event this triggers, once from the draw handler. Dropping either
+  # would mean relying on the select event firing, and DataTables does not fire
+  # it for a row already selected — so the cost is cut inside
+  # update_select_all_ctrl instead, where it is unconditional.
   #
   # Running on draw rather than on row creation also puts it after every
   # createdRow callback, including the host application's: a checkbox injected

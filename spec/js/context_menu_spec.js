@@ -325,6 +325,13 @@ describe('ContextMenu', () => {
       expect(menu.find('a').attr('href')).toBe('/users/1?a=b+c&d=e-f')
     })
 
+    // Same family as the login url: no scheme, but it leaves the origin.
+    it('drops a protocol-relative href', () => {
+      const menu = render('<ul><li><a href="//evil.com/x">Edit</a></li></ul>')
+
+      expect(menu.find('a').attr('href')).toBeUndefined()
+    })
+
     it('still drops script tags', () => {
       render('<ul><li>Edit</li></ul><script>window.PWNED = true</script>')
 

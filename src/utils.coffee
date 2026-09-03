@@ -12,6 +12,12 @@ SCHEME_CHARS = /[^a-z0-9.+-]/gi
 # to a path or a query, as in "/users/1?from=a:b".
 PATH_START = /[\/?#]/
 
+# Two path separators, in any mix of slashes and backslashes: the browser reads
+# that as "same scheme, another host" and leaves the origin. It carries no
+# scheme, so the scheme test alone waves it through — which is how '//evil.com'
+# passed as a login url.
+PROTOCOL_RELATIVE = /^[\/\\]{2}/
+
 
 class Utils
 
@@ -27,16 +33,31 @@ class Utils
     $.extend(target, source)
 
 
-  # True for anything the browser may follow from this library: a relative url,
-  # or one of the schemes above. Everything else — javascript:, data: — is not
-  # something a configured login url or a menu entry has any reason to be.
+  # True for anything the browser may follow from this library: a url relative to
+  # the current origin, or one of the schemes above. Everything else —
+  # javascript:, data:, and any form that leaves the origin — is not something a
+  # configured login url or a menu entry has any reason to be.
   @safe_url: (value) ->
-    head  = String(value or '').split(PATH_START)[0]
+    candidate = Utils._without_leading_blanks(String(value ? ''))
+
+    return false if PROTOCOL_RELATIVE.test(candidate)
+
+    head  = candidate.split(PATH_START)[0]
     colon = head.indexOf(':')
     return true if colon < 0
 
     scheme = head.slice(0, colon).replace(SCHEME_CHARS, '').toLowerCase()
     scheme == '' or scheme in SAFE_SCHEMES
+
+
+  # Leading whitespace and control characters, which browsers ignore when they
+  # resolve a url and which therefore hide what follows them. Walked rather than
+  # matched: a regex saying so has to name a control-character range, which is
+  # exactly what a linter refuses on sight, and rightly.
+  @_without_leading_blanks: (value) ->
+    index = 0
+    index += 1 while index < value.length and value.charCodeAt(index) <= 0x20
+    value.slice(index)
 
 
   # $.parseHTML drops <script> — keepScripts defaults to false — and nothing

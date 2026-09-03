@@ -133,6 +133,19 @@ describe('Loader.ajax', () => {
       it('refuses one obfuscated with a control character', () => {
         expect(login_url({ login_url: 'java\tscript:alert(1)' })).toBe('/')
       })
+
+      // Protocol-relative: no scheme, so the scheme test alone waved it through,
+      // and it leaves the origin all the same. Browsers normalise the backslash
+      // spellings to the first one before resolving.
+      it.each([
+        '//evil.com/login',
+        '\\\\evil.com/login',
+        '/\\evil.com/login',
+        '\\/evil.com/login',
+        '  //evil.com/login',
+      ])('refuses %j, which leaves the origin', (url) => {
+        expect(login_url({ login_url: url })).toBe('/')
+      })
     })
   })
 
