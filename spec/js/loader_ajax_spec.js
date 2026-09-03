@@ -66,6 +66,44 @@ describe('Loader.ajax', () => {
       expect(on_error).not.toHaveBeenCalled()
     })
 
+    // A navigation or a closed tab kills every in-flight request before any
+    // response, and jQuery reports that as textStatus 'error' with status 0 —
+    // not as 'abort'. A dropped connection looks exactly the same, so the
+    // handler still runs; only its severity drops, because a browser error
+    // monitor files console.error as an unhandled error and these routinely
+    // outnumbered the real failures.
+    it('keeps calling a configured handler when the request died before any response', () => {
+      const on_error = jest.fn()
+      ajax('/users', {}, () => {}, { on_error: on_error })
+
+      sent.error({ status: 0 }, 'error', '')
+      expect(on_error).toHaveBeenCalled()
+    })
+
+    it('logs a response-less failure as a warning, not as an error', () => {
+      const error = jest.spyOn(console, 'error').mockImplementation(() => {})
+      const warn  = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+      ajax('/users', {}, () => {})
+      sent.error({ status: 0 }, 'error', '')
+
+      expect(error).not.toHaveBeenCalled()
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('table load failed'))
+
+      error.mockRestore()
+      warn.mockRestore()
+    })
+
+    it('still logs a server failure as an error', () => {
+      const error = jest.spyOn(console, 'error').mockImplementation(() => {})
+
+      ajax('/users', {}, () => {})
+      sent.error({ status: 500 }, 'error', 'Internal Server Error')
+
+      expect(error).toHaveBeenCalledWith(expect.stringContaining('table load failed'))
+      error.mockRestore()
+    })
+
     it('still routes 422 to the session handler rather than the error handler', () => {
       const on_error = jest.fn()
       const on_422 = jest.fn()

@@ -118,6 +118,24 @@ describe('the options the loader builds', () => {
       expect(table.datatable.reloads.length).toBe(1)
     })
 
+    // The callback fires when the server answers, which can be long after the
+    // click: a Turbo navigation in between destroys the table and drops
+    // `instance` (see Loader.load), leaving the reload with nothing to call.
+    it('does not crash when the table was torn down before the server answered', () => {
+      const table = loadTable()
+      const callback = table.callbacks['buttons']['select_all'].success[0]
+      delete table.constructor.instance
+
+      expect(() => callback('Datatables.UsersDatatable', {}, 'success', {})).not.toThrow()
+    })
+
+    it('does not crash when the class itself is gone', () => {
+      const table = loadTable()
+      const callback = table.callbacks['buttons']['select_all'].success[0]
+
+      expect(() => callback('Datatables.NoSuchDatatable', {}, 'success', {})).not.toThrow()
+    })
+
     it('are installed on both selection buttons', () => {
       const table = loadTable()
 

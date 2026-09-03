@@ -8,8 +8,13 @@ WithCheckBoxes.class_methods =
   # Public Class methods #
   ########################
 
+  # `instance` is null until the table is built, and again after a teardown.
+  # Host code that reloads on a timer or on a websocket message hits both
+  # windows, where an unguarded call raised "can't access property reload,
+  # this.instance is null" — a crash for something that simply has nothing to
+  # reload yet.
   reload: (callback = null, reset_paging = true) ->
-    this.instance.reload(callback, reset_paging)
+    this.instance?.reload(callback, reset_paging)
 
 
 WithCheckBoxes.instance_methods =

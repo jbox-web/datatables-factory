@@ -8,8 +8,11 @@ WithButtons.class_methods =
   # Public Class methods #
   ########################
 
+  # Same guard, and the same reason, as WithCheckBoxes.reload: `instance` is
+  # null until the table is built and again after a teardown, and host code
+  # calling this from the class cannot tell which side of that it is on.
   reset_datatable_selection: ->
-    this.instance.reset_datatable_selection()
+    this.instance?.reset_datatable_selection()
 
 
 WithButtons.instance_methods =

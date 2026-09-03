@@ -21,8 +21,17 @@ Loader.class_methods =
 
     # Without a handler, a 500 or a dropped connection leaves DataTables stuck
     # on "Processing…" forever, with nothing reported to the user or the console.
+    #
+    # A status of 0 means the request died before any response reached us. Most
+    # of the time that is a navigation or a closed tab killing an in-flight
+    # request — jQuery reports those as 'error', not as 'abort', so they cannot
+    # be filtered out earlier — and only sometimes a genuinely dropped
+    # connection. The two are indistinguishable here, so the message is still
+    # logged, but as a warning: a browser error monitor files console.error as
+    # an unhandled error, and these outnumber the real failures by far.
     on_error = dtf_options['on_error'] or (xhr, status, error) ->
-      console.error("DatatableFactory : table load failed (#{xhr.status} #{status}) #{error}")
+      message = "DatatableFactory : table load failed (#{xhr.status} #{status}) #{error}"
+      if xhr.status == 0 then console.warn(message) else console.error(message)
 
     $.ajax
       url: url
@@ -298,9 +307,15 @@ Loader.instance_methods =
   _loader_load_buttons_callbacks: ->
     @info('Build datatable callbacks options : buttons')
 
+    # This runs when the server answers, which can be long after the click. A
+    # navigation in between destroys the table and drops `instance` (see
+    # `load` above), and the class itself is gone once the page that declared
+    # it has been replaced — so nothing on this path is guaranteed to still be
+    # there, and an unguarded chain crashes on a table nobody is looking at
+    # any more.
     callback = (dt_class, _data, _status, _xhr) ->
       klass = Loader.class_methods.constantize(dt_class)
-      klass.instance.datatable.ajax.reload()
+      klass?.instance?.datatable?.ajax?.reload()
 
     # Merge, never assign: before_init runs first, so a consumer may already
     # have registered beforeSend/error/success callbacks here.

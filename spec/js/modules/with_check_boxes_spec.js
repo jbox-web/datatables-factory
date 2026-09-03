@@ -382,5 +382,18 @@ describe('WithCheckBoxes', () => {
 
       expect(table.datatable.reloads.length).toBe(1)
     })
+
+    // `instance` is null until the table is built, and again once Turbo tears
+    // the page down. Host code that reloads on a timer or on a websocket
+    // message hits both windows, and a bare `this.instance.reload()` turned
+    // them into "can't access property reload, this.instance is null".
+    it('does nothing when no table has been built yet', () => {
+      const table = buildRendered()
+      const klass = table.constructor
+      klass.instance = null
+
+      expect(() => klass.reload()).not.toThrow()
+      expect(table.datatable.reloads.length).toBe(0)
+    })
   })
 })

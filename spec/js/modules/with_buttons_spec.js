@@ -146,6 +146,18 @@ describe('WithButtons', () => {
       expect(() => table.constructor.reset_datatable_selection()).not.toThrow()
       expect(ajaxCalls).toEqual([])
     })
+
+    // Same window as WithCheckBoxes.reload: `instance` is null before the table
+    // is built and again after a teardown, and host code reaching for the class
+    // has no way to know which side of that it is on.
+    it('does nothing from the class when no table has been built yet', () => {
+      const table = build()
+      const klass = table.constructor
+      klass.instance = null
+
+      expect(() => klass.reset_datatable_selection()).not.toThrow()
+      expect(ajaxCalls).toEqual([])
+    })
   })
 
   describe('the filter buttons', () => {
