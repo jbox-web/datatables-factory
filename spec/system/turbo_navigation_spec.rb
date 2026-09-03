@@ -128,10 +128,19 @@ RSpec.describe 'Turbo navigation', :js do
     end
   end
 
+  # Every row assertion in this block goes through wait_for_rows and names its
+  # table. Each example leaves a table drawing and comes back to it, so a bare
+  # have_css('tbody tr') races the redraw: Capybara resolves the selector into
+  # node handles and only then queries them, and a draw landing in between makes
+  # it raise Capybara::Cuprite::ObsoleteNode. That is what took two of the eight
+  # CI jobs down on the filter example below.
+  #
+  # The unscoped form is wrong twice over here: it also counts the rows of any
+  # other table the page happens to carry.
   describe 'returning to a page whose table was already loaded' do
     it 'renders exactly one table, not a leftover duplicate' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       turbo_click 'Buttons'
       expect(page).to have_css('#buttons-datatable_wrapper', wait: 5)
 
@@ -142,7 +151,7 @@ RSpec.describe 'Turbo navigation', :js do
 
     it 'reloads its rows' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       turbo_click 'Buttons'
       expect(page).to have_css('#buttons-datatable_wrapper', wait: 5)
 
@@ -154,30 +163,34 @@ RSpec.describe 'Turbo navigation', :js do
 
     it 'still sorts when a header is clicked' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       turbo_click 'Buttons'
       expect(page).to have_css('#buttons-datatable_wrapper', wait: 5)
       turbo_click 'Basic'
       wait_for_datatable
       expect(wait_for_rows('#basic-datatable', count: 10)).to eq(10)
 
-      find('thead th', text: 'First name').click
+      find('#basic-datatable thead th', text: 'First name').click
       wait_for_datatable
+      wait_for_rows('#basic-datatable', count: 10)
 
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#basic-datatable tbody tr:first-child', text: 'User00', wait: 5)
     end
 
+    # The one that actually failed. On top of the race above, its filter is
+    # debounced, which moves the redraw further from the keystroke and straight
+    # into the polling window — reproduced locally at one run in five.
     it 'still filters after the round trip' do
       visit '/filters'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#filters-datatable', count: 10)
       turbo_click 'Basic'
       expect(page).to have_css('#basic-datatable_wrapper', wait: 5)
       turbo_click 'Filters'
-      expect(page).to have_css('#filters-datatable tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#filters-datatable', count: 10)
 
       fill_in 'dtf-filter-filters-datatable-0', with: 'User07'
 
-      expect(page).to have_css('tbody tr', count: 1, wait: 5)
+      expect(wait_for_rows('#filters-datatable', count: 1)).to eq(1)
     end
   end
 end
