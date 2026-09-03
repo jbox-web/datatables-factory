@@ -75,6 +75,7 @@ class SelectBase extends BaseFilter
 
 
   destroy: ->
+    super()
     @_destroy_select2()
     @select_plugin?.destroy()
     @select_plugin = null

@@ -42,6 +42,8 @@ class DateFilter extends TextFilter
 
 
   destroy: ->
+    super()
+
     switch @filter_plugin
       when 'flatpickr'
         @picker?.destroy()

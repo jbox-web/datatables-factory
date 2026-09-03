@@ -87,6 +87,17 @@ class BaseFilter extends Extendable
     @logger.dump event
 
 
+  # Every filter has one, so DatatableFilter#destroy always has something to
+  # call. A debounced keyup scheduled just before a teardown used to fire
+  # afterwards — measured: one _run_filter call landing on the destroyed
+  # DatatableFilter, which reaches into a DataTables instance that is gone and
+  # then schedules a state write nobody will cancel. Subclasses that tear a
+  # plugin down call super().
+  destroy: ->
+    clearTimeout(@_delay_timer) if @_delay_timer?
+    @_delay_timer = null
+
+
   prevent_default_on_enter: (event) ->
     if event.keyCode == 13
       if event.preventDefault
@@ -167,13 +178,18 @@ class BaseFilter extends Extendable
     ]
 
 
+  # The timer lives on the filter, not in the closure, for two reasons: destroy()
+  # has to be able to cancel it, and a range filter builds this twice — one
+  # handler per bound — which gave the two inputs of a single filter independent
+  # timers, so typing in one no longer cancelled the other's pending call.
   _with_delay: (callback, ms) ->
-    timer = 0
+    filter = this
     ->
       context = this
       args = arguments
-      clearTimeout timer
-      timer = setTimeout((->
+      clearTimeout filter._delay_timer if filter._delay_timer?
+      filter._delay_timer = setTimeout((->
+        filter._delay_timer = null
         callback.apply context, args
         return
       ), ms or 0)

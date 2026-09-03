@@ -65,6 +65,10 @@ describe('event teardown', () => {
 
       WithCheckBoxes.instance_methods._with_check_boxes_destroy.call(context)
 
+      // Array#every is true on an empty array, so the count is what stops this
+      // from passing identically if the module stopped calling off() at all.
+      expect(off).toHaveBeenCalledTimes(3)
+
       const namespaced = off.mock.calls.every((call) => call[0].includes('.dtfCheckBoxes'))
       expect(namespaced).toBe(true)
     })

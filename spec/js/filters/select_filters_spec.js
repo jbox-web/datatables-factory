@@ -440,6 +440,33 @@ describe('select filters', () => {
         }
       })
 
+      // The tom-select arm of _missing_plugin was covered, this one never was:
+      // every select2 example installs $.fn.select2 first. A host that declares
+      // the plugin and forgets to load it must get a working native select and
+      // a message, not a table that fails to initialise.
+      it('falls back to the native select when select2 is not loaded', () => {
+        const { filter, owner } = build(SelectFilter, {
+          options: { filter_plugin: 'select2' },
+          dropdown_data: ROLES,
+        })
+        const reported = []
+        filter.logger.error = (message) => reported.push(message)
+        renderSelect(filter)
+
+        jest.useFakeTimers()
+        try {
+          expect(() => filter.bind_inputs()).not.toThrow()
+
+          $(`#${filter.select_id}`).val('admin').trigger('change')
+          jest.runAllTimers()
+
+          expect(owner.filters).toEqual([{ column_id: 3, value: 'admin' }])
+          expect(reported.join(' ')).toMatch(/select2 is not loaded/)
+        } finally {
+          jest.useRealTimers()
+        }
+      })
+
       it('shields the select2 container from the header', () => {
         const { filter } = build(SelectFilter, {
           options: { filter_plugin: 'select2' },

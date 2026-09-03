@@ -179,6 +179,27 @@ describe('TextFilter', () => {
         jest.useRealTimers()
       }
     })
+
+    // The window between a keystroke and its debounced call is exactly the one
+    // a Turbo navigation lands in. Left running, the timer reaches into a
+    // DatatableFilter whose DataTables instance is gone, and then schedules a
+    // state write nobody will cancel.
+    it('drops a pending call when the filter is destroyed', () => {
+      jest.useFakeTimers()
+      try {
+        const { filter, owner } = build({ options: { filter_delay: 300 } })
+        filter.create_html()
+        filter.bind_inputs()
+
+        $(`#${filter.input_id}`).val('a').trigger($.Event('keyup', { keyCode: 65 }))
+        filter.destroy()
+        jest.advanceTimersByTime(500)
+
+        expect(owner.filters).toEqual([])
+      } finally {
+        jest.useRealTimers()
+      }
+    })
   })
 
   describe('the reset button', () => {

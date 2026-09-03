@@ -64,6 +64,7 @@ class RangeNumberSliderFilter extends RangeNumberFilter
 
 
   destroy: ->
+    super()
     @slider?.destroy()
 
 

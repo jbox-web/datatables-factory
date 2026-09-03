@@ -136,6 +136,46 @@ describe('DatatableFilter', () => {
     })
   })
 
+  // The "does not throw" examples above cannot see the dispatch itself: they
+  // load a TextFilter, and until every filter got one, destroy?() there resolved
+  // to nothing.
+  describe('destroy', () => {
+    it('destroys each filter it had loaded', () => {
+      const subject = build([dateFilter])
+      const destroyed = jest.spyOn(subject.find_by_column_id(3), 'destroy')
+
+      subject.destroy()
+
+      expect(destroyed).toHaveBeenCalled()
+    })
+
+    it('forgets them afterwards', () => {
+      const subject = build([textFilter])
+
+      subject.destroy()
+
+      expect(subject.find_by_column_id(1)).toBeUndefined()
+    })
+
+    // The state write is debounced, so there is always a window in which one is
+    // scheduled. Left running it calls state.save() on a table that is gone.
+    it('cancels a state save still pending', () => {
+      jest.useFakeTimers()
+      try {
+        const subject = build([textFilter])
+        const save = subject.instance.state.save
+        subject.save_state(1, { value: 'x' })
+
+        subject.destroy()
+        jest.advanceTimersByTime(500)
+
+        expect(save).not.toHaveBeenCalled()
+      } finally {
+        jest.useRealTimers()
+      }
+    })
+  })
+
   describe('state persistence without a datatable instance', () => {
     it('reports that the state cannot be saved', () => {
       const logger = buildLogger()

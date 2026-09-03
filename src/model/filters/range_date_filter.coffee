@@ -43,6 +43,8 @@ class RangeDateFilter extends RangeBase
 
 
   destroy: ->
+    super()
+
     switch @filter_plugin
       when 'flatpickr'
         picker.destroy() for picker in [@from_picker, @to_picker] when picker?

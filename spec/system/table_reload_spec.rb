@@ -46,6 +46,36 @@ RSpec.describe 'Reloading a table in place', :js do
     expect(page).to have_css('#basic-datatable tbody tr', count: 3, wait: 5)
   end
 
+  # Reloading in place on a page that HAS filters is the case the audit found
+  # uncovered: /basic declares none, so the filter rebuild — the part that used
+  # to stack a second widget set on the first — never ran here.
+  context 'with filters declared on the page' do
+    before do
+      visit '/filters'
+      wait_for_rows('#filters-datatable', count: 3)
+      page.execute_script('window.DatatableBase.load_datatables()')
+      wait_for_rows('#filters-datatable', count: 3)
+    end
+
+    it 'rebuilds each filter instead of adding to it' do
+      wrappers = page.evaluate_script(
+        "document.querySelectorAll('#filters-first-name-filter div.dtf-filter-wrapper').length"
+      )
+      inputs = page.evaluate_script(
+        "document.querySelectorAll('#filters-first-name-filter input.dtf-filter').length"
+      )
+
+      expect(wrappers).to eq(1)
+      expect(inputs).to eq(1)
+    end
+
+    it 'still filters from the rebuilt input' do
+      fill_in 'dtf-filter-filters-datatable-0', with: 'User01'
+
+      expect(wait_for_rows('#filters-datatable', count: 1)).to eq(1)
+    end
+  end
+
   it 'still sorts when a header is clicked' do
     expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
 

@@ -38,6 +38,20 @@ export class DataTableApiStub {
     }
     page.info = () => api.pageInfo
     this.page = page
+
+    // Modelled because a table that declares filters cannot load without them:
+    // DatatableFilter reads the saved state in its constructor and writes the
+    // per-column search straight into the settings store, one slot per declared
+    // column, exactly as DataTables builds it.
+    this.stateSaves = 0
+    this.state = {
+      loaded: () => DataTableApiStub.defaultState,
+      save: () => {
+        api.stateSaves += 1
+      },
+    }
+    const columns = (settings && settings.columns) || []
+    this.context = [{ aoPreSearchCols: columns.map(() => ({ search: '' })) }]
   }
 
   table() {
@@ -90,10 +104,12 @@ export class DataTableApiStub {
 
 DataTableApiStub.instances = []
 DataTableApiStub.defaultPageInfo = null
+DataTableApiStub.defaultState = null
 
 export function resetApiStubs() {
   DataTableApiStub.instances = []
   DataTableApiStub.defaultPageInfo = null
+  DataTableApiStub.defaultState = null
 }
 
 export function lastApiStub() {
