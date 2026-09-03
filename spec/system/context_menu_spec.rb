@@ -10,12 +10,13 @@ RSpec.describe 'Context menu datatable', :js do
   it 'shows the table' do
     visit '/context_menu'
     expect(page).to have_css('#context_menu-datatable_wrapper', wait: 5)
-    expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+    expect(wait_for_rows('#context_menu-datatable', count: 1)).to eq(1)
   end
 
   it 'marks rows with has-context-menu class' do
     visit '/context_menu'
-    expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
-    expect(page).to have_css('tbody tr.has-context-menu', wait: 5)
+    wait_for_rows('#context_menu-datatable', count: 1)
+
+    expect(page).to have_css('#context_menu-datatable tbody tr.has-context-menu', wait: 5)
   end
 end

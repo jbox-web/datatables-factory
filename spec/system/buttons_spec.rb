@@ -12,7 +12,7 @@ RSpec.describe 'Buttons datatable', :js do
   it 'renders the table' do
     visit '/buttons'
     expect(page).to have_css('#buttons-datatable_wrapper', wait: 5)
-    expect(page).to have_css('tbody tr', minimum: 3, wait: 5)
+    expect(wait_for_rows('#buttons-datatable', count: 3)).to eq(3)
   end
 
   it 'has the DataTables buttons toolbar' do

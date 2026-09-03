@@ -19,7 +19,7 @@ RSpec.describe 'Reloading a table in place', :js do
     end
 
     visit '/basic'
-    find('tbody tr', match: :first, wait: 5)
+    find('#basic-datatable tbody tr', match: :first, wait: 5)
     page.execute_script('window.__dtf_previous = window.Datatables.BasicDatatable.instance')
     page.execute_script('window.DatatableBase.load_datatables()')
     find('#basic-datatable tbody tr', match: :first, wait: 5)
@@ -77,10 +77,11 @@ RSpec.describe 'Reloading a table in place', :js do
   end
 
   it 'still sorts when a header is clicked' do
-    expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+    expect(page).to have_css('#basic-datatable tbody tr:first-child', text: 'Last00', wait: 5)
 
-    find('thead th', text: 'First name').click
+    find('#basic-datatable thead th', text: 'First name').click
+    wait_for_datatable
 
-    expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+    expect(page).to have_css('#basic-datatable tbody tr:first-child', text: 'User00', wait: 5)
   end
 end

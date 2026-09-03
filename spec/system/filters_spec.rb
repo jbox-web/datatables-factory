@@ -15,7 +15,7 @@ RSpec.describe 'Filters datatable', :js do
   it 'shows the table with rows' do
     visit '/filters'
     expect(page).to have_css('#filters-datatable_wrapper', wait: 5)
-    expect(page).to have_css('tbody tr', minimum: 3, wait: 5)
+    expect(wait_for_rows('#filters-datatable', count: 3)).to eq(3)
   end
 
   it 'shows the filter containers' do
@@ -25,13 +25,17 @@ RSpec.describe 'Filters datatable', :js do
     expect(page).to have_css('[id$="-filter"]', wait: 3)
   end
 
+  # These filters are debounced, so the redraw lands well after the keystroke —
+  # right in the window a bare have_css polls. Counting through wait_for_rows
+  # takes the count atomically instead of resolving node handles a draw can
+  # detach under it.
   it 'filters rows through a column filter' do
     visit '/filters'
-    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+    wait_for_rows('#filters-datatable', count: 3)
 
     find('#filters-first-name-filter input.dtf-filter').set('Alice')
 
-    expect(page).to have_css('tbody tr', count: 1, wait: 5)
+    expect(wait_for_rows('#filters-datatable', count: 1)).to eq(1)
     expect(page).to have_text('Alice')
   end
 
@@ -40,14 +44,14 @@ RSpec.describe 'Filters datatable', :js do
   # DataTables 3 (aoPreSearchCols -> searches), so this is the regression guard.
   it 'clears the column filters with the reset button' do
     visit '/filters'
-    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+    wait_for_rows('#filters-datatable', count: 3)
 
     find('#filters-first-name-filter input.dtf-filter').set('Alice')
-    expect(page).to have_css('tbody tr', count: 1, wait: 5)
+    wait_for_rows('#filters-datatable', count: 1)
 
-    find('button[title="Reset all filters"]').click
+    find('#filters-datatable_wrapper button[title="Reset all filters"]').click
 
-    expect(page).to have_css('tbody tr', count: 3, wait: 5)
+    expect(wait_for_rows('#filters-datatable', count: 3)).to eq(3)
     expect(find('#filters-first-name-filter input.dtf-filter').value).to eq('')
   end
 end

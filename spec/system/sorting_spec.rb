@@ -19,8 +19,10 @@ RSpec.describe 'Column sorting', :js do
     end
   end
 
+  # Named, like every selector below: an unscoped 'tbody tr' both races the
+  # redraw a sort triggers and matches any other table the page carries.
   def first_row
-    find('tbody tr:first-child').text
+    find('#buttons-datatable tbody tr:first-child').text
   end
 
   describe 'declared default order' do
@@ -28,40 +30,41 @@ RSpec.describe 'Column sorting', :js do
       visit '/buttons'
       wait_for_datatable
       expect(wait_for_rows('#buttons-datatable', count: 10)).to eq(10)
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
     end
 
     it 'applies order: [[1, "asc"]] on a table declaring another column' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
+
       # last_name ascending -> Last00, which belongs to User14
-      expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+      expect(page).to have_css('#basic-datatable tbody tr:first-child', text: 'Last00', wait: 5)
     end
   end
 
   describe 'clicking a sortable header' do
     it 'sorts ascending on the first click' do
       visit '/buttons'
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
-      find('thead th', text: 'Last name').click
+      find('#buttons-datatable thead th', text: 'Last name').click
       wait_for_datatable
 
-      expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'Last00', wait: 5)
     end
 
     it 'reverses the order on the second click' do
       visit '/buttons'
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
-      find('thead th', text: 'Last name').click
+      find('#buttons-datatable thead th', text: 'Last name').click
       wait_for_datatable
-      expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'Last00', wait: 5)
 
-      find('thead th', text: 'Last name').click
+      find('#buttons-datatable thead th', text: 'Last name').click
       wait_for_datatable
 
-      expect(page).to have_css('tbody tr:first-child', text: 'Last14', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'Last14', wait: 5)
     end
 
     it 'sorts across the whole dataset, not just the visible page' do
@@ -69,26 +72,26 @@ RSpec.describe 'Column sorting', :js do
       wait_for_datatable
       expect(wait_for_rows('#buttons-datatable', count: 10)).to eq(10)
       # User14 carries the highest age and is not on the first page initially
-      expect(page).to have_no_css('tbody tr', text: 'User14')
+      expect(page).to have_no_css('#buttons-datatable tbody tr', text: 'User14')
 
-      find('thead th', text: 'Age').click
+      find('#buttons-datatable thead th', text: 'Age').click
       wait_for_datatable
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
-      find('thead th', text: 'Age').click
+      find('#buttons-datatable thead th', text: 'Age').click
       wait_for_datatable
 
-      expect(page).to have_css('tbody tr:first-child', text: 'User14', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User14', wait: 5)
     end
   end
 
   describe 'a column declared sortable: false' do
     it 'does not reorder the table when its header is clicked' do
       visit '/buttons'
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
       before_click = first_row
-      find('thead th', text: 'Role').click
+      find('#buttons-datatable thead th', text: 'Role').click
       wait_for_datatable
 
       expect(first_row).to eq(before_click)
@@ -96,13 +99,14 @@ RSpec.describe 'Column sorting', :js do
 
     it 'keeps the other headers sortable' do
       visit '/buttons'
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
-      find('thead th', text: 'Role').click
+      find('#buttons-datatable thead th', text: 'Role').click
       wait_for_datatable
-      find('thead th', text: 'Last name').click
+      find('#buttons-datatable thead th', text: 'Last name').click
+      wait_for_datatable
 
-      expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'Last00', wait: 5)
     end
   end
 end

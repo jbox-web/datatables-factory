@@ -11,7 +11,7 @@ RSpec.describe 'Namespaced datatable', :js do
   it 'loads the table with the namespaced JS class' do
     visit '/namespaced'
     expect(page).to have_css('#acme-namespaced-datatable_wrapper', wait: 5)
-    expect(page).to have_css('tbody tr', minimum: 2, wait: 5)
+    expect(wait_for_rows('#acme-namespaced-datatable', count: 2)).to eq(2)
   end
 
   it 'renders the correct table id' do

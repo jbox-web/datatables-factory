@@ -12,11 +12,11 @@ RSpec.describe 'Checkboxes datatable', :js do
   it 'shows the checkbox column header' do
     visit '/checkboxes'
     expect(page).to have_css('#checkboxes-datatable_wrapper', wait: 5)
-    expect(page).to have_css('thead input[type="checkbox"]', wait: 5)
+    expect(page).to have_css('#checkboxes-datatable thead input[type="checkbox"]', wait: 5)
   end
 
   it 'shows rows in the table' do
     visit '/checkboxes'
-    expect(page).to have_css('tbody tr', minimum: 3, wait: 5)
+    expect(wait_for_rows('#checkboxes-datatable', count: 3)).to eq(3)
   end
 end

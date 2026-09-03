@@ -32,7 +32,7 @@ RSpec.describe 'Turbo navigation', :js do
   describe 'the navigation itself' do
     it 'keeps the JS context across a sidebar link' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       mark_window
 
       turbo_click 'Buttons'
@@ -43,7 +43,7 @@ RSpec.describe 'Turbo navigation', :js do
 
     it 'keeps the JS context when navigating back' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       mark_window
 
       turbo_click 'Buttons'
@@ -55,10 +55,13 @@ RSpec.describe 'Turbo navigation', :js do
     end
   end
 
+  # Scoped like the block below, and for the same reason: these examples assert
+  # on rows of a table that has just drawn, and an unscoped 'tbody tr' both
+  # races the redraw and matches any other table the page carries.
   describe 'a table reached through Turbo' do
     it 'loads its rows' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
 
       turbo_click 'Buttons'
 
@@ -68,23 +71,26 @@ RSpec.describe 'Turbo navigation', :js do
 
     it 'applies its declared default order' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
 
       turbo_click 'Buttons'
 
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      wait_for_rows('#buttons-datatable', count: 10)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
     end
 
     it 'still sorts when a header is clicked' do
       visit '/basic'
-      expect(page).to have_css('tbody tr', minimum: 1, wait: 5)
+      wait_for_rows('#basic-datatable', count: 10)
       turbo_click 'Buttons'
-      expect(page).to have_css('tbody tr:first-child', text: 'User00', wait: 5)
+      wait_for_rows('#buttons-datatable', count: 10)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'User00', wait: 5)
 
-      find('thead th', text: 'Last name').click
+      find('#buttons-datatable thead th', text: 'Last name').click
       wait_for_datatable
+      wait_for_rows('#buttons-datatable', count: 10)
 
-      expect(page).to have_css('tbody tr:first-child', text: 'Last00', wait: 5)
+      expect(page).to have_css('#buttons-datatable tbody tr:first-child', text: 'Last00', wait: 5)
     end
   end
 
@@ -110,7 +116,7 @@ RSpec.describe 'Turbo navigation', :js do
     # assertions — they block until the table is there and raise otherwise.
     before do
       visit '/basic'
-      find('tbody tr', match: :first, wait: 5)
+      find('#basic-datatable tbody tr', match: :first, wait: 5)
       instrument_destroy
 
       turbo_click 'Buttons'
