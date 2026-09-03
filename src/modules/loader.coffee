@@ -14,10 +14,10 @@ Loader.class_methods =
 
   ajax: (url, data, callback, dtf_options = {}) ->
     on_422 = dtf_options['on_422'] or ->
-      msg      = dtf_options['session_expired_message'] or 'Session expired, please log in again.'
-      login_url = dtf_options['login_url'] or '/'
+      msg = dtf_options['session_expired_message'] or 'Session expired, please log in again.'
       alert msg
-      window.location.href = login_url
+      window.location.href = Loader.class_methods.login_url(dtf_options)
+
 
     # Without a handler, a 500 or a dropped connection leaves DataTables stuck
     # on "Processing…" forever, with nothing reported to the user or the console.
@@ -49,6 +49,16 @@ Loader.class_methods =
         # 422 is already routed to on_422; an abort is not a failure.
         return if xhr.status == 422 or status == 'abort'
         on_error(xhr, status, error)
+
+
+  # Where the browser is sent once the session is gone. It comes from the host's
+  # configuration, but hosts derive it from a request parameter often enough — a
+  # return_to — that following it unchecked would hand an attacker a same-origin
+  # javascript: execution, triggered by nothing more than waiting for the session
+  # to expire.
+  login_url: (dtf_options = {}) ->
+    candidate = dtf_options['login_url']
+    if candidate? and Utils.safe_url(candidate) then candidate else '/'
 
 
   # The table load is a POST, so Rails rejects it without the token. The
@@ -208,7 +218,7 @@ Loader.instance_methods =
       $(form).find('.dtf-filter').addClass('form-control')
 
       # Optional icon declared on the Rails side (f.text_field :name, icon: 'magnifying-glass')
-      @_prepend_filter_icons(form)
+      @_prepend_filter_icons()
 
     @info('Datatable filters loaded')
 
@@ -228,14 +238,23 @@ Loader.instance_methods =
   # Prepend a FontAwesome icon (input-group-text) to each filter declaring an
   # `icon` option. Styling/responsive behavior is left to the host application
   # through the .dtf-filter-icon class.
-  _prepend_filter_icons: (form) ->
+  # No form to scope to any more: the container id already carries the table's
+  # own id (SearchFormBuilder#id_for_container), so it is unique in the document
+  # and getElementById is both exact and cheaper than walking the form.
+  _prepend_filter_icons: ->
     for filter in @filters
       continue if !filter.icon?
       # Icon names are interpolated into a class attribute: restrict them to the
       # FontAwesome charset so no markup can be injected.
       continue if !/^[a-z0-9-]+$/.test(filter.icon)
 
-      group = $(form).find("##{filter.filter_container_id} .input-group").first()
+      # getElementById, never a selector built from the id: a container id
+      # carrying a comma turned "#<id> .input-group" into a multiple selector
+      # and put the icon in every input group of the page.
+      container = document.getElementById(filter.filter_container_id)
+      continue if !container?
+
+      group = $(container).find('.input-group').first()
       continue if group.length == 0 || group.children('.dtf-filter-icon').length > 0
 
       group.prepend("<span class=\"input-group-text dtf-filter-icon\"><i class=\"fa-solid fa-#{filter.icon}\"></i></span>")
@@ -259,9 +278,12 @@ Loader.instance_methods =
     callbacks = @callbacks['createdRow']
 
     local_opts =
+      # Explicit return: without it CoffeeScript accumulates the result of every
+      # callback into a fresh array, once per row of every draw.
       createdRow: (row, data, index, cells) ->
         for c in callbacks
           c(row, data, index, cells)
+        return
 
     @dt_options = Utils.merge_hash(@dt_options, local_opts)
 
@@ -276,6 +298,7 @@ Loader.instance_methods =
       drawCallback: (settings) ->
         for c in callbacks
           c(settings)
+        return
 
     @dt_options = Utils.merge_hash(@dt_options, local_opts)
 
@@ -364,8 +387,12 @@ Loader.instance_methods =
     dtf_options = @dtf_options
 
     ajax: (data, callback, _settings) ->
+      # Enriched in place, shallowly. The payload is DataTables' own object,
+      # handed to us to add to, and it is serialized on the next line — a deep
+      # clone per callback bought nothing, and merging arrays by index made a
+      # callback narrowing a list keep the tail of the previous one.
       for c in callbacks
-        data = Utils.merge_hash(data, c(data))
+        Utils.extend_hash(data, c(data))
 
       Loader.class_methods.ajax(url, data, callback, dtf_options)
 

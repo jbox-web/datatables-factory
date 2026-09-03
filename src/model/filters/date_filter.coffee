@@ -79,7 +79,7 @@ class DateFilter extends TextFilter
   # Picking a date fires no keyup, so the inherited handler would leave the table
   # on its previous result until the next keystroke.
   _date_select: (_date, _event) =>
-    @logger.info "#{@name()} : _date_select"
+    @logger.info => "#{@name()} : _date_select"
 
     @_text_change({})
 

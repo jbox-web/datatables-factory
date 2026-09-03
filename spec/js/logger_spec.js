@@ -9,6 +9,56 @@ function spyOnConsole() {
   }
 }
 
+// A message a hot path builds and the logger throws away is pure waste, so the
+// call sites hand a function over and the logger decides whether to run it.
+describe('lazy messages', () => {
+  const { default: Logger } = require('../../src/logger.coffee')
+  const WithLogger = require('../../src/modules/with_logger.coffee').default
+
+  function owner(logger) {
+    return Object.assign({ dt_class: 'Datatables.UsersDatatable', logger }, WithLogger.instance_methods)
+  }
+
+  it('never calls the function when logging is off', () => {
+    const build = jest.fn(() => 'expensive')
+
+    new Logger({ debug_log: false }).info(build)
+
+    expect(build).not.toHaveBeenCalled()
+  })
+
+  it('calls it once when logging is on', () => {
+    const build = jest.fn(() => 'expensive')
+    const logged = jest.spyOn(console, 'info').mockImplementation(() => {})
+
+    new Logger({ debug_log: true }).info(build)
+
+    expect(build).toHaveBeenCalledTimes(1)
+    expect(logged).toHaveBeenCalledWith('DatatableFactory : expensive')
+    logged.mockRestore()
+  })
+
+  it('stops a mixed-in caller before it formats anything', () => {
+    const format = jest.fn()
+    const subject = owner(new Logger({ debug_log: false }))
+    subject._format_message = format
+
+    subject.info(() => 'expensive')
+
+    expect(format).not.toHaveBeenCalled()
+  })
+
+  // A host application may hand its own logger in. One that does not answer
+  // info_enabled must keep receiving everything rather than fall silent.
+  it('keeps writing to a logger that does not answer info_enabled', () => {
+    const plain = { info: jest.fn() }
+
+    owner(plain).info('hello')
+
+    expect(plain.info).toHaveBeenCalledWith('Datatables.UsersDatatable : hello')
+  })
+})
+
 describe('Logger', () => {
   let spies
 

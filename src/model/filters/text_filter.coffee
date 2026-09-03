@@ -123,7 +123,7 @@ class TextFilter extends BaseFilter
 
 
   _text_change: (event) ->
-    @logger.info "#{@name()} : _text_change"
+    @logger.info => "#{@name()} : _text_change"
     @logger.dump(event)
 
     return if @_skip_key_codes().includes(event.keyCode)
@@ -145,7 +145,7 @@ class TextFilter extends BaseFilter
 
 
   _text_clear: (event) ->
-    @logger.info "#{@name()} : _text_clear"
+    @logger.info => "#{@name()} : _text_clear"
     @logger.dump(event)
 
     current_value = @current_value()

@@ -107,6 +107,33 @@ describe('Loader.ajax', () => {
 
       expect(handler).toHaveBeenCalled()
     })
+
+    // The value is assigned to window.location, so it decides where the browser
+    // goes. Hosts derive it from a request parameter often enough (a return_to)
+    // that it must not be trusted blind.
+    describe('the login url it navigates to', () => {
+      const login_url = (options) => Loader.class_methods.login_url(options)
+
+      it('keeps a relative path', () => {
+        expect(login_url({ login_url: '/users/login' })).toBe('/users/login')
+      })
+
+      it('keeps an absolute http url', () => {
+        expect(login_url({ login_url: 'https://example.com/login' })).toBe('https://example.com/login')
+      })
+
+      it('falls back to the root when none is configured', () => {
+        expect(login_url({})).toBe('/')
+      })
+
+      it('refuses a javascript: url', () => {
+        expect(login_url({ login_url: 'javascript:alert(1)' })).toBe('/')
+      })
+
+      it('refuses one obfuscated with a control character', () => {
+        expect(login_url({ login_url: 'java\tscript:alert(1)' })).toBe('/')
+      })
+    })
   })
 
   describe('a failed request', () => {

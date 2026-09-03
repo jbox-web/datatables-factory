@@ -94,6 +94,22 @@ describe('the options the loader builds', () => {
       )
     })
 
+    // Merged, not deep-merged. jQuery's deep extend combines arrays by index,
+    // so a callback narrowing a list left the tail of the previous one behind:
+    // ['x'] over ['a','b','c'] used to come out as ['x','b','c'].
+    it('lets a later callback replace a list an earlier one set', () => {
+      const table = loadTable({ dt_options: { source: '/users/data' } })
+      table.callbacks['ajax'] = [
+        () => ({ selected: ['a', 'b', 'c'] }),
+        () => ({ selected: ['x'] }),
+      ]
+      table._loader_load_ajax_callbacks()
+
+      table.dt_options.ajax({ draw: 1 }, () => {}, {})
+
+      expect(JSON.parse(ajaxCalls[0].data).selected).toEqual(['x'])
+    })
+
     it('sends the payload untouched when no callback registered', () => {
       const table = loadTable({ dt_options: { source: '/users/data' } })
       table.callbacks['ajax'] = []
@@ -250,7 +266,7 @@ describe('the options the loader builds', () => {
       // different subsystem and has its own specs.
       const table = loadTable()
       table.filters = filters
-      table._prepend_filter_icons($('#users-datatable_wrapper').parent())
+      table._prepend_filter_icons()
       return table
     }
 
@@ -279,12 +295,32 @@ describe('the options the loader builds', () => {
       expect($('#role-filter img').length).toBe(0)
     })
 
+    // Looked up by id, never through a selector built from it. A container id
+    // carrying a comma used to turn "#<id> .input-group" into a multiple
+    // selector and put the icon in every input group of the page.
+    it('adds nothing when the container id is not an id', () => {
+      document.body.innerHTML = `
+        <div>
+          <div id="users-datatable_wrapper"></div>
+          <div id="role-filter"><div class="input-group"><input></div></div>
+          <div id="age-filter"><div class="input-group"><input></div></div>
+        </div>
+        <table id="users-datatable"></table>
+      `
+      const table = loadTable()
+      table.filters = [{ filter_container_id: 'role-filter, #age-filter', icon: 'tags' }]
+
+      table._prepend_filter_icons()
+
+      expect($('.dtf-filter-icon').length).toBe(0)
+    })
+
     it('never adds the same icon twice', () => {
       const table = withFilters([
         { filter_container_id: 'role-filter', icon: 'magnifying-glass' },
       ])
 
-      table._prepend_filter_icons($('#users-datatable_wrapper').parent())
+      table._prepend_filter_icons()
 
       expect($('#role-filter .dtf-filter-icon').length).toBe(1)
     })

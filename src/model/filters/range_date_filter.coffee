@@ -106,7 +106,7 @@ class RangeDateFilter extends RangeBase
   # also sent both bounds raw, where _range_change drops a bound that does not
   # parse.
   _date_select: (_date, _event) =>
-    @logger.info "#{@name()} : _date_select"
+    @logger.info => "#{@name()} : _date_select"
 
     @_range_change({})
 

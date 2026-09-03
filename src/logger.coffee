@@ -10,9 +10,22 @@ class Logger extends Extendable
     @info('----------------------------------------')
 
 
+  # Exposed so a caller can skip building a message it is about to throw away.
+  info_enabled: ->
+    @_flag_on('debug_log')
+
+
+  dump_enabled: ->
+    @_flag_on('debug_dump')
+
+
+  # A function is called only once logging is on. That is the whole point: with
+  # debug_log off — the production setting — a message interpolated at the call
+  # site is built and discarded on every keystroke and every draw.
   info: (message) ->
-    if @dtf_options.debug_log? and (@dtf_options.debug_log == true or @dtf_options.debug_log == 'true')
-      console.info "DatatableFactory : #{message}"
+    return unless @info_enabled()
+
+    console.info "DatatableFactory : #{@_resolve(message)}"
 
 
   warn: (message) ->
@@ -24,8 +37,18 @@ class Logger extends Extendable
 
 
   dump: (message) ->
-    if @dtf_options.debug_dump? and (@dtf_options.debug_dump == true or @dtf_options.debug_dump == 'true')
-      console.info message
+    return unless @dump_enabled()
+
+    console.info @_resolve(message)
+
+
+  _resolve: (message) ->
+    if typeof message == 'function' then message() else message
+
+
+  _flag_on: (name) ->
+    value = @dtf_options[name]
+    value? and (value == true or value == 'true')
 
 
 export default Logger

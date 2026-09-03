@@ -79,7 +79,7 @@ class DatatableFilter extends Extendable
 
 
   save_state: (column_id, data) ->
-    @info "Save current filter state (#{column_id})"
+    @info => "Save current filter state (#{column_id})"
 
     # instance might not be present (session expired?)
     return if !@_instance_present_for('save_state')
@@ -94,7 +94,7 @@ class DatatableFilter extends Extendable
 
 
   has_state_for: (column_id) ->
-    @info "Get current filter state (#{column_id})"
+    @info => "Get current filter state (#{column_id})"
 
     # instance might not be present (session expired?)
     return if !@_instance_present_for('has_state_for')
@@ -103,12 +103,12 @@ class DatatableFilter extends Extendable
 
 
   set_search_value: (column_id, value) ->
-    @info "Set search value (#{column_id})"
+    @info => "Set search value (#{column_id})"
     @_set_search_value(column_id, value)
 
 
   run_filter: (column_id, value) ->
-    @info "Run filter (#{column_id})"
+    @info => "Run filter (#{column_id})"
     @_run_filter(column_id, value)
 
 
@@ -326,7 +326,7 @@ class DatatableFilter extends Extendable
 
     for column_id, filter of @loaded_filters
       if json["dt_filter_data_#{column_id}"]?
-        @info "Loading data for #{filter.name()}"
+        @info => "Loading data for #{filter.name()}"
         filter.dropdown_data = json["dt_filter_data_#{column_id}"]
         filter.reload(event)
 

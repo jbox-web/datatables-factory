@@ -168,12 +168,12 @@ class RangeBase extends BaseFilter
 
 
   _range_change: (event) ->
-    @logger.info "#{@name()} : _range_change"
+    @logger.info => "#{@name()} : _range_change"
     @logger.dump(event)
 
 
   _range_clear: (event) ->
-    @logger.info "#{@name()} : _range_clear"
+    @logger.info => "#{@name()} : _range_clear"
     @logger.dump(event)
 
     current_value = @current_value()

@@ -73,17 +73,17 @@ class BaseFilter extends Extendable
 
 
   set: (value) ->
-    @logger.info "#{@name()} : set"
+    @logger.info => "#{@name()} : set"
     @logger.dump value
 
 
   reset: (event) ->
-    @logger.info "#{@name()} : reset"
+    @logger.info => "#{@name()} : reset"
     @logger.dump event
 
 
   reload: (event) ->
-    @logger.info "#{@name()} : reload"
+    @logger.info => "#{@name()} : reload"
     @logger.dump event
 
 

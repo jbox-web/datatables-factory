@@ -122,12 +122,12 @@ class SelectBase extends BaseFilter
 
 
   _select_change: (event) ->
-    @logger.info "#{@name()} : _select_change"
+    @logger.info => "#{@name()} : _select_change"
     @logger.dump(event)
 
 
   _select_clear: (event) ->
-    @logger.info "#{@name()} : _select_clear"
+    @logger.info => "#{@name()} : _select_clear"
     @logger.dump(event)
 
     current_value = @current_value()

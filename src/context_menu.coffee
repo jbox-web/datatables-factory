@@ -1,16 +1,4 @@
-# The schemes a menu entry may legitimately carry. Anything relative has none,
-# and is always fine.
-SAFE_SCHEMES = ['http', 'https', 'mailto', 'tel']
-
-# What a scheme may contain, per RFC 3986. Everything else is dropped before the
-# comparison: browsers tolerate whitespace and control characters inside a
-# scheme, so "java\tscript:" runs while a naive match on the raw value does not
-# see it.
-SCHEME_CHARS = /[^a-z0-9.+-]/gi
-
-# A scheme can only appear before the first of these; past them a colon belongs
-# to a path or a query, as in "/users/1?from=a:b".
-PATH_START = /[\/?#]/
+import Utils from './utils.coffee'
 
 # Kept between calls so a second right click can cancel the first request. The
 # stale answer would otherwise render into the menu already open and move it
@@ -28,15 +16,6 @@ class ContextMenu
     { width: window.innerWidth, height: window.innerHeight }
 
 
-  @safe_url: (value) ->
-    head  = String(value or '').split(PATH_START)[0]
-    colon = head.indexOf(':')
-    return true if colon < 0
-
-    scheme = head.slice(0, colon).replace(SCHEME_CHARS, '').toLowerCase()
-    scheme == '' or scheme in SAFE_SCHEMES
-
-
   # $.parseHTML already drops <script> — keepScripts defaults to false — and
   # nothing else: inline handlers and javascript: urls survive it untouched.
   # The markup is the host application's own, so escaping it stays the server's
@@ -51,7 +30,7 @@ class ContextMenu
 
         if name.indexOf('on') == 0
           element.removeAttr(attribute.name)
-        else if name in ['href', 'src', 'xlink:href'] and !ContextMenu.safe_url(attribute.value)
+        else if name in ['href', 'src', 'xlink:href'] and !Utils.safe_url(attribute.value)
           element.removeAttr(attribute.name)
 
     nodes
