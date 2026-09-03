@@ -61,11 +61,29 @@ Loader.class_methods =
     if token? then { 'X-CSRF-Token': token } else {}
 
 
+  # One tagged element must never cost the ones after it. $.each offers no
+  # isolation at all, and this loop had two ways of losing the rest of the page:
+  #
+  #   - it stopped on a falsy callback result, and `load` answers false for a
+  #     class that is not registered yet — a race the host application already
+  #     fights, since a Turbo Stream can land before its pack has defined the
+  #     class. Hence the bare `return`, which is the whole fix for that half.
+  #   - it let an exception out. A tagged element with no data-dtf-loader is
+  #     enough (a copy-paste, a partial rendered outside its helper): `loader` is
+  #     then undefined and reading its dtf_options throws. Since the host calls
+  #     this from turbo:load, the throw also took the rest of that chain down.
+  #
+  # console.error and not warn: unlike an aborted request, this one is always a
+  # programming error and there is something to fix.
   load_datatables: ->
     $('[data-toggle=datatable]').each ->
-      data = $(this).data()
-      loader = Loader.class_methods.extract_options(data, 'dtfLoader').loader
-      Loader.class_methods.load(loader)
+      try
+        data = $(this).data()
+        loader = Loader.class_methods.extract_options(data, 'dtfLoader').loader
+        Loader.class_methods.load(loader)
+      catch error
+        console.error("DatatableFactory : datatable '#{this.id or '(no id)'}' failed to load: #{error?.message or error}")
+      return
 
 
   load: (loader) ->

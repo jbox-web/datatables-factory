@@ -222,6 +222,59 @@ describe('Loader class helpers', () => {
 
       expect(() => Loader.class_methods.load_datatables()).not.toThrow()
     })
+
+    // Two ways one element can cost the ones after it, and neither is exotic:
+    //
+    //   - load() returns false when the class is not registered yet, and
+    //     jQuery's $.each stops on a callback returning false (measured: 1 of 3
+    //     elements visited). The host application already fights this race, its
+    //     Turbo Streams can land before a class is defined.
+    //   - a tagged element with no data-dtf-loader makes load() throw, and
+    //     $.each has no isolation either.
+    describe('isolation between tables', () => {
+      const tagTable = (id, klassName) => {
+        $(`#${id}`).data('dtfLoader', {
+          dt_id: `#${id}`,
+          dt_class: klassName,
+          dt_options: { columns: [], buttons: [], filters: [], filters_applied: [] },
+          dtf_options: {},
+        })
+      }
+
+      const healthyClass = () => {
+        const Klass = class extends (require('../../src/model/datatable_base.coffee').default) {}
+        window.Datatables = { ...(window.Datatables || {}), HealthyDatatable: Klass }
+        return Klass
+      }
+
+      it('loads the next table when an earlier class is not registered', () => {
+        stubDataTables()
+        document.body.innerHTML = `
+          <table id="tbl-unknown" data-toggle="datatable"></table>
+          <table id="tbl-ok" data-toggle="datatable"></table>
+        `
+        const Klass = healthyClass()
+        tagTable('tbl-unknown', 'Datatables.NotRegisteredDatatable')
+        tagTable('tbl-ok', 'Datatables.HealthyDatatable')
+
+        Loader.class_methods.load_datatables()
+
+        expect(Klass.instance).toBeTruthy()
+      })
+
+      it('loads the next table when an earlier element carries no configuration', () => {
+        stubDataTables()
+        document.body.innerHTML = `
+          <table id="tbl-bare" data-toggle="datatable"></table>
+          <table id="tbl-ok" data-toggle="datatable"></table>
+        `
+        const Klass = healthyClass()
+        tagTable('tbl-ok', 'Datatables.HealthyDatatable')
+
+        expect(() => Loader.class_methods.load_datatables()).not.toThrow()
+        expect(Klass.instance).toBeTruthy()
+      })
+    })
   })
 })
 

@@ -92,21 +92,21 @@ class RangeDateFilter extends RangeBase
     ))
 
 
+  # Picking a date fires no keyup, so the inherited handler would leave the table
+  # on its previous result. It delegates to _range_change rather than repeating
+  # it — same reason RangeNumberSliderFilter#_slider_change does: an empty event
+  # carries no keyCode, and the arrow-key guard lets it through.
+  #
+  # Delegating is also what fixes the marker. This method used to build the
+  # search value itself and never touched the `inuse` class, so a date chosen in
+  # the calendar filtered the table while leaving its input looking empty — the
+  # marker only appeared at the next reload, when restore_state put it back. It
+  # also sent both bounds raw, where _range_change drops a bound that does not
+  # parse.
   _date_select: (_date, _event) =>
     @logger.info "#{@name()} : _date_select"
 
-    current_value = @current_value()
-
-    from = current_value.from
-    to = current_value.to
-
-    search_value = "#{from}#{@range_delimiter}#{to}"
-
-    # run filter (triggers a datatable reload)
-    @_run_filter(@column_id, search_value)
-
-    # save current value
-    @_save_state(@column_id, from: from, to: to)
+    @_range_change({})
 
 
   _range_change: (event) ->

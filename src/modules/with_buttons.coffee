@@ -1,4 +1,5 @@
-import Utils from '../utils.coffee'
+import Utils  from '../utils.coffee'
+import Loader from './loader.coffee'
 
 WithButtons = {}
 
@@ -133,8 +134,15 @@ WithButtons.instance_methods =
     }
 
 
+  # The same token the table load sends (Loader.ajax). This request is a POST
+  # too — it is the one that actually changes state — and without the header
+  # Rails answers 422, which is indistinguishable from an expired session and is
+  # swallowed by the error callbacks. An application that injects the token
+  # globally through an $.ajaxPrefilter simply overwrites this with the same
+  # value; jQuery applies the `headers` option after prefilters, so a caller who
+  # sets one explicitly still wins.
   _call_url: (button, params, ajax_options) ->
-    options = { url: button.url, method: button.method }
+    options = { url: button.url, method: button.method, headers: Loader.class_methods.csrf_headers() }
     options = Utils.merge_hash(options, { data: params }) if params
     options = Utils.merge_hash(options, ajax_options) if ajax_options
     $.ajax options

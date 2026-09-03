@@ -43,15 +43,13 @@ RSpec.describe 'Bulk actions datatable', :js do
 
   # The button POST is the assertion that matters: it is state-changing, it goes
   # through _call_url, and the server counts what it received. Reaching the count
-  # proves the request was accepted — which today it is not.
+  # proves Rails accepted the request, i.e. that it carried its CSRF token.
   #
   # Both directions in one example on purpose: asserting "Total selected: 0"
   # after a reset proves nothing on its own, since the counter starts at 0 and a
   # rejected POST leaves it there. Only the 0 -> 3 -> 0 round trip distinguishes
   # an accepted request from a refused one.
   it 'records the server-side selection and clears it again' do
-    pending 'SEC-with_buttons.coffee:136 — _call_url sends no X-CSRF-Token, Rails answers 422'
-
     expect(page).to have_css('.selected-count', text: 'Total selected: 0', wait: 5)
 
     find('.dt-buttons button[title="Select all"]').click
@@ -114,13 +112,9 @@ RSpec.describe 'Bulk actions datatable', :js do
       expect(page).to have_css('#bulk-datatable tbody', text: 'No matching records found', wait: 5)
     end
 
-    # COR-range_date_filter.coffee:95 — _date_select runs the filter and saves
-    # the state but never touches the `inuse` class, unlike _range_change on the
-    # keyup path and restore_state on reload. So a date picked in the calendar
-    # filters the table without marking the input.
+    # _date_select delegates to _range_change, so the calendar path marks the
+    # input exactly like the keyboard one does.
     it 'marks the input as in use once a date is picked' do
-      pending 'COR-range_date_filter.coffee:95 — _date_select never sets the inuse class'
-
       pick_first_day_of_the_current_month
 
       expect(page).to have_css('#dtf-filter-bulk-datatable-from-date-5.inuse', wait: 5)
