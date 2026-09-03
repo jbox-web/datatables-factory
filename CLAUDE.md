@@ -97,6 +97,14 @@ so `off('xhr.dt')` removes `xhr.dt.myapp` too: an application binding before
 `load_datatables()`, the documented way to catch DataTables events ahead of initialisation,
 loses its handler without a word.
 
+`WithCheckBoxes` re-selects the rows a server-side response rendered checked from
+the *draw* handler (`_reselect_checked_rows`), not from `createdRow` — one scan of
+the body and one `rows().select()` call per draw, checked rows derived from the
+ones already scanned rather than a second selector. Running after every
+`createdRow` callback, the host application's included, is deliberate: a checkbox
+a host injects there did not exist yet when the per-row hook that used to do this
+looked for it.
+
 **Loading flow:**
 1. `Loader.load_datatables()` scans DOM for `[data-toggle=datatable]`
 2. Resolves JS class via `window` path lookup (`Loader.constantize`)
@@ -179,6 +187,9 @@ Never assert on datatable rows directly — use `spec/support/datatable_helpers.
 - `turbo_click(link)` — navigate and wait for `turbo:load`. Turbo paints a cached snapshot first,
   so anything done before that fires acts on DOM about to be discarded (assertions passing against
   stale rows, text typed into an input that gets replaced).
+- `turbo_go_back` — same arming trick, for the browser's Back button. A restoration visit is the
+  one case where Turbo puts back a snapshot of the DOM *as the page was left*, JS-generated nodes
+  included, and only then fires `turbo:load` — `back_navigation_spec.rb` is what that path is for.
 - `wait_for_rows(selector, count:)` — counts in a single `evaluate_script`. Capybara resolves a
   selector into node handles *then* queries each one, so a redraw landing in between leaves it
   holding detached nodes, reported as `<<ERROR>>`.

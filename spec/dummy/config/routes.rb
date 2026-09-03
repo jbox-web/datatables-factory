@@ -14,13 +14,13 @@ Rails.application.routes.draw do
   get 'buttons',      to: 'buttons#index',      as: :buttons
   get 'namespaced',   to: 'namespaced#index',   as: :namespaced
 
+  get 'multi',        to: 'multi#index',        as: :multi
+  get 'defaults',     to: 'defaults#index',     as: :defaults
+
   # Bulk actions: the two state-changing endpoints the select_all /
   # reset_selection buttons POST to. They are the only routes in this app
   # reached through WithButtons#_call_url rather than through the table's own
   # ajax option, so they are also the only ones that exercise its CSRF handling.
-  get 'multi',        to: 'multi#index',        as: :multi
-  get 'defaults',     to: 'defaults#index',     as: :defaults
-
   get  'bulk',                 to: 'bulk#index',           as: :bulk
   post 'bulk/select_all',      to: 'bulk#select_all',      as: :bulk_select_all
   post 'bulk/reset_selection', to: 'bulk#reset_selection', as: :bulk_reset_selection

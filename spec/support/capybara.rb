@@ -24,19 +24,6 @@ Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(app, **CUPRITE_DRIVER_OPTIONS)
 end
 
-# Same driver with js_errors off, under its own NAME — not the same name with
-# different options. Capybara memoises one session per driver name, so a spec
-# calling driven_by :cuprite with tweaked options gets whatever session an
-# earlier file already created: the tweak takes effect when the file runs alone
-# and is silently dropped in a full suite run (measured).
-#
-# Only for the specs whose subject IS an uncaught JS error, where raising it out
-# of `visit` would prevent asserting what it costs. Everywhere else js_errors
-# must stay on.
-Capybara.register_driver(:cuprite_tolerating_js_errors) do |app|
-  Capybara::Cuprite::Driver.new(app, **CUPRITE_DRIVER_OPTIONS, js_errors: false)
-end
-
 Capybara.default_driver    = :rack_test
 Capybara.javascript_driver = :cuprite
 # Generous on purpose: CI runs six matrix jobs in parallel, and a server-side
