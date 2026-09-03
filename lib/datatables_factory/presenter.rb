@@ -5,7 +5,7 @@ module DatatablesFactory
 
     attr_reader :dt_id, :dtf_options, :column_names
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
     def initialize(view, id, opts: {}, html_opts: {})
       super(view)
       # Work on a copy: the caller's hash may be a reusable constant, and the
@@ -29,7 +29,6 @@ module DatatablesFactory
       @datatable_id      = nil
       @final_namespace   = nil
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
 
     def head_for_check_box

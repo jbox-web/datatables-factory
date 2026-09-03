@@ -70,7 +70,7 @@ module DatatablesFactory
     end
 
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
     def datatables_translations
       {
         processing:     t('datatables.processing'),
@@ -105,7 +105,6 @@ module DatatablesFactory
         },
       }
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   end
 end

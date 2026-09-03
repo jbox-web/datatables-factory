@@ -16,11 +16,10 @@ module DatatablesFactory
     end
 
 
-    # rubocop:disable Layout/LineLength
+    # rubocop:disable-next Layout/LineLength
     def to_hash
       { className: css_class, visible: visible?, orderable: sortable?, searchable: searchable?, width: width, data: @name, name: name }
     end
-    # rubocop:enable Layout/LineLength
 
 
     def label
