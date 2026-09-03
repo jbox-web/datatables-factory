@@ -208,10 +208,19 @@ server-side — a coloured badge, a status pill — the markup shows up as raw t
 <%= f.multi_select :tags, filter_html_labels: true %>
 ```
 
-The escaping is deliberately skipped for that filter, so only use it when the
-variable part of the label is already escaped where it is built (Rails' `tag`
-helpers do this). Passing user input through unescaped opens an HTML injection.
 Escaping stays the default for every other filter.
+
+Know where those labels come from: they are the `label` of each entry of the
+`dt_filter_data_<column_id>` payload your datatable returns, i.e. database rows,
+not view code. So the option is only as safe as whatever built them — use a
+template engine that escapes (Rails' `tag` helpers, Phlex, ERB), never string
+concatenation.
+
+The rendered markup is bounded even so: inline event handlers (`onclick` and the
+rest) and `href`/`src` values whose scheme is not `http`, `https`, `mailto` or
+`tel` are stripped before the label reaches the page. Badges, colours and inline
+styles come through untouched; a `javascript:` link or an `onerror` does not.
+That is a floor, not a substitute for escaping.
 
 ## Optional features
 
@@ -305,9 +314,31 @@ When a column has no entry, the label falls back to the humanized column name
 
 ## CSRF
 
-The table load request is a `POST` and carries the `X-CSRF-Token` header read
-from `<meta name="csrf-token">`, so it works with the standard Rails
-`protect_from_forgery`. Make sure `csrf_meta_tags` is present in your layout.
+Both requests the library issues carry the `X-CSRF-Token` header, read from
+`<meta name="csrf-token">`: the table load, which is a `POST`, and the
+`select_all` / `reset_selection` button actions, which are the state-changing
+ones. Both work with the standard Rails `protect_from_forgery`, so make sure
+`csrf_meta_tags` is present in your layout.
+
+An application that already injects the token globally — through an
+`$.ajaxPrefilter`, for instance — simply overwrites the header with the same
+value.
+
+## Filter values and the saved state
+
+With `stateSave` on, DataTables persists its state — the filter values included
+— to `localStorage` by default, where it stays until something clears it. That
+is fine for a name or a status, and not for a national ID or a phone number
+typed on a shared workstation.
+
+Opt a filter out of it:
+
+```erb
+<%= f.text_field :national_id, filter_no_state: true %>
+```
+
+The filter then behaves like any other except that its value is never written to
+the state, and so never restored on the next visit.
 
 ## Debugging
 

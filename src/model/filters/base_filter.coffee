@@ -31,6 +31,11 @@ class BaseFilter extends Extendable
     @filter_css_class         = @options.filter_css_class or ''
     @filter_reset_button      = if @options.filter_reset_button == false then false else true
     @filter_reset_button_text = @options.filter_reset_button_text or 'x'
+    # Opt-out of the saved state, filter by filter. Every value typed into a
+    # filter is otherwise copied into the DataTables state and persisted by
+    # stateSave — localStorage by default, with no expiry — which is not where a
+    # national ID or a phone number searched on a shared workstation belongs.
+    @filter_no_state           = @options.filter_no_state == true
 
     # build ids
     @container_id = "##{@options.filter_container_id}"
@@ -157,6 +162,8 @@ class BaseFilter extends Extendable
 
 
   _save_state: (column_id, data) ->
+    return if @filter_no_state
+
     @datatable_filter.save_state(column_id, data)
 
 

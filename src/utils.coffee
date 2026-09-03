@@ -39,4 +39,28 @@ class Utils
     scheme == '' or scheme in SAFE_SCHEMES
 
 
+  # $.parseHTML drops <script> — keepScripts defaults to false — and nothing
+  # else: inline handlers and javascript: urls survive it untouched. Escaping
+  # markup stays the server's job; this bounds what a single unescaped
+  # interpolation can do, which would otherwise be script execution.
+  @sanitize: (nodes) ->
+    for node in $(nodes).find('*').addBack()
+      element = $(node)
+
+      for attribute in Array::slice.call(node.attributes or [])
+        name = attribute.name.toLowerCase()
+
+        if name.indexOf('on') == 0
+          element.removeAttr(attribute.name)
+        else if name in ['href', 'src', 'xlink:href'] and !Utils.safe_url(attribute.value)
+          element.removeAttr(attribute.name)
+
+    nodes
+
+
+  # Same, for a caller that has a string and wants one back.
+  @sanitize_html: (html) ->
+    $('<div/>').append(Utils.sanitize($.parseHTML(String(html ? ''), null) or [])).html()
+
+
 export default Utils

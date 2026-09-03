@@ -210,23 +210,25 @@ class SelectBase extends BaseFilter
         @logger.error("Unknown select type: #{@filter_plugin}")
 
 
-  # TomSelect échappe le libellé de ses options. Un hôte qui compose ce libellé
-  # côté serveur (badge, pastille de couleur) le verrait donc s'afficher en
-  # balisage brut. filter_html_labels demande explicitement le rendu HTML, filtre
-  # par filtre — l'échappement reste le comportement par défaut.
+  # TomSelect escapes the labels it renders, so a host that composes one server
+  # side — a badge, a coloured pill — sees its markup as text. filter_html_labels
+  # asks for the markup to be rendered, filter by filter; escaping stays the
+  # default everywhere else.
   #
-  # Le second argument des fonctions de rendu est la fonction d'échappement de
-  # TomSelect : ne pas l'appliquer est précisément l'objet de l'option. Ne la
-  # poser que sur un libellé dont la partie variable est déjà échappée à la
-  # construction, faute de quoi elle ouvre une injection HTML.
+  # The label is not handed over untouched, though. It comes from the ajax
+  # response — database rows — so it is safe only as far as whatever built it
+  # escaped its variable parts. Passing it through the same bounding the context
+  # menu applies keeps every legitimate label working, badges and inline styles
+  # included, and takes away the inline handlers and non-http schemes that would
+  # turn one missed escape into script execution in the reader's session.
   _tom_select_options: ->
     options = @filter_plugin_options or {}
     return options unless @options.filter_html_labels
 
     Utils.merge_hash options,
       render:
-        option: (data, _escape) -> "<div>#{data.text}</div>"
-        item:   (data, _escape) -> "<div>#{data.text}</div>"
+        option: (data, _escape) -> "<div>#{Utils.sanitize_html(data.text)}</div>"
+        item:   (data, _escape) -> "<div>#{Utils.sanitize_html(data.text)}</div>"
 
 
   # Names the declared plugin when the host has not loaded it, nil otherwise.

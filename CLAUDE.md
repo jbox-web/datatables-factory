@@ -55,10 +55,12 @@ carrying the value, so `current_value`, the saved state, the reset button and th
 `min-dtf_delim-max` wire format are inherited untouched. The inputs are hidden
 while the slider is up, and come back when it is not.
 
-The slider binds `change`, never `update`: `update` also fires on programmatic
-`set()` — verified in noUiSlider 15.8.1, `valueSet` (`dist/nouislider.js:2071`),
-which fires `update` and `set` but never `change` — so restoring a state or a URL
-filter repositions the handles without costing a request.
+The slider *filters* on `change`, never on `update`, though it listens to both:
+`update` only mirrors the handles into the two hidden inputs. `update` also fires
+on a programmatic `set()` — verified in noUiSlider 15.8.1, `valueSet`
+(`dist/nouislider.js:2071`), which fires `update` and `set` but never `change` —
+so restoring a state or a URL filter repositions the handles without costing a
+request.
 
 Bounds (`filter_range_min` / `filter_range_max`) are mandatory and `SearchFormBuilder#range_slider`
 raises without them: server-side processing hands the page one draw's worth of
@@ -85,9 +87,15 @@ query string justifies it.
 A URL filter is only one way to invalidate the saved page: deleted rows, a narrowed scope or
 a `populate_with` default do it too. `Loader#_reset_stale_page` is the catch-all — on every
 server-side response, an offset past `recordsFiltered` sends the table back to its first
-page. It is bound **after** `$(dt_id).DataTable(...)`, never before: that call fires
-`preInit`, and the `DatatableFilter` built there clears every `xhr.dt` handler on the node
-(`_bind_datatable`), so an earlier binding is dropped on the spot.
+page. It is bound after `$(dt_id).DataTable(...)`, but no longer has to be: the
+`DatatableFilter` built at `preInit` used to clear every `xhr.dt` handler on the node, its
+own and the host application's alike, and now clears only `xhr.dt.dtfFilter`.
+
+Every handler this library binds carries a namespace of its own — `.dtfFilter`, `.dtf`,
+`.dtf-paging`, `.dtfCheckBoxes`, `.dtfContextMenu`. jQuery matches a namespace as a subset,
+so `off('xhr.dt')` removes `xhr.dt.myapp` too: an application binding before
+`load_datatables()`, the documented way to catch DataTables events ahead of initialisation,
+loses its handler without a word.
 
 **Loading flow:**
 1. `Loader.load_datatables()` scans DOM for `[data-toggle=datatable]`

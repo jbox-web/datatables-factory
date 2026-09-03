@@ -71,8 +71,15 @@ class BulkDatatable < AjaxDatatablesRails::ActiveRecord
 
   private
 
+    # One badge deliberately carries an inline handler and a javascript: link,
+    # which is what a single missed escape in a host application looks like. The
+    # library renders the badge and strips both — see spec/system/bulk_spec.rb.
     def role_badge(role)
-      %(<span class="badge role-badge" style="background-color: #{ROLE_COLORS.fetch(role)}">#{role.capitalize}</span>)
+      attributes = %(class="badge role-badge" style="background-color: #{ROLE_COLORS.fetch(role)}")
+      attributes += %( onclick="window.__dtf_pwned = true") if role == 'admin'
+      inner = role == 'admin' ? %(<a href="javascript:window.__dtf_pwned = true">!</a>) : ''
+
+      %(<span #{attributes}>#{role.capitalize}#{inner}</span>)
     end
 
 end

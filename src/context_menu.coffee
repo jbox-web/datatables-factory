@@ -16,26 +16,6 @@ class ContextMenu
     { width: window.innerWidth, height: window.innerHeight }
 
 
-  # $.parseHTML already drops <script> — keepScripts defaults to false — and
-  # nothing else: inline handlers and javascript: urls survive it untouched.
-  # The markup is the host application's own, so escaping it stays the server's
-  # job; this only bounds what a single unescaped interpolation in a menu
-  # partial can do, which would otherwise be script execution on a right click.
-  @sanitize: (nodes) ->
-    for node in $(nodes).find('*').addBack()
-      element = $(node)
-
-      for attribute in Array::slice.call(node.attributes or [])
-        name = attribute.name.toLowerCase()
-
-        if name.indexOf('on') == 0
-          element.removeAttr(attribute.name)
-        else if name in ['href', 'src', 'xlink:href'] and !Utils.safe_url(attribute.value)
-          element.removeAttr(attribute.name)
-
-    nodes
-
-
   @show: (event, url) ->
     # Looked up once. Every read and write below goes through this, where the
     # method used to resolve the same id fourteen times per open.
@@ -97,7 +77,7 @@ class ContextMenu
       data: data
 
       success: (result, _textStatus, _jqXHR) ->
-        nodes = ContextMenu.sanitize($.parseHTML(result, null) or [])
+        nodes = Utils.sanitize($.parseHTML(result, null) or [])
         items = $(nodes)
         # Accept both a wrapping <ul> and bare <li> nodes as a non-empty menu.
         has_items = (items.filter('li').length + items.find('li').length) >= 1

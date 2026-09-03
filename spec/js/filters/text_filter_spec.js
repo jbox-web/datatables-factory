@@ -202,6 +202,44 @@ describe('TextFilter', () => {
     })
   })
 
+  // Every value typed into a filter is copied into the DataTables state and
+  // persisted by stateSave — localStorage by default, with no expiry. That is
+  // not where a national ID searched on a shared workstation belongs, so a
+  // filter can opt out of it.
+  describe('filter_no_state', () => {
+    it('keeps the value off the saved state', () => {
+      const { filter, owner } = build({ options: { filter_no_state: true } })
+      filter.create_html()
+
+      filter.set('123-45-6789')
+
+      expect(owner.saved).toEqual([])
+      expect(owner.searches).toEqual([{ column_id: 3, value: '123-45-6789' }])
+    })
+
+    // Called straight rather than through a keyup: the handler is debounced, and
+    // what matters here is the split between filtering and saving.
+    it('still filters the table', () => {
+      const { filter, owner } = build({ options: { filter_no_state: true } })
+      filter.create_html()
+      $(`#${filter.input_id}`).val('abc')
+
+      filter._text_change({ keyCode: 65 })
+
+      expect(owner.filters).toEqual([{ column_id: 3, value: 'abc' }])
+      expect(owner.saved).toEqual([])
+    })
+
+    it('saves the value like any other filter when not set', () => {
+      const { filter, owner } = build()
+      filter.create_html()
+
+      filter.set('abc')
+
+      expect(owner.saved).toEqual([{ column_id: 3, data: { value: 'abc' } }])
+    })
+  })
+
   describe('the reset button', () => {
     it('does nothing when the input is already empty', () => {
       const { filter, owner } = build()

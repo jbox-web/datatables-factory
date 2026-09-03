@@ -78,6 +78,19 @@ RSpec.describe 'Bulk actions datatable', :js do
       expect(page).to have_no_css('.ts-dropdown', text: '<span')
     end
 
+    # The Admin badge is served with an inline handler and a javascript: link,
+    # which is what one missed escape in a host application looks like. The
+    # badge must render and both must be gone: the option renders markup, it
+    # does not hand the response the run of the page.
+    it 'renders the badge but strips what could execute' do
+      find('.ts-wrapper .ts-control').click
+      expect(page).to have_css('.ts-dropdown span.role-badge', count: 3, wait: 5)
+
+      expect(page).to have_no_css('.ts-dropdown [onclick]')
+      expect(page).to have_no_css('.ts-dropdown a[href^="javascript:"]')
+      expect(page.evaluate_script('window.__dtf_pwned')).to be_nil
+    end
+
     it 'filters on several values joined by the pipe separator' do
       find('.ts-wrapper .ts-control').click
       find('.ts-dropdown .option', text: 'Admin').click
