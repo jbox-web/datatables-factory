@@ -75,6 +75,7 @@ class SelectBase extends BaseFilter
 
 
   destroy: ->
+    @_destroy_select2()
     @select_plugin?.destroy()
     @select_plugin = null
 
@@ -229,6 +230,22 @@ class SelectBase extends BaseFilter
         'tom-select' if typeof TomSelect == 'undefined'
       when 'select2'
         'select2' unless $.fn.select2?
+
+
+  # tom-select hands back an instance, so @select_plugin covers it. select2 does
+  # not: it lives in the element's data and answers to .select2('destroy'), which
+  # is why destroy() used to be a no-op for it and every rebuild left a widget,
+  # its document-level handlers and its .select2-container sibling behind.
+  #
+  # The data is also the guard, for the same reason as the datepicker's: after a
+  # Turbo restoration visit the node in the DOM is not the one select2 was
+  # initialised on.
+  _destroy_select2: ->
+    return unless @filter_plugin == 'select2' and $.fn.select2?
+
+    element = @_el(@select_id)
+    element.select2('destroy') if element.data('select2')?
+    return
 
 
   _bind_native_select: ->

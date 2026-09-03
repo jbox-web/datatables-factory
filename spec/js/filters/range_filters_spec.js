@@ -297,10 +297,28 @@ describe('range filters', () => {
       const { filter } = build(RangeDateFilter)
       filter.create_html()
       const calls = stubDatepicker()
+      filter.bind_inputs()
+      calls.length = 0
 
       filter.destroy()
 
       expect(calls.map((call) => call.args[0])).toEqual(['destroy', 'destroy'])
+    })
+
+    // A Turbo restoration visit brings the markup back — hasDatepicker class
+    // included — but not the instance, which lived in the element's data. Asked
+    // to destroy that, jQuery UI passes its own class guard and dereferences an
+    // instance that is not there. Destroying only what is still attached is what
+    // keeps the throw out of Loader.load, which would otherwise abandon the
+    // rebuild and leave the page with a table its filters no longer drive.
+    it('leaves the picker alone when the node no longer carries one', () => {
+      const { filter } = build(RangeDateFilter)
+      filter.create_html()
+      const calls = stubDatepicker()
+
+      filter.destroy()
+
+      expect(calls).toEqual([])
     })
 
     it('sends both dates joined by the delimiter', () => {

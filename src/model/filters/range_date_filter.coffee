@@ -49,8 +49,8 @@ class RangeDateFilter extends RangeBase
       else
         return unless @_datepicker_loaded()
 
-        @_el(@from_id).datepicker('destroy')
-        @_el(@to_id).datepicker('destroy')
+        @_destroy_datepicker_on(@from_id)
+        @_destroy_datepicker_on(@to_id)
 
 
   ###################

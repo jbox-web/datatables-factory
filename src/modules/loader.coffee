@@ -190,8 +190,16 @@ Loader.instance_methods =
 
     if form?
       $(form).find('.dtf-filter-wrapper').each ->
+        # Idempotent: this runs on every load, and wrapping an already-wrapped
+        # wrapper adds three more levels of nesting each time — a .row inside an
+        # .input-group, which is not a grid Bootstrap renders. The test is the
+        # outermost wrapper this very code creates, not the inner .input-group,
+        # which ends up one level down.
+        return if $(this).children('div.mb-3.row').length > 0
+
         $(this).children().wrapAll('<div class="col-md-12"></div>').wrapAll('<div class="input-group"></div>')
         $(this).children().wrapAll('<div class="mb-3 row"></div>')
+        return
 
       # Bootstrap 5 : le bouton reset est enfant direct de .input-group (plus de wrapper .input-group-btn)
       # La classe du bouton est configurable via dtf_options (filter_reset_button_class)

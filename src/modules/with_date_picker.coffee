@@ -11,6 +11,23 @@ WithDatePicker.instance_methods =
   # Private Instance methods #
   ############################
 
+  # jQuery UI keeps its instance in the element's *data* but marks the element
+  # with a *class*. A Turbo restoration visit brings the class back with the
+  # markup and leaves the data behind, so _destroyDatepicker passes its own class
+  # guard and then dereferences an instance that is not there — measured:
+  # "TypeError: Cannot read properties of undefined (reading 'append')", thrown
+  # out of Loader.load before it could rebuild anything, which left the page with
+  # a table whose filters no longer drove it.
+  #
+  # The data is the only honest signal that the picker is still attached to this
+  # very node. Probed: it is an object on an attached input and undefined
+  # otherwise.
+  _destroy_datepicker_on: (id) ->
+    element = @_el(id)
+    element.datepicker('destroy') if element.data('datepicker')?
+    return
+
+
   _date_or_empty_string: (value) ->
     return '' if value == ''
 

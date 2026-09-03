@@ -39,6 +39,14 @@ class BaseFilter extends Extendable
   bind: ->
     @logger.info("* Loading '#{@name()}'")
     @_debug_log() if @options.debug == true
+    # Cleared, not appended to. The container is rendered empty by the server
+    # (SearchFormBuilder#basic_field emits tag.div('')), so anything inside it
+    # was put there by an earlier build of this same filter. create_html only
+    # appends: without this, a rebuild stacked a second widget set on the first,
+    # both answering to the same ids — measured at 2 wrappers and 3 inputs after
+    # a single Turbo restoration visit, with the visible input bound to the
+    # instance that had just been destroyed.
+    @_container().empty()
     @create_html()
     @bind_inputs()
     @restore_state()

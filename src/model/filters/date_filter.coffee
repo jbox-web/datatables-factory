@@ -48,7 +48,7 @@ class DateFilter extends TextFilter
       else
         return unless @_datepicker_loaded()
 
-        @_el(@input_id).datepicker('destroy')
+        @_destroy_datepicker_on(@input_id)
 
 
   ###################

@@ -63,16 +63,30 @@ export function resetDom() {
 }
 
 // jQuery UI is a peer the host application provides, so it is stubbed like
-// TomSelect. Only the two things range_date_filter actually consumes are
-// modelled: $.fn.datepicker as a no-op recorder, and $.datepicker.parseDate
-// with the pass/throw contract the filter branches on (a parsed Date means
-// "in use", a throw means "not a date"). Nothing here reimplements jQuery UI's
-// own date arithmetic — the specs never assert on the parsed value itself.
+// TomSelect. Only what range_date_filter actually consumes is modelled:
+// $.fn.datepicker as a recorder, and $.datepicker.parseDate with the pass/throw
+// contract the filter branches on (a parsed Date means "in use", a throw means
+// "not a date"). Nothing here reimplements jQuery UI's own date arithmetic —
+// the specs never assert on the parsed value itself.
+//
+// The recorder does model one more thing, because the filter depends on it: the
+// real library stores its instance under the element's `datepicker` data key on
+// attach and removes it on destroy (probed against the vendored build — an
+// object on an attached input, undefined otherwise). That data is how the filter
+// tells a picker still attached to THIS node from one whose node was replaced,
+// so a stub that never wrote it would let a guard pass here and fail in a page.
 export function stubDatepicker() {
   const calls = []
 
   $.fn.datepicker = function datepicker(...args) {
     calls.push({ elements: this.toArray(), args })
+
+    if (args[0] === 'destroy') {
+      this.removeData('datepicker')
+    } else if (typeof args[0] !== 'string') {
+      this.data('datepicker', { stub: true })
+    }
+
     return this
   }
 
