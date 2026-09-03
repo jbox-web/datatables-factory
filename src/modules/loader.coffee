@@ -176,11 +176,12 @@ Loader.instance_methods =
 
     $(@dt_id).DataTable(@dt_options)
 
-    # After DataTable(), not before: the call above fires preInit, and the
-    # DatatableFilter built there clears every xhr.dt handler on the node
-    # (_bind_datatable) — a handler bound earlier would be dropped on the spot.
-    # Bound outside init_filters on purpose too: a table without any declared
-    # filter can land on an out-of-range page just as well.
+    # Bound outside init_filters on purpose: a table without any declared filter
+    # can land on an out-of-range page just as well.
+    #
+    # It no longer has to come after DataTable(). It used to, because the
+    # DatatableFilter built at preInit cleared every xhr.dt handler on the node;
+    # now that it clears only its own namespace, the order here is free.
     $(@dt_id).off('xhr.dt.dtf-paging').on 'xhr.dt.dtf-paging', (_event, settings, json) =>
       @_reset_stale_page(settings, json)
 
@@ -370,7 +371,9 @@ Loader.instance_methods =
     # have registered beforeSend/error/success callbacks here.
     for button_name in ['select_all', 'reset_selection']
       entry = @callbacks['buttons'][button_name] or {}
-      entry['success'] = (entry['success'] or []).concat([callback])
+      # [].concat, so a consumer that registered a single function rather than a
+      # list is normalised here instead of throwing during load().
+      entry['success'] = [].concat(entry['success'] or []).concat([callback])
       @callbacks['buttons'][button_name] = entry
 
 

@@ -91,6 +91,27 @@ describe('Loader.load', () => {
     })
   })
 
+  // A host that also tears the table down on turbo:before-cache calls this
+  // twice, and an initialisation that failed before preInit leaves the same
+  // state: no @datatable to destroy.
+  describe('destroying twice', () => {
+    it('does not throw on the second call', () => {
+      Loader.class_methods.load(loaderFor('tbl-a'))
+      const table = UsersDatatable.instance
+      table.destroy()
+
+      expect(() => table.destroy()).not.toThrow()
+    })
+
+    it('does not throw on a table that never got its API', () => {
+      Loader.class_methods.load(loaderFor('tbl-a'))
+      const table = UsersDatatable.instance
+      table.datatable = null
+
+      expect(() => table.destroy()).not.toThrow()
+    })
+  })
+
   describe('unknown class', () => {
     it('returns false rather than throwing', () => {
       expect(Loader.class_methods.load(loaderFor('tbl-a', 'Datatables.Nope'))).toBe(false)
@@ -140,6 +161,23 @@ describe('button callbacks', () => {
       t.callbacks['buttons']['select_all'].success = [handler]
     })
 
+    expect(table.callbacks['buttons']['select_all'].success.length).toBe(2)
+  })
+
+  // Registering a single function rather than a list is a natural reading of
+  // "callbacks". It used to throw on concat, inside load(), which took every
+  // table on the page with it.
+  it('accepts a bare function where a list was expected', () => {
+    const handler = jest.fn()
+    let table
+
+    expect(() => {
+      table = loadWith((t) => {
+        t.callbacks['buttons']['select_all'].success = handler
+      })
+    }).not.toThrow()
+
+    expect(table.callbacks['buttons']['select_all'].success).toContain(handler)
     expect(table.callbacks['buttons']['select_all'].success.length).toBe(2)
   })
 

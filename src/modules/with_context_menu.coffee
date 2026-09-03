@@ -92,6 +92,12 @@ WithContextMenu.instance_methods =
     start = null
 
     tbody.on 'touchstart.dtfContextMenu', (event) =>
+      # A second finger landing before the first was lifted used to overwrite the
+      # variable and leave the previous timer running: it fired later with no
+      # finger on the screen, opening a menu nobody asked for — and touchend,
+      # having already cleared what it could see, did not suppress the click.
+      clearTimeout(timer) if timer?
+      timer = null
       fired = false
       touch = event.originalEvent.touches[0]
       return if !touch?

@@ -180,6 +180,17 @@ describe('WithButtons', () => {
 
       expect(table.datatable_filter.apply_default_filters).toHaveBeenCalledWith(event)
     })
+
+    // DatatableFilter is only built when the table declares at least one filter,
+    // and nothing stops a view from putting a reset button on a table that
+    // declares none. The first click used to throw.
+    it('does nothing when the table declares no filter at all', () => {
+      const table = build()
+      table.datatable_filter = undefined
+
+      expect(() => table.reset_filters({})).not.toThrow()
+      expect(() => table.apply_default_filters({})).not.toThrow()
+    })
   })
 
   describe('the ajax callbacks', () => {

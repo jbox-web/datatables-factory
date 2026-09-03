@@ -68,7 +68,7 @@ class DatatableFilter extends Extendable
 
   destroy: ->
     clearTimeout(@_save_state_timer) if @_save_state_timer?
-    $(@datatable.dt_id).off('stateSaveParams.dt').off('xhr.dt')
+    $(@datatable.dt_id).off('stateSaveParams.dt.dtfFilter').off('xhr.dt.dtfFilter')
     for _column_id, filter of @loaded_filters
       filter.destroy?()
     @loaded_filters = {}
@@ -276,14 +276,19 @@ class DatatableFilter extends Extendable
     # This event allows modification of the state saving object prior to actually doing the save,
     # including addition or other state properties (for plug-ins) or modification of a DataTables core property.
     # See: https://datatables.net/reference/event/stateSaveParams
-    $(@datatable.dt_id).off('stateSaveParams.dt').on('stateSaveParams.dt', onsave_callback)
+    $(@datatable.dt_id).off('stateSaveParams.dt.dtfFilter').on('stateSaveParams.dt.dtfFilter', onsave_callback)
 
     # set ondraw callback
     ondraw_callback = (event, settings, json) =>
       @_dt_on_draw(event, settings, json)
       return
 
-    $(@datatable.dt_id).off('xhr.dt').on('xhr.dt', ondraw_callback)
+    # Namespaced, both of them. Cleared as 'xhr.dt' this removed every handler of
+    # that type on the node — jQuery matches a namespace as a subset — so an
+    # application binding 'xhr.dt.myapp' before load_datatables, the documented
+    # way to catch DataTables events before initialisation, lost it here without
+    # a word. Measured: three handlers out of three, its own included.
+    $(@datatable.dt_id).off('xhr.dt.dtfFilter').on('xhr.dt.dtfFilter', ondraw_callback)
 
     # we need to make sure that the filter state will be saved after page reload
     @_save_state()

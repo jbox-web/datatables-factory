@@ -176,6 +176,46 @@ describe('DatatableFilter', () => {
     })
   })
 
+  // Cleared as 'xhr.dt' this removed every handler of that type on the node,
+  // jQuery matching a namespace as a subset. Binding before load_datatables is
+  // the documented way to catch DataTables events before initialisation, so an
+  // application doing it lost its handler here without a word.
+  describe('the handlers it binds on the table node', () => {
+    // build() replaces the whole body, so the host table has to be added after
+    // it and before the filter binds.
+    function bindOn() {
+      const subject = build([textFilter])
+      $('body').append('<table id="host-table"></table>')
+
+      const host = jest.fn()
+      $('#host-table').on('xhr.dt.myapp', host)
+      $('#host-table').on('stateSaveParams.dt.myapp', host)
+
+      subject.datatable.dt_id = '#host-table'
+      subject._bind_datatable()
+
+      return { subject, host }
+    }
+
+    it('leaves a handler the host application bound on the same events alone', () => {
+      const { host } = bindOn()
+
+      $('#host-table').trigger('xhr.dt', [{}, {}])
+      $('#host-table').trigger('stateSaveParams.dt', [{}, {}])
+
+      expect(host).toHaveBeenCalledTimes(2)
+    })
+
+    it('removes its own on destroy and leaves the host one in place', () => {
+      const { subject, host } = bindOn()
+
+      subject.destroy()
+      $('#host-table').trigger('xhr.dt', [{}, {}])
+
+      expect(host).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('state persistence without a datatable instance', () => {
     it('reports that the state cannot be saved', () => {
       const logger = buildLogger()

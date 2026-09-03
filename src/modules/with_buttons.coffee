@@ -49,12 +49,15 @@ WithButtons.instance_methods =
     @_find_button(@buttons, button_name)
 
 
+  # Guarded: DatatableFilter is only built when the table declares at least one
+  # filter, and nothing stops a view from putting a reset button on a table that
+  # declares none. The first click used to throw.
   reset_filters: (event) ->
-    @datatable_filter.reset_filters(event)
+    @datatable_filter?.reset_filters(event)
 
 
   apply_default_filters: (event) ->
-    @datatable_filter.apply_default_filters(event)
+    @datatable_filter?.apply_default_filters(event)
 
 
   select_all: (button) ->
@@ -116,10 +119,10 @@ WithButtons.instance_methods =
 
   _build_ajax_options: (button) ->
     dt_class   = @dt_class
-    callbacks  = @callbacks['buttons'][button]
-    on_send    = if callbacks.beforeSend? then callbacks.beforeSend else []
-    on_error   = if callbacks.error? then callbacks.error else []
-    on_success = if callbacks.success? then callbacks.success else []
+    callbacks  = @callbacks['buttons'][button] or {}
+    on_send    = @_callback_list(callbacks.beforeSend)
+    on_error   = @_callback_list(callbacks.error)
+    on_success = @_callback_list(callbacks.success)
 
     {
       beforeSend: (xhr, settings) =>
@@ -141,6 +144,14 @@ WithButtons.instance_methods =
   # globally through an $.ajaxPrefilter simply overwrites this with the same
   # value; jQuery applies the `headers` option after prefilters, so a caller who
   # sets one explicitly still wins.
+  # Registering a single function rather than a list is a natural reading of
+  # "callbacks", and it used to throw — on concat here, or inside
+  # _loader_load_buttons_callbacks, which runs during load() and so took every
+  # table on the page down with it.
+  _callback_list: (value) ->
+    if value? then [].concat(value) else []
+
+
   _call_url: (button, params, ajax_options) ->
     options = { url: button.url, method: button.method, headers: Loader.class_methods.csrf_headers() }
     options = Utils.merge_hash(options, { data: params }) if params

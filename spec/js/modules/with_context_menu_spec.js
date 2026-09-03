@@ -201,6 +201,23 @@ describe('WithContextMenu', () => {
       expect(ContextMenu.show).toHaveBeenCalled()
     })
 
+    // A second finger landing before the first was lifted used to overwrite the
+    // timer variable and leave the previous timer running: it fired later with
+    // no finger on the screen at all.
+    it('opens no menu once every finger has been lifted', () => {
+      build()
+      $('#dt-container tbody tr').addClass('has-context-menu')
+
+      touch('touchstart', { target: $('#row-0 td')[0] })
+      jest.advanceTimersByTime(100)
+      touch('touchstart', { target: $('#row-0 td')[0] })
+      touch('touchend', { target: $('#row-0 td')[0] })
+
+      jest.advanceTimersByTime(1000)
+
+      expect(ContextMenu.show).not.toHaveBeenCalled()
+    })
+
     // A long press that turns into a scroll is not a long press.
     it('gives up once the finger has moved', () => {
       build()

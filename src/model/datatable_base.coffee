@@ -85,7 +85,12 @@ class DatatableBase extends Extendable
     @after_init()
 
 
+  # Reentrant: a host that also tears the table down on turbo:before-cache calls
+  # this twice, and the second call used to dereference a @datatable already set
+  # to null. An initialisation that failed before preInit leaves the same state.
   destroy: ->
+    return if !@datatable?
+
     # Clean up module listeners before DataTables tears down
     @_with_check_boxes_destroy()
     @_with_context_menu_destroy()
