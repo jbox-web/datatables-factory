@@ -221,6 +221,13 @@ Add `dt.head_for_check_box` as the first column. The module automatically:
 - renders a "select all" checkbox in the header
 - sends `selected` / `not_selected` row ids with every AJAX request
 - handles touch devices (selection restricted to the checkbox column)
+- drops the selection from the saved DataTables state, so `stateSave` never
+  restores a stale selection over the one the server rendered
+
+The last point matters when the host application keeps the selection
+server-side: DataTables Select stores the selected rows in the state and
+deselects everything before restoring them, which would silently uncheck rows
+the server had just checked.
 
 ### Context menu
 

@@ -35,6 +35,7 @@ WithCheckBoxes.instance_methods =
         @callbacks['createdRow'].push @_check_boxes_callback_on_created_row()
 
         @_restrict_touch_selection_to_check_boxes()
+        @_drop_selection_from_saved_state()
 
       when 'after_init'
         @info('Add check_boxes callbacks to : datatable')
@@ -206,6 +207,28 @@ WithCheckBoxes.instance_methods =
 
     select['selector'] = 'td.check_box'
     @dt_options['select'] = select
+
+
+  # DataTables Select writes the selected rows into the saved state and, when
+  # restoring it, calls `rows().deselect()` before re-selecting them. With this
+  # module the checked boxes come from the server, so a state left in
+  # localStorage by an earlier visit wins over what the server just rendered:
+  # measured on a campaign form where a fourth recipient, checked server-side,
+  # came back unchecked — and the next ajax call then reported it as
+  # deselected, dropping it from the server-side selection for good.
+  #
+  # Removing `select` from the loaded state closes both restore paths at once:
+  # DataTables runs the `stateLoadParams` option callbacks before firing the
+  # event Select listens on, and freezes `state.loaded()` only after them.
+  #
+  # The host application's own callback is kept and its return value passed
+  # through — a `false` there cancels the state load entirely.
+  _drop_selection_from_saved_state: ->
+    previous = @dt_options['stateLoadParams']
+
+    @dt_options['stateLoadParams'] = (settings, data) ->
+      delete data['select'] if data?
+      previous?.call(this, settings, data)
 
 
   _with_check_boxes_destroy: ->

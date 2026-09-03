@@ -136,6 +136,54 @@ describe('WithCheckBoxes', () => {
     })
   })
 
+  // DataTables Select stores the selected rows in the saved state and, on
+  // restore, deselects everything before re-selecting them. Here the checked
+  // boxes come from the server, so a stale state silently drops rows.
+  describe('the selection held in the saved state', () => {
+    it('drops it from the loaded state and leaves the rest alone', () => {
+      const table = build()
+      const data = { select: { rows: ['row-0'] }, length: 25 }
+
+      table.dt_options['stateLoadParams']({}, data)
+
+      expect(data.select).toBeUndefined()
+      expect(data.length).toBe(25)
+    })
+
+    it('still runs a callback the host application already set', () => {
+      const seen = []
+      const table = build({
+        dt_options: { stateLoadParams: (_settings, data) => seen.push(data) },
+      })
+      const data = { select: {} }
+
+      table.dt_options['stateLoadParams']({}, data)
+
+      expect(seen).toEqual([data])
+      expect(data.select).toBeUndefined()
+    })
+
+    // A `false` cancels the state load entirely — swallowing it would silently
+    // restore a state the host application meant to reject.
+    it('propagates a false returned by the host callback', () => {
+      const table = build({ dt_options: { stateLoadParams: () => false } })
+
+      expect(table.dt_options['stateLoadParams']({}, {})).toBe(false)
+    })
+
+    it('tolerates an empty state', () => {
+      const table = build()
+
+      expect(() => table.dt_options['stateLoadParams']({}, null)).not.toThrow()
+    })
+
+    it('leaves a table without a checkbox column alone', () => {
+      const table = build({ columns: [{ data: 'name' }] })
+
+      expect(table.dt_options['stateLoadParams']).toBeUndefined()
+    })
+  })
+
   describe('reading the selection from the DOM', () => {
     it('collects the ids of the selected rows', () => {
       const table = buildRendered({ dom: { rows: 3, checkedRows: [0, 2] } })
