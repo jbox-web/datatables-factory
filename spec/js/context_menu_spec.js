@@ -16,9 +16,12 @@ function stubGeometry({ menuWidth = 100, menuHeight = 100, window: win = {} } = 
   })
 }
 
+// The returned object stands in for the jqXHR: show() keeps it so it can abort
+// a request still in flight when a second right click arrives.
 function stubAjax() {
   const calls = []
   $.ajax = (options) => {
+    options.abort = jest.fn()
     calls.push(options)
     return options
   }
@@ -61,6 +64,35 @@ describe('ContextMenu', () => {
       ContextMenu.show(clickAt(), '/users/menu')
 
       expect(ajaxCalls[0].url).toBe('/users/menu')
+    })
+
+    // A second right click before the first response arrives: the stale answer
+    // would otherwise render into the menu already open and move it back to the
+    // coordinates of the previous click.
+    it('aborts a request still in flight', () => {
+      ContextMenu.show(clickAt(), '/users/menu')
+      ContextMenu.show(clickAt(), '/users/menu')
+
+      expect(ajaxCalls[0].abort).toHaveBeenCalled()
+      expect(ajaxCalls[1].abort).not.toHaveBeenCalled()
+    })
+
+    // The CSRF token has no business in a query string: it lands in the server
+    // logs and in the Referer of whatever the menu links to.
+    it('leaves the CSRF fields out of the payload', () => {
+      document.body.innerHTML = `
+        <form><input type="hidden" name="scope" value="active">
+          <input type="hidden" name="authenticity_token" value="s3cret">
+          <input type="hidden" name="utf8" value="&#x2713;">
+          <table><tbody><tr id="row-0"><td>row</td></tr></tbody></table>
+        </form>
+        <div id="context-menu"></div>
+        <div id="context-menu-empty"></div>
+      `
+
+      ContextMenu.show(clickAt(), '/users/menu')
+
+      expect(ajaxCalls[0].data).toBe('scope=active')
     })
 
     // The surrounding form carries the current scope, so the menu the server
@@ -229,11 +261,10 @@ describe('ContextMenu', () => {
         expect($('#context-menu .folder').hasClass('down')).toBe(true)
       })
 
-      // The 'up' class next to this branch is unreachable as the code stands:
-      // it is guarded by window_height - clientY < menu_height inside the else
-      // of max_height > window_height, and that else already guarantees
-      // window_height - clientY >= menu_height. Pinned as "never up" rather
-      // than skipped, so the day the guard is fixed this spec fails and says so.
+      // There is only one direction to choose from: the branch that used to
+      // add an 'up' class sat in the else of max_height > window_height, which
+      // already guarantees the room it was testing for, so it could never run.
+      // It is gone; this pins that nothing puts the class back.
       it('never opens submenus upwards while there is room below', () => {
         stubGeometry({ menuHeight: 100, window: { height: 800 } })
         ContextMenu.show(clickAt({ pageY: 10, clientY: 690 }), '/users/menu')
@@ -243,6 +274,61 @@ describe('ContextMenu', () => {
         expect($('#context-menu').hasClass('reverse-y')).toBe(false)
         expect($('#context-menu .folder').hasClass('up')).toBe(false)
       })
+    })
+  })
+
+  // $.parseHTML drops <script>, and nothing else. The markup is the host
+  // application's own, so escaping it stays its job — but a single unescaped
+  // interpolation in a menu partial should not be script execution on a right
+  // click, so what survives the parse is bounded here too.
+  describe('what survives the parse', () => {
+    function render(html) {
+      ContextMenu.show(clickAt(), '/users/menu')
+      ajaxCalls[ajaxCalls.length - 1].success(html, 'success', {})
+      return $('#context-menu')
+    }
+
+    it('drops inline event handlers', () => {
+      const menu = render('<ul><li onclick="window.PWNED = true"><a onmouseover="window.PWNED = true">Edit</a></li></ul>')
+
+      expect(menu.find('[onclick], [onmouseover]').length).toBe(0)
+      expect(menu.text()).toMatch(/Edit/)
+    })
+
+    it('drops a javascript: href but keeps the link', () => {
+      const menu = render('<ul><li><a href="javascript:window.PWNED = true">Edit</a></li></ul>')
+
+      expect(menu.find('a').attr('href')).toBeUndefined()
+      expect(menu.find('a').text()).toBe('Edit')
+    })
+
+    it('keeps the http and relative urls the menu is made of', () => {
+      const menu = render('<ul><li><a href="/users/1">Show</a></li><li><a href="https://example.com">Site</a></li></ul>')
+
+      expect(menu.find('a').map((_i, a) => $(a).attr('href')).toArray()).toEqual([
+        '/users/1',
+        'https://example.com',
+      ])
+    })
+
+    // Browsers tolerate whitespace and control characters inside a scheme, so
+    // the value is stripped of them before the scheme is read.
+    it('drops a javascript: href obfuscated with a control character', () => {
+      const menu = render('<ul><li><a href="java\tscript:window.PWNED = true">Edit</a></li></ul>')
+
+      expect(menu.find('a').attr('href')).toBeUndefined()
+    })
+
+    it('keeps a url whose path carries punctuation', () => {
+      const menu = render('<ul><li><a href="/users/1?a=b+c&d=e-f">Show</a></li></ul>')
+
+      expect(menu.find('a').attr('href')).toBe('/users/1?a=b+c&d=e-f')
+    })
+
+    it('still drops script tags', () => {
+      render('<ul><li>Edit</li></ul><script>window.PWNED = true</script>')
+
+      expect(window.PWNED).toBeUndefined()
     })
   })
 
