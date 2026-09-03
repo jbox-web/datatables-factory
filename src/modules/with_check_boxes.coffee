@@ -31,9 +31,6 @@ WithCheckBoxes.instance_methods =
         @info('Add check_boxes callbacks to : ajax')
         @callbacks['ajax'].push @_check_boxes_callback_on_ajax()
 
-        @info('Add check_boxes callbacks to : createdRow')
-        @callbacks['createdRow'].push @_check_boxes_callback_on_created_row()
-
         @_restrict_touch_selection_to_check_boxes()
         @_drop_selection_from_saved_state()
 
@@ -91,8 +88,11 @@ WithCheckBoxes.instance_methods =
     @datatable.rows({ page: 'current' }).deselect()
 
 
+  # By node, never by a selector built from the row id. A table whose server
+  # sends no DT_RowId produced '#undefined', which matched nothing and selected
+  # no row without a word; an id carrying a comma matched every row instead.
   select_row: (tr) ->
-    @datatable.row('#' + tr.attr('id'), { page: 'current' }).select()
+    @datatable.row($(tr).get(0), { page: 'current' }).select()
 
 
   update_select_all_ctrl: ->
@@ -140,22 +140,20 @@ WithCheckBoxes.instance_methods =
       Utils.merge_hash(d, e)
 
 
-  _check_boxes_callback_on_created_row: ->
-    (row) =>
-      @_add_row_if_checked($(row))
-
-
   _check_boxes_callback_on_draw: ->
     =>
+      @_reselect_checked_rows()
       @update_select_all_ctrl()
 
 
+  # A bare return, never `false`: jQuery reads a false return as preventDefault
+  # plus stopPropagation, so a response carrying no count — the normal case for
+  # a server that does not send one — stopped xhr.dt from ever reaching a
+  # handler the host application bound on an ancestor.
   _check_boxes_callback_on_xhr: ->
     (e, settings, json, _xhr) =>
-      if json? && json['records_selected']?
-        @_update_select_all_global_count(json['records_selected'])
-      else
-        return false
+      @_update_select_all_global_count(json['records_selected']) if json? and json['records_selected']?
+      return
 
 
   _check_boxes_callback_on_select: ->
@@ -240,10 +238,22 @@ WithCheckBoxes.instance_methods =
     @_check_boxes_thead = null
 
 
-  _add_row_if_checked: (tr) ->
-    checkbox = $($(tr).find('input[type="checkbox"]')[0])
-    if checkbox.is(':checked')
-      @select_row(tr)
+  # One scan and one select call per draw, where this used to be a row lookup and
+  # a select event per row — and each of those events rescanned the whole
+  # container three times to refresh the "select all" control, so a page of
+  # checked rows cost quadratic work exactly when the feature was in use.
+  #
+  # Running on draw rather than on row creation also puts it after every
+  # createdRow callback, including the host application's: a checkbox injected
+  # there did not exist yet when the per-row hook looked for it.
+  _reselect_checked_rows: ->
+    return if !@datatable?
+
+    rows = $('tbody > tr', @datatable.table().container()).filter ->
+      $(this).find('input[type="checkbox"]').is(':checked')
+
+    @datatable.rows(rows.toArray()).select() if rows.length > 0
+    return
 
 
   # .text(), never .html(): the count comes from the server response and the

@@ -150,7 +150,8 @@ describe('WithContextMenu', () => {
       rightClick('#row-0 td')
 
       expect(table.datatable.deselected).toEqual([{ page: 'current' }])
-      expect(table.datatable.selected).toEqual(['#row-0'])
+      // The node, not a selector built from its id: see WithCheckBoxes#select_row.
+      expect(table.datatable.selected).toEqual([$('#row-0')[0]])
     })
 
     // Right-clicking inside an existing selection must not shrink it to one row:

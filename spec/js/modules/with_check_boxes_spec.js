@@ -1,3 +1,4 @@
+import WithCheckBoxes from '../../../src/modules/with_check_boxes.coffee'
 import { checkBoxColumn, loadTable, stubDataTables } from '../support/table_helpers'
 
 // The checkbox column is what switches the whole module on; a table without it
@@ -69,14 +70,20 @@ describe('WithCheckBoxes', () => {
     // Measured against a table without the column rather than against a fixed
     // count: the loader registers callbacks of its own, and hard-coding the
     // total would break the day it registers one more.
-    it('adds one ajax and one createdRow callback of its own', () => {
+    it('adds one ajax callback of its own', () => {
       const plain = build({ columns: [{ data: 'name' }] })
       const withBoxes = build()
 
       expect(withBoxes.callbacks['ajax'].length).toBe(plain.callbacks['ajax'].length + 1)
-      expect(withBoxes.callbacks['createdRow'].length).toBe(
-        plain.callbacks['createdRow'].length + 1
-      )
+    })
+
+    // Re-selection happens on draw, not on row creation, so nothing is
+    // registered there any more.
+    it('registers no createdRow callback', () => {
+      const plain = build({ columns: [{ data: 'name' }] })
+      const withBoxes = build()
+
+      expect(withBoxes.callbacks['createdRow'].length).toBe(plain.callbacks['createdRow'].length)
     })
 
     it('listens for draw, xhr and selection on the table', () => {
@@ -221,18 +228,42 @@ describe('WithCheckBoxes', () => {
       expect(table.datatable.deselected).toEqual([{ page: 'current' }])
     })
 
-    it('re-selects a freshly drawn row that came back checked', () => {
-      const table = buildRendered({ dom: { rows: 1, checkedRows: [0] } })
-
-      table.callbacks['createdRow'][0]($('#row-0')[0])
-
-      expect(table.datatable.selected).toEqual(['#row-0'])
-    })
-
-    it('leaves a freshly drawn unchecked row alone', () => {
+    // By node: a table whose server sends no DT_RowId used to produce the
+    // selector '#undefined', which matched nothing and selected no row.
+    it('selects a row by its node rather than by its id', () => {
       const table = buildRendered({ dom: { rows: 1 } })
 
-      table.callbacks['createdRow'][0]($('#row-0')[0])
+      table.select_row($('#row-0'))
+
+      expect(table.datatable.selected).toEqual([$('#row-0')[0]])
+    })
+
+    it('selects a row that carries no id at all', () => {
+      const table = buildRendered({ dom: { rows: 1 } })
+      $('#row-0').removeAttr('id')
+
+      table.select_row($('tbody tr').first())
+
+      expect(table.datatable.selected.length).toBe(1)
+      expect(table.datatable.selected[0].nodeName).toBe('TR')
+    })
+
+    // One call for the whole page, from the draw handler: per row it meant a
+    // lookup and a select event each, and each of those rescanned the container
+    // to refresh the select-all control.
+    it('re-selects every row that came back checked, in one call', () => {
+      const table = buildRendered({ dom: { rows: 3, checkedRows: [0, 2] } })
+
+      table.datatable.handlers['draw.dt.dtfCheckBoxes']()
+
+      expect(table.datatable.selected.length).toBe(1)
+      expect(table.datatable.selected[0].length).toBe(2)
+    })
+
+    it('selects nothing when no row came back checked', () => {
+      const table = buildRendered({ dom: { rows: 3 } })
+
+      table.datatable.handlers['draw.dt.dtfCheckBoxes']()
 
       expect(table.datatable.selected).toEqual([])
     })
@@ -400,8 +431,28 @@ describe('WithCheckBoxes', () => {
     it('ignores a response that carries no count', () => {
       const table = buildRendered()
 
-      expect(table.datatable.handlers['xhr.dt.dtfCheckBoxes']({}, {}, {}, {})).toBe(false)
+      table.datatable.handlers['xhr.dt.dtfCheckBoxes']({}, {}, {}, {})
+
       expect($('.selected-count').text()).toBe('')
+    })
+
+    // jQuery reads a false return as preventDefault plus stopPropagation. The
+    // handler used to return one whenever the response carried no count — the
+    // normal case for a server that does not send one — which stopped xhr.dt
+    // from ever reaching a handler the host bound on an ancestor.
+    it('lets the event keep bubbling when the response carries no count', () => {
+      document.body.innerHTML = '<div id="host"><table id="users-datatable"></table></div>'
+      const reached = jest.fn()
+      $('#host').on('xhr.dt', reached)
+
+      const handler = WithCheckBoxes.instance_methods._check_boxes_callback_on_xhr.call({
+        _update_select_all_global_count: () => {},
+      })
+      $('#users-datatable').on('xhr.dt', handler)
+
+      $('#users-datatable').trigger('xhr.dt', [{}, {}, {}])
+
+      expect(reached).toHaveBeenCalled()
     })
   })
 
