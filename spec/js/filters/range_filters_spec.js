@@ -237,6 +237,16 @@ describe('range filters', () => {
     // letters. `numeric` and not `decimal`: _int_or_empty_string only accepts a
     // dot, and a French decimal keypad offers a comma, which would be dropped
     // without a word.
+    // The default is not a lock: a column of amounts wants the separator its
+    // decimals need, and says so through the same option the text filter uses.
+    it('lets filter_input_mode override the numeric default', () => {
+      const { filter } = build(RangeNumberFilter, { options: { filter_input_mode: 'decimal' } })
+      filter.create_html()
+
+      expect($(`#${filter.from_id}`).attr('inputmode')).toBe('decimal')
+      expect($(`#${filter.to_id}`).attr('inputmode')).toBe('decimal')
+    })
+
     it('asks touch keyboards for digits on both bounds', () => {
       const { filter } = build(RangeNumberFilter)
       filter.create_html()
@@ -333,6 +343,13 @@ describe('range filters', () => {
   describe('RangeDateFilter', () => {
     // The date bounds keep the default keyboard: they are filled by the
     // datepicker, and a separator has to be typable when they are not.
+    it('honours filter_input_mode on the date bounds when one is asked for', () => {
+      const { filter } = build(RangeDateFilter, { options: { filter_input_mode: 'numeric' } })
+      filter.create_html()
+
+      expect($(`#${filter.from_id}`).attr('inputmode')).toBe('numeric')
+    })
+
     it('leaves the date bounds without an inputmode', () => {
       const { filter } = build(RangeDateFilter)
       filter.create_html()

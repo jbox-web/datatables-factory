@@ -341,6 +341,23 @@ Opt a filter out of it:
 The filter then behaves like any other except that its value is never written to
 the state, and so never restored on the next visit.
 
+## Touch keyboards
+
+Every filter is a text input, whatever the column holds: on a phone, a column of
+amounts or of file numbers opens the letter keyboard. Tell the filter what to
+ask for:
+
+```erb
+<%= f.text_field :mandate_number, filter_input_mode: 'numeric' %>
+<%= f.range :free_capital, filter_input_mode: 'decimal' %>
+```
+
+The value goes straight to the `inputmode` attribute, so any value the HTML
+attribute accepts works. Numeric ranges default to `numeric` — their bounds are
+read as integers unless told otherwise; `decimal` is the one to ask for when the
+column carries a separator. Nothing else sets the attribute at all, which leaves
+the default keyboard where a separator or a letter has to stay typable.
+
 ## Debugging
 
 Pass `?dtf_debug_log=true` or `?dtf_debug_dump=true` in the URL to enable console logging. Only the literal `true` enables a flag. The `dtf_options` hash is forwarded to the JS side and controls verbosity.

@@ -152,13 +152,6 @@ class RangeBase extends BaseFilter
       .on('keydown', callback)
 
 
-  # Which touch keyboard the bounds ask for. Empty here — the bounds are plain
-  # text inputs, and a range whose values are not numbers (dates) wants the
-  # default keyboard, separator included. Subclasses that know better say so.
-  _input_mode: ->
-    {}
-
-
   # via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
   # interprété comme un appel à la méthode jQuery-UI .autocomplete() (qui lève).
   # empêche les gestionnaires de mots de passe (Bitwarden, 1Password, LastPass…) d'injecter leur autofill

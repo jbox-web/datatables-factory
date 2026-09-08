@@ -36,6 +36,10 @@ class BaseFilter extends Extendable
     # stateSave — localStorage by default, with no expiry — which is not where a
     # national ID or a phone number searched on a shared workstation belongs.
     @filter_no_state           = @options.filter_no_state == true
+    # Which touch keyboard the filter asks for. A column of amounts or of file
+    # numbers is filtered from a phone as often as from a desk, and every filter
+    # here is a text input: left unset, the keyboard opens on its letters.
+    @filter_input_mode         = @options.filter_input_mode
 
     # build ids
     @container_id = "##{@options.filter_container_id}"
@@ -128,6 +132,16 @@ class BaseFilter extends Extendable
   ###################
   # PRIVATE METHODS #
   ###################
+
+  # Attributes for the inputs a filter builds, applied through .attr(). Empty
+  # unless configured — an empty string would still land on the element as
+  # inputmode="", which a browser reads as "text" and not as "unspecified".
+  # Subclasses with a sensible default override this method, never the option.
+  _input_mode: ->
+    return {} unless @filter_input_mode
+
+    inputmode: @filter_input_mode
+
 
   # DOM helpers — single jQuery dependency point
   _el: (id) -> $("##{id}")

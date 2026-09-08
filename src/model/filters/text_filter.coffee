@@ -107,6 +107,7 @@ class TextFilter extends BaseFilter
         'data-lpignore':  'true'
         'data-1p-ignore': ''
       )
+      .attr(@_input_mode())
       .on('keydown', callback1)
       .on('mousedown', callback2)
 

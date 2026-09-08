@@ -32,6 +32,23 @@ describe('TextFilter', () => {
       expect($(`#${filter.reset_id}`).length).toBe(1)
     })
 
+    // A column of amounts or of file numbers is filtered from a phone as often
+    // as from a desk, and the filter is a plain text input: without this, the
+    // touch keyboard opens on its letters.
+    it('asks touch keyboards for the configured input mode', () => {
+      const { filter } = build({ options: { filter_input_mode: 'decimal' } })
+      filter.create_html()
+
+      expect($(`#${filter.input_id}`).attr('inputmode')).toBe('decimal')
+    })
+
+    it('leaves the input without an inputmode when none is configured', () => {
+      const { filter } = build()
+      filter.create_html()
+
+      expect($(`#${filter.input_id}`).attr('inputmode')).toBeUndefined()
+    })
+
     it('carries the configured css class alongside the base one', () => {
       const { filter } = build({ options: { filter_css_class: 'form-control' } })
       filter.create_html()

@@ -23,7 +23,7 @@ class RangeNumberFilter extends RangeBase
   # while a French decimal keypad offers a comma — the bound would then be
   # dropped without a word rather than filtered on.
   _input_mode: ->
-    inputmode: 'numeric'
+    inputmode: (@filter_input_mode or 'numeric')
 
 
   _range_change: (event) ->
