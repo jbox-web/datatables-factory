@@ -54,6 +54,7 @@ Use `bootstrap_datatables_for` (includes Bootstrap 5 classes) or `datatables_for
 | `colvis` | `true` | Appears in column visibility toggle |
 | `class` | `[]` | Extra CSS classes — a String or an Array |
 | `width` | `''` | Column width |
+| `priority` | — | Responsive priority — a lower value keeps the column visible longer when width runs out. Omitted by default, so the plugin applies its own `10000` |
 
 The filter names passed to the form builder must match a declared column; a
 filter naming an unknown column raises `ArgumentError` at render time rather

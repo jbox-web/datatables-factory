@@ -56,6 +56,18 @@ RSpec.describe DatatablesFactory::DataColumn do
       )
     end
 
+    it 'omits the responsive priority when the caller gives none' do
+      column = described_class.new(view, :email)
+
+      expect(column.to_hash).to_not have_key(:responsivePriority)
+    end
+
+    it 'exposes the responsive priority as an integer' do
+      column = described_class.new(view, :email, priority: '2')
+
+      expect(column.to_hash[:responsivePriority]).to eq(2)
+    end
+
     it 'names the check_box column Select All' do
       column = described_class.new(view, :check_box)
       expect(column.to_hash[:name]).to eq('Select All')

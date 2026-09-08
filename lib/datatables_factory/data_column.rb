@@ -18,7 +18,9 @@ module DatatablesFactory
 
     # rubocop:disable-next Layout/LineLength
     def to_hash
-      { className: css_class, visible: visible?, orderable: sortable?, searchable: searchable?, width: width, data: @name, name: name }
+      hash = { className: css_class, visible: visible?, orderable: sortable?, searchable: searchable?, width: width, data: @name, name: name }
+      hash[:responsivePriority] = priority if priority
+      hash
     end
 
 
@@ -69,6 +71,15 @@ module DatatablesFactory
 
     def width
       @opts.fetch(:width, '')
+    end
+
+
+    # Responsive drops columns from right to left as long as no priority is
+    # declared; a lower priority survives longer. The key is omitted when the
+    # caller gives none, so the plugin keeps its own default (10000) instead of
+    # receiving a nil it would sort as a real value.
+    def priority
+      @opts[:priority]&.to_i
     end
 
   end
