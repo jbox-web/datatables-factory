@@ -16,6 +16,16 @@ class RangeNumberFilter extends RangeBase
   # PRIVATE METHODS #
   ###################
 
+  # A bound is typed on a phone as often as on a desktop, and these are text
+  # inputs: without this, a touch keyboard opens on its letters.
+  #
+  # 'numeric' and not 'decimal': _int_or_empty_string below only accepts a dot,
+  # while a French decimal keypad offers a comma — the bound would then be
+  # dropped without a word rather than filtered on.
+  _input_mode: ->
+    inputmode: 'numeric'
+
+
   _range_change: (event) ->
     super(event)
 

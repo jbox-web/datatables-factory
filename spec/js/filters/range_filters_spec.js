@@ -232,6 +232,19 @@ describe('range filters', () => {
   })
 
   describe('RangeNumberFilter', () => {
+    // A bound is typed on a phone as often as on a desktop, and the inputs are
+    // plain text fields — without inputmode a touch keyboard opens on its
+    // letters. `numeric` and not `decimal`: _int_or_empty_string only accepts a
+    // dot, and a French decimal keypad offers a comma, which would be dropped
+    // without a word.
+    it('asks touch keyboards for digits on both bounds', () => {
+      const { filter } = build(RangeNumberFilter)
+      filter.create_html()
+
+      expect($(`#${filter.from_id}`).attr('inputmode')).toBe('numeric')
+      expect($(`#${filter.to_id}`).attr('inputmode')).toBe('numeric')
+    })
+
     // Unary plus reads a blank string as 0, so a bound left with nothing but a
     // space went to the server as ">= 0" instead of being treated as open.
     describe('reading a bound', () => {
@@ -318,6 +331,16 @@ describe('range filters', () => {
   })
 
   describe('RangeDateFilter', () => {
+    // The date bounds keep the default keyboard: they are filled by the
+    // datepicker, and a separator has to be typable when they are not.
+    it('leaves the date bounds without an inputmode', () => {
+      const { filter } = build(RangeDateFilter)
+      filter.create_html()
+
+      expect($(`#${filter.from_id}`).attr('inputmode')).toBeUndefined()
+      expect($(`#${filter.to_id}`).attr('inputmode')).toBeUndefined()
+    })
+
     it('attaches a datepicker to both inputs', () => {
       const { filter } = build(RangeDateFilter)
       filter.create_html()

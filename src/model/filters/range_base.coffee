@@ -133,6 +133,7 @@ class RangeBase extends BaseFilter
 
     $('<input/>', options)
       .attr(@_autofill_off())
+      .attr(@_input_mode())
       .on('keydown', callback)
 
 
@@ -147,7 +148,15 @@ class RangeBase extends BaseFilter
 
     $('<input/>', options)
       .attr(@_autofill_off())
+      .attr(@_input_mode())
       .on('keydown', callback)
+
+
+  # Which touch keyboard the bounds ask for. Empty here — the bounds are plain
+  # text inputs, and a range whose values are not numbers (dates) wants the
+  # default keyboard, separator included. Subclasses that know better say so.
+  _input_mode: ->
+    {}
 
 
   # via .attr() et non le hash de $('<input/>', …) : 'autocomplete' y serait
