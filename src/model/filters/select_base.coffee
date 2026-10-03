@@ -109,6 +109,37 @@ class SelectBase extends BaseFilter
   # PRIVATE METHODS #
   ###################
 
+  # The options of the dropdown, as DOM nodes. An entry that carries a `group`
+  # is filed under an <optgroup> of that label — TomSelect and the native
+  # select render it as a section header — so a long list reads by sections.
+  # Entries keep the server's order: a group opens where its first entry
+  # stands, and one that comes back after another group opens again rather
+  # than being merged, the server deciding the order. An entry without a group
+  # — or with a blank one, which would open a section under an empty header —
+  # stays at the top level. Built through the DOM API like the options
+  # themselves: a group label is set as a property, never interpolated.
+  _option_nodes: (entries) ->
+    nodes = []
+    group = null
+
+    for data in entries
+      option = new Option(data.label, data.value)
+
+      unless data.group? and data.group != ''
+        group = null
+        nodes.push(option)
+        continue
+
+      if !group? or group.label != data.group
+        group = document.createElement('optgroup')
+        group.label = data.group
+        nodes.push(group)
+
+      group.appendChild(option)
+
+    nodes
+
+
   _html_input_field: ->
     options =
       id:    @select_id

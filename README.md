@@ -223,6 +223,27 @@ rest) and `href`/`src` values whose scheme is not `http`, `https`, `mailto` or
 styles come through untouched; a `javascript:` link or an `onerror` does not.
 That is a floor, not a substitute for escaping.
 
+### Grouped options in select dropdowns
+
+A long list reads better by sections. An entry of the `dt_filter_data_<column_id>`
+payload that carries a `group` is filed under an `<optgroup>` of that label, which
+TomSelect (and the native select) renders as a section header:
+
+```ruby
+def additional_data
+  { dt_dropdown_data(:name) => [
+    { value: 'visit_bill.signature_done', label: 'Visit bill signed', group: 'Visit bills' },
+    { value: 'mandate.signature_done',    label: 'Mandate signed',    group: 'Mandates' },
+  ] }
+end
+```
+
+Both `select` and `multi_select` honour it. Entries keep the server's order: a group
+opens where its first entry stands, so sort the payload by group first. An entry
+without a `group` (or with a blank one) stays at the top level, and a payload without any is rendered
+exactly as before. The group label is set as a DOM property, never interpolated —
+it is escaped like an option label, whatever `filter_html_labels` says.
+
 ## Optional features
 
 ### Checkboxes

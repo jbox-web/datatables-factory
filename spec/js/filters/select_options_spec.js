@@ -115,5 +115,79 @@ describe('select filter option rendering', () => {
       expect(select.find('[onmouseover]').length).toBe(0)
       expect(select.find('option').length).toBe(1)
     })
+
+    it('files the entries that carry a group under its optgroup', () => {
+      const filter = buildFilter(SelectMultiFilter)
+      filter.dropdown_data = [
+        { value: 'a', label: 'A', group: 'Letters' },
+        { value: '1', label: 'One', group: 'Digits' },
+      ]
+
+      const select = render(filter)
+      expect(select.children('optgroup').map((_i, group) => group.label).get()).toEqual(['Letters', 'Digits'])
+      expect(select.find('optgroup[label="Digits"] option').val()).toBe('1')
+    })
+  })
+
+  // A long list reads by sections: an entry that carries a `group` is filed
+  // under an <optgroup> of that label, which TomSelect renders as a header.
+  // Entries keep the server's order — a group opens where its first entry
+  // stands — and an entry without a group stays at the top level.
+  describe('grouped entries', () => {
+    const grouped = [
+      { value: 'visit_bill.signed', label: 'Signed', group: 'Visit bills' },
+      { value: 'visit_bill.expired', label: 'Expired', group: 'Visit bills' },
+      { value: 'mandate.signed', label: 'Signed', group: 'Mandates' },
+      { value: 'other', label: 'Other' },
+    ]
+
+    it('renders one optgroup per group, in the order of the data', () => {
+      const filter = buildFilter(SelectFilter)
+      filter.dropdown_data = grouped
+
+      const groups = render(filter).children('optgroup')
+      expect(groups.map((_i, group) => group.label).get()).toEqual(['Visit bills', 'Mandates'])
+      expect(groups.first().children('option').map((_i, option) => option.value).get())
+        .toEqual(['visit_bill.signed', 'visit_bill.expired'])
+    })
+
+    it('keeps the placeholder and the ungrouped entries at the top level', () => {
+      const filter = buildFilter(SelectFilter)
+      filter.dropdown_data = grouped
+
+      const top = render(filter).children('option')
+      expect(top.map((_i, option) => option.value).get()).toEqual(['', 'other'])
+    })
+
+    it('reopens a group that comes back after another one, rather than merging them', () => {
+      const filter = buildFilter(SelectFilter)
+      filter.dropdown_data = [
+        { value: 'a', label: 'A', group: 'G1' },
+        { value: 'b', label: 'B', group: 'G2' },
+        { value: 'c', label: 'C', group: 'G1' },
+      ]
+
+      expect(render(filter).children('optgroup').map((_i, group) => group.label).get()).toEqual(['G1', 'G2', 'G1'])
+    })
+
+    // A blank group would open a section with an empty header.
+    it('keeps an entry with a blank group at the top level', () => {
+      const filter = buildFilter(SelectFilter)
+      filter.dropdown_data = [{ value: 'a', label: 'A', group: '' }]
+
+      const select = render(filter)
+      expect(select.find('optgroup').length).toBe(0)
+      expect(select.children('option').map((_i, option) => option.value).get()).toEqual(['', 'a'])
+    })
+
+    it('does not let a group label inject markup', () => {
+      const filter = buildFilter(SelectFilter)
+      const label = '"><img src=x onerror="window.PWNED = true">'
+      filter.dropdown_data = [{ value: 'a', label: 'A', group: label }]
+
+      const select = render(filter)
+      expect(select.find('img').length).toBe(0)
+      expect(select.children('optgroup').get(0).label).toBe(label)
+    })
   })
 })

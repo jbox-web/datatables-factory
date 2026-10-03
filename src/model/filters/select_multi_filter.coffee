@@ -36,7 +36,7 @@ class SelectMultiFilter extends SelectBase
   # See SelectFilter#_select_options: DOM API, never string interpolation.
   _select_options: ->
     return [] if !@dropdown_data?
-    (new Option(data.label, data.value) for data in @dropdown_data)
+    @_option_nodes(@dropdown_data)
 
 
   _empty_value: (value) ->

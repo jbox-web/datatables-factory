@@ -38,8 +38,7 @@ class SelectFilter extends SelectBase
   # otherwise inject attributes or elements when appended by jQuery.
   _select_options: ->
     options = [new Option(@filter_default_label, '')]
-    if @dropdown_data?
-      options.push(new Option(data.label, data.value)) for data in @dropdown_data
+    options = options.concat(@_option_nodes(@dropdown_data)) if @dropdown_data?
     options
 
 
